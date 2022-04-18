@@ -1,0 +1,61 @@
+{% load widget_tweaks %}
+{% if form_field %}
+    <div class="row border-top mt-3">
+        <div class="col-md-12 mt-3">
+            <h1>{{ form2_name }}</h1>
+        </div>
+        {% for field in form_field %}
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-control-label">{{ field.label }}</label>
+                    {% render_field field class="form-control" placeholder=field.label %}
+                    <small style="color: red">
+                        {{ field.errors }}
+                    </small>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% if forms %}
+    <div class="card">
+        <div class="card-body">
+            {% for form in forms %}
+                <div class="row" style="margin-top: 5px">
+                    <div class="col-md-8">
+                        <label class="label">{{ form.name }}</label>
+                        {% render_field form.form.service_area hidden="" class="form-control" %}
+                    </div>
+                    <div class="col-md-4">
+                        {% render_field form.form.rate class="form-control" %}
+                    </div>
+                </div>
+            {% empty %}
+                <h4>No Service Area Available</h4>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+
+
+
+
+<script>
+    $('#id_airport').on('change', function () {
+        console.log("hello")
+        let select = $(this)
+        let get_value = select.val()
+        console.log("this is the selected value of the airport", get_value)
+        let url = "{% url 'get-airport' %}?airport=" + get_value+"&service_price_id="+{{ service_price_id }}
+        $.get(url, function (response, success) {
+            console.log("we got success-========================================")
+            let html = response.data
+            console.log("this is service price id",{{ service_price_id }})
+
+            $("#ajax_div").html(html)
+        })
+    })
+</script>
+
+

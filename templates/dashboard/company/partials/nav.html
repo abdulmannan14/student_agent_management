@@ -1,0 +1,150 @@
+{% load static %}
+<nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light bg-white" id="sidenav-main">
+    <div class="scrollbar-inner">
+        <!-- Brand -->
+        <div class="sidenav-header  d-flex  align-items-center">
+            <a class="navbar-brand" href="">
+                <img src="{% static 'assets/img/logo.png' %}" class="navbar-brand-img" alt="...">
+            </a>
+            <div class=" ml-auto ">
+                <!-- Sidenav toggler -->
+                <div class="sidenav-toggler d-none d-xl-block" data-action="sidenav-unpin" data-target="#sidenav-main">
+                    <div class="sidenav-toggler-inner">
+                        <i class="sidenav-toggler-line"></i>
+                        <i class="sidenav-toggler-line"></i>
+                        <i class="sidenav-toggler-line"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="navbar-inner">
+            <!-- Collapse -->
+            <div class="collapse navbar-collapse" id="sidenav-collapse-main">
+                <!-- Nav items -->
+                <ul class="navbar-nav">
+                    <li class="nav-item  index">
+                        <a class="nav-link" href="{% url 'company-index' %}" role="button"
+                           aria-expanded="true" aria-controls="navbar-dashboards">
+                            <div class="icon icon-shape rounded-circle shadow">
+                                {#                                <img src="https://img.icons8.com/material-two-tone/24/000000/dashboard-layout.png"/>#}
+                                {#                                <img class="sidebar-icons"  src="{% static 'dashboard/assets/img/sidebar/dashboard.svg' %}"/>#}
+                                <i class="fa-solid fa-grip fa-gradient"></i>
+                            </div>
+                            <span class="nav-link-text ml-2 text-dark">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item restaurant">
+                        <a class="nav-link" href="{% url 'restaurant-overview' %}" role="button"
+                           aria-expanded="true" aria-controls="navbar-dashboards">
+                            <div class="icon icon-shape rounded-circle shadow">
+                                {#                                <img src="https://img.icons8.com/material-outlined/24/000000/company.png"/>#}
+                                {#                                <img class="sidebar-icons" src="{% static 'dashboard/assets/img/sidebar/company.svg' %}"/>#}
+                                <i class="fa-solid fa-building fa-gradient"></i>
+                            </div>
+
+                            <span class="nav-link-text ml-2 text-dark">Restaurant</span>
+                        </a>
+                    </li>
+                    <li class="nav-item orders">
+                        <a class="nav-link" href="{% url 'restaurant-today-orders' %}" role="button"
+                           aria-expanded="false"
+                           aria-controls="navbar-vehicle">
+                            <div class="icon icon-shape rounded-circle shadow">
+                                {#                                <img src="https://img.icons8.com/external-photo3ideastudio-solid-photo3ideastudio/24/000000/external-reservation-restaurant-photo3ideastudio-solid-photo3ideastudio.png"/>#}
+                                {#                                <img class="sidebar-icons" src="{% static 'dashboard/assets/img/sidebar/reservations.svg' %}"/>#}
+                                <i class="fa-solid fa-bookmark fa-gradient"></i>
+                            </div>
+
+                            <span class="nav-link-text ml-2 text-dark">Orders</span>
+                        </a>
+                    </li>
+                    <li class="nav-item tables">
+                        <a class="nav-link" href="{% url 'restaurant-all-table' %}" role="button"
+                           aria-expanded="false"
+                           aria-controls="navbar-tables">
+                            <div class="icon icon-shape rounded-circle shadow">
+                                {#                                <img src="https://img.icons8.com/external-kmg-design-outline-color-kmg-design/32/000000/external-send-user-interface-kmg-design-outline-color-kmg-design.png"/>#}
+                                {#                                <img class="sidebar-icons" src="{% static 'dashboard/assets/img/sidebar/dispatch.svg' %}"/>#}
+                                <i class="fa-solid fa-paper-plane fa-gradient"></i>
+                            </div>
+                            <span class="nav-link-text ml-2 text-dark">Tables</span>
+                        </a>
+                    </li>
+                    <li class="nav-item menu " id="forward">
+                        <a class="nav-link  collapsed" id="ak" href="#navbar-dashboards" data-toggle="collapse"
+                           role="button" aria-expanded="false" aria-controls="navbar-dashboards">
+                            <div class="icon icon-shape rounded-circle shadow">
+                                {#                                <img src="https://img.icons8.com/ios-glyphs/30/000000/online-order.png"/>#}
+                                {#                                <img class="sidebar-icons" src="{% static 'dashboard/assets/img/sidebar/online.svg' %}"/>#}
+                                {#                                <i class="fa-solid fa-window-maximize"></i>#}
+                                <i class="fa-solid fa-desktop fa-gradient"></i>
+                            </div>
+                            <span class="nav-link-text ml-2 text-dark">Menu</span>
+                        </a>
+                        <div class="collapse" id="navbar-dashboards" style="padding-top: 5px">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item menu_head">
+                                    <a href="{% url 'restaurant-all-menu-head' %}" class="nav-link">
+                                        <span class="sidenav-mini-icon nav-link-text  text-dark"> D </span>
+                                        <i class="fa-solid fa-car fa-gradient"></i>
+                                        Menu Head
+                                    </a>
+                                </li>
+                                <li class="nav-item service_type">
+                                    <a href="{% url 'restaurant-all-menu-item' %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fa-brands fa-servicestack fa-gradient"></i>
+                                        Menu Items
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item expense">
+                        <a class="nav-link" href="{% url 'restaurant-today-expense' %}" role="button"
+                           aria-expanded="false"
+                           aria-controls="navbar-vehicle">
+                            <div class="icon icon-shape rounded-circle shadow">
+                                {#                                <img src="https://img.icons8.com/external-kmg-design-outline-color-kmg-design/32/000000/external-inbox-contact-us-kmg-design-outline-color-kmg-design.png"/>#}
+                                {#                                <img  class="sidebar-icons" src="{% static 'dashboard/assets/img/sidebar/records.svg' %}"/>#}
+                                <i class="fa-solid fa-folder fa-gradient"></i>
+
+                            </div>
+                            <span class="nav-link-text ml-2 text-dark">Expenses</span>
+                        </a>
+                    </li>
+                    <li class="nav-item feedback">
+                        <a class="nav-link" href="{% url 'restaurant-today-feedback' %}" role="button"
+                           aria-expanded="false"
+                           aria-controls="navbar-vehicle">
+                            <div class="icon icon-shape rounded-circle shadow">
+                                {#                                <img src="https://img.icons8.com/external-kmg-design-outline-color-kmg-design/32/000000/external-inbox-contact-us-kmg-design-outline-color-kmg-design.png"/>#}
+                                {#                                <img  class="sidebar-icons" src="{% static 'dashboard/assets/img/sidebar/records.svg' %}"/>#}
+                                <i class="fa-solid fa-folder fa-gradient"></i>
+
+                            </div>
+                            <span class="nav-link-text ml-2 text-dark">Feedbacks</span>
+                        </a>
+                    </li>
+                    <li class="nav-item records">
+                        <a class="nav-link" href="{% url 'company-add-reservations' %}" role="button"
+                           aria-expanded="false"
+                           aria-controls="navbar-vehicle">
+                            <div class="icon icon-shape rounded-circle shadow">
+                                {#                                <img src="https://img.icons8.com/external-kmg-design-outline-color-kmg-design/32/000000/external-inbox-contact-us-kmg-design-outline-color-kmg-design.png"/>#}
+                                {#                                <img  class="sidebar-icons" src="{% static 'dashboard/assets/img/sidebar/records.svg' %}"/>#}
+                                <i class="fa-solid fa-folder fa-gradient"></i>
+
+                            </div>
+                            <span class="nav-link-text ml-2 text-dark">Subscribtion</span>
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+

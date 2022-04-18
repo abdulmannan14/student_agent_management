@@ -1,0 +1,147 @@
+{% extends 'dashboard/base.html' %}
+{#{% load django_tables2 %}#}
+{% load widget_tweaks %}
+{% block nav %}
+    {% include 'dashboard/company/partials/nav.html' %}
+{% endblock %}
+{% block main %}
+
+
+    <div class="main-content" id="panel">
+        <!-- Topnav -->
+        {% include 'dashboard/company/partials/top-nav.html' %}
+        <!-- Header -->
+        <!-- Header -->
+        {% include 'dashboard/company/partials/header.html' %}
+        <!-- Page content -->
+        <div class="container-fluid mt--6">
+            <!-- Table -->
+            <div class="row Company_Registration ">
+                <div class="col">
+                    <div class="card mb-4 rounded-5 ">
+                        <!-- Card header -->
+                        <div class="card-header rounded-5">
+                            <h2 class="mb-0">{{ welcome }}</h2>
+                            <h4 class="mb-0">{{ subtitle }}</h4>
+
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-2">
+
+                                    </div>
+                                    <div class="card col-4">
+                                        <a href="#">
+                                            <div class="card-header text-center bg-light">
+                                                {{ view_menu }}
+                                            </div>
+                                    </div>
+                                    <div class="card col-4">
+                                        <a href="#">
+                                            <div class="card-header text-center bg-cyan" id="get_bill_id">
+                                                {{ get_bill }}
+                                            </div>
+                                    </div>
+                                    <div class="col-2">
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-2"></div>
+                                    <div class="card col-8">
+                                        {#                                        <a href='{{call_waiter_url}}'>#}
+                                        <div class="card-header text-center bg-danger" id="call_waiter_id">
+                                            {{ call_waiter }}
+                                        </div>
+                                    </div>
+                                    <div class="col-2"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                showNotification("", "{{message}}", "{{ message.tags }}", "fa fa-check")
+            </script>
+        {% endfor %}
+    {% endif %}
+    <script>
+        $(".js-form").on("submit", function () {
+            let form = $(this)
+            let btn = form.find("button[type=submit]")
+            btn.attr("disabled", "")
+            let cancel = $("#outer").find("a")
+            cancel.css("pointer-events", "none")
+            btn.html("Prcessing...")
+            $.ajax({
+                url: form.attr("action"),
+                type: form.attr("method"),
+                data: form.serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        showNotification(response.message)
+                        setTimeout(function () {
+                            window.location.href = response.data.redirect_url
+                        }, 1500)
+                        console.log(response)
+
+                    } else {
+                        showNotification(response.message, "")
+                    }
+                    btn.removeAttr("disabled")
+                    cancel.removeAttr("style")
+                    btn.html("Submit")
+                },
+                error: function () {
+                    btn.removeAttr("disabled")
+                    btn.html("Submit")
+                    cancel.removeAttr("style")
+                }
+            })
+            return false;
+        })
+
+    </script>
+    <script>
+        $("#call_waiter_id").click(function () {
+            showNotification('Waiter Called at your table, please wait!')
+        })
+    </script>
+    <script>
+        $("#get_bill_id").click(function () {
+            let btn = $("#get_bill_id")
+            btn.attr("disabled", "")
+            btn.html("Prcessing...")
+            $.ajax({
+                url: {% url 'get-bill' %},
+                type: 'post',
+                success: function (response) {
+                    if (response.success) {
+                        showNotification(response.message)
+                        setTimeout(function () {
+                            window.location.href = response.data.redirect_url
+                        }, 1500)
+                        console.log(response)
+
+                    } else {
+                        showNotification(response.message, "")
+                    }
+                    btn.removeAttr("disabled")
+                    cancel.removeAttr("style")
+                    btn.html("Submit")
+                },
+                error: function () {
+                    btn.removeAttr("disabled")
+                    btn.html("Submit")
+                    cancel.removeAttr("style")
+                }
+            })
+            return false;
+        })
+    </script>
+{% endblock %}

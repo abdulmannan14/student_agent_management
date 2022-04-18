@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LimouCloud</title>
+    <!-- favicon -->
+    <link rel="icon" href="{% static 'assets/img/favicons/favicon-96x96.png' %}" type="image/png">
+    <link rel="manifest" href={% static "assets/index2_images/favicons/site.webmanifest" %}>
+    <!-- plugin scripts -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    {% include 'home/partials/styles.html' %}
+    {% block extra_styles %}
+
+    {% endblock %}
+</head>
+
+<body>
+
+<div class="preloader">
+    <img src={% static "assets/index2_images/logo-1-1.png" %} width="75" class="preloader__image" alt="">
+</div><!-- /.preloader -->
+
+<div class="page-wrapper">
+    <header class="site-header-one stricky site-header-one__fixed-top">
+        <div class="container-fluid">
+            <div class="site-header-one__logo">
+                <a href="{% url 'index2' %}">
+                    <img src={% static "assets/index2_images/logo-1-1.png" %} width="129" alt="">
+                </a>
+                <span class="side-menu__toggler"><i class="fa fa-bars"></i></span><!-- /.side-menu__toggler -->
+            </div><!-- /.site-header-one__logo -->
+            <div class="main-nav__main-navigation">
+                <ul class="main-nav__navigation-box one-page-scroll-menu">
+                    <li class="scrollToLink">
+                        <a href="{% url 'index2' %}#home">Home</a>
+                    </li>
+                    <li class="scrollToLink"><a href="{% url 'index2' %}#features">Features</a></li>
+                    <li class="scrollToLink"><a href="{% url 'index2' %}#pricing">Pricing</a></li>
+                    <li class="scrollToLink"><a href="{% url 'index2' %}#team">Team</a></li>
+                    <li class="scrollToLink"><a href="{% url 'index2' %}#screens">Apps</a></li>
+                    {#                    <li class="dropdown scrollToLink">#}
+                    {#                        <a href="#blog">News</a>#}
+                    {#                        <ul>#}
+                    {#                            <li><a href="blog.html">News</a></li>#}
+                    {#                            <li><a href="blog-details.html">News Details</a></li>#}
+                    {#                        </ul>#}
+                    {#                    </li>#}
+                </ul><!-- /.main-nav__navigation-box -->
+            </div><!-- /.main-nav__main-navigation -->
+            <div class="main-nav__right text-right">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'company-index' %}" class="thm-btn btn-sm main-nav__btn"><span>{{ user }}</span></a>
+                    <a href="{% url 'account-logout' %}" class="thm-btn btn-sm main-nav__btn"><span
+                            class="fa fa-sign-out"></span></a>
+                {% else %}
+                    <a href="{% url 'account-login' %}" class="thm-btn btn-sm main-nav__btn"><span>Sign In</span></a>
+                {% endif %}
+            </div><!-- /.main-nav__right -->
+        </div><!-- /.container-fluid -->
+    </header><!-- /.site-header-one -->
+    {% block main %}
+        {# Main content Here #}
+    {% endblock %}
+    <footer class="site-footer">
+        <div class="site-footer__upper">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="footer-widget footer-widget__about">
+                            <a href="index.html">
+                                <img src={% static "assets/index2_images/logo-1-1.png" %} width="129" alt="">
+                            </a>
+                            <p>75 Cooley St. Ste. 7 <br>Pleasantville, NY 10570 <br> info@limoucloud.com
+                                <br> ###-###-####</p>
+                        </div><!-- /.footer-widget -->
+                    </div><!-- /.col-lg-4 -->
+
+                    <div class="col-lg-5">
+                        <div class="footer-widget__links-wrap">
+                            <div class="footer-widget">
+                                <h3 class="footer-widget__title">Company</h3>
+                                <ul class="list-unstyled footer-widget__links-list">
+                                    <li><a href="#">About</a></li>
+                                    <li><a href="#">Our Team</a></li>
+                                    <li><a href="#">Contact</a></li>
+                                    <li><a href="#">Services</a></li>
+                                </ul><!-- /.list-unstyled footer-widget__links-list -->
+                            </div><!-- /.footer-widget -->
+                            <div class="footer-widget">
+                                <h3 class="footer-widget__title">Explore</h3>
+                                <ul class="list-unstyled footer-widget__links-list">
+                                    <li><a href="#">News</a></li>
+                                    <li><a href="#">Features</a></li>
+                                    <li><a href="#">Download</a></li>
+                                    <li><a href="#">Free Trial</a></li>
+                                </ul><!-- /.list-unstyled footer-widget__links-list -->
+                            </div><!-- /.footer-widget -->
+                            <div class="footer-widget">
+                                <h3 class="footer-widget__title">Links</h3>
+                                <ul class="list-unstyled footer-widget__links-list">
+                                    <li><a href="#">Help</a></li>
+                                    <li><a href="#">Privacy Policy</a></li>
+                                    <li><a href="#">Terms of Use</a></li>
+                                    <li><a href="#">Services</a></li>
+                                </ul><!-- /.list-unstyled footer-widget__links-list -->
+                            </div><!-- /.footer-widget -->
+                        </div><!-- /.footer-widget__links-wrap -->
+                    </div><!-- /.col-lg-5 -->
+                    <div
+                            class="col-lg-3 d-flex align-items-center justify-content-xl-end justify-content-lg-end justify-content-md-center justify-content-sm-center">
+                        <div class="footer-widget">
+                            <div class="footer-widget__social">
+                                <a href="#"><i class="fab fa-facebook-square"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                            </div><!-- /.footer-widget__social -->
+                        </div><!-- /.footer-widget -->
+                    </div><!-- /.col-lg-3 -->
+                </div><!-- /.row -->
+            </div><!-- /.container -->
+        </div><!-- /.site-footer__upper -->
+        <div class="site-footer__bottom">
+            <div class="container text-center">
+                <p>© Copyright 2021 LimouCloud</p>
+            </div><!-- /.container -->
+        </div><!-- /.site-footer__bottom -->
+    </footer><!-- /.site-footer -->
+</div><!-- /.page-wrapper -->
+
+
+<a href="#" data-target="html" class="scroll-to-target scroll-to-top"><i class="fa fa-angle-up"></i></a>
+
+
+<div class="side-menu__block">
+    <div class="side-menu__block-overlay custom-cursor__overlay">
+        <div class="cursor"></div>
+        <div class="cursor-follower"></div>
+    </div><!-- /.side-menu__block-overlay -->
+    <div class="side-menu__block-inner ">
+        <div class="side-menu__top justify-content-end">
+
+            <a href="#" class="side-menu__toggler side-menu__close-btn"><img
+                    src={% static "assets/index2_images/shapes/close-1-1.png" %} alt=""></a>
+        </div><!-- /.side-menu__top -->
+
+
+        <nav class="mobile-nav__container">
+            <!-- content is loading via js -->
+        </nav>
+        <div class="side-menu__sep"></div><!-- /.side-menu__sep -->
+        <div class="side-menu__content">
+            <p>Lorem Ipsum is simply dummy text the printing and setting industry. Lorm Ipsum has been the
+                industry's stanard dummy text ever. </p>
+            <p><a href="mailto:info@limoucloud.com">info@limoucloud.com</a> <br> <a href="tel:888-999-0000">888 999
+                0000</a></p>
+            <div class="side-menu__social">
+                <a href="#"><i class="fab fa-facebook-square"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-pinterest-p"></i></a>
+            </div>
+        </div><!-- /.side-menu__content -->
+    </div><!-- /.side-menu__block-inner -->
+</div><!-- /.side-menu__block -->
+
+<script src={% static "assets/index2_js/jquery-3.5.0.min.js" %}></script>
+<script src={% static "assets/index2_js/bootstrap.bundle.min.js" %}></script>
+<script src={% static "assets/index2_js/bootstrap-select.min.js" %}></script>
+<script src={% static "assets/index2_js/bootstrap-datepicker.min.js" %}></script>
+<script src={% static "assets/index2_js/isotope.js" %}></script>
+<script src={% static "assets/index2_js/jquery.easing.min.js" %}></script>
+{#<script src={% static "assets/index2_js/jquery.ajaxchimp.min.js" %}></script>#}
+<script src={% static "assets/index2_js/jquery.waypoints.min.js" %}></script>
+<script src={% static "assets/index2_js/jquery.counterup.min.js" %}></script>
+<script src={% static "assets/index2_js/jquery.magnific-popup.min.js" %}></script>
+<script src={% static "assets/index2_js/jquery.validate.min.js" %}></script>
+<script src={% static "assets/index2_js/owl.carousel.min.js" %}></script>
+<script src={% static "assets/index2_js/TweenMax.min.js" %}></script>
+<script src={% static "assets/index2_js/swiper.min.js" %}></script>
+<script src={% static "assets/index2_js/wow.js" %}></script>
+<script src={% static "assets/index2_js/theme.js" %}></script>
+{% include "home/partials/tawk.to.html" %}
+<script>
+    $(document).ready(function () {
+
+        {#$('.form-control').select2();#}
+
+        $(".js-form").on("submit", function () {
+            let form = $(this);
+            let msg = form.find(".msg")
+            let btn = form.find("button[type='submit']")
+            let spin = $('<i style="margin-left: 5px" class="fas fa-spin fa-sync"></i>')
+            btn.append(spin)
+            $.ajax({
+                url: form.attr("action"),
+                type: form.attr("method"),
+                data: form.serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        msg.css("color", "green")
+                    } else
+                        msg.css("color", "red")
+                    msg.html(response.message)
+                    spin.remove()
+                    try {
+                        if (form.hasClass("clear-form")) {
+                            clear_form("js-form")
+                        }
+                    } catch (ex) {
+                        console.error(ex)
+                    }
+                },
+                error: function (error) {
+                    console.error(error)
+                    msg.css("color", "red")
+                    msg.html("Something went wrong!")
+                    spin.remove()
+                }
+            })
+            return false;
+        })
+
+        function clear_form(form_class) {
+            $(':input', '.' + form_class)
+                .not(':button, :submit, :reset, :hidden')
+                .val('')
+                .removeAttr('checked')
+                .removeAttr('selected');
+        }
+    })
+</script>
+{% block extra_js %}
+{% endblock %}
+
+</body>
+
+</html>

@@ -1,0 +1,71 @@
+{% extends "home/base.html" %}
+{% load widget_tweaks %}
+{% load static %}
+{% block extra_styles %}
+    <style>
+        span > a {
+            color: #3cdba9 !important;
+            text-decoration: underline;
+        }
+
+        .bg-secondary {
+            background: white !important;
+            border-radius: 30px;
+            border: 1px solid !important;
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <section class="banner-one" id="home">
+        <img src="{% static "assets/index2_images/shapes/banner-shape-1-1.png" %}" class="banner-one__bg-shape-1"
+             alt="">
+        <div class="banner-one__bg"
+             style="background-image: url({% static "assets/index2_images/resources/banner-img.jpeg" %});">
+        </div><!-- /.banner-one__bg -->
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-md-12">
+                    <div class="card bg-secondary border-0">
+                        <div class="card-header bg-transparent pb-2">
+                            <div class="text-dark text-center mt-3">
+                                <span>{{ page_title | safe }}</span>
+                            </div>
+                            <div class="text-center text-white">
+                                <small>{{ page_subtitle }}</small>
+                            </div>
+                        </div>
+                        <div class="card-body px-lg-5 py-lg-5">
+                            <div name="termly-embed" data-id="db9898b4-39da-4720-9e23-79c4ab8f0611"
+                                 data-type="iframe"></div>
+                            <script type="text/javascript">(function (d, s, id) {
+                                var js, tjs = d.getElementsByTagName(s)[0];
+                                if (d.getElementById(id)) return;
+                                js = d.createElement(s);
+                                js.id = id;
+                                js.src = "https://app.termly.io/embed-policy.min.js";
+                                tjs.parentNode.insertBefore(js, tjs);
+                            }(document, 'script', 'termly-jssdk'));</script>
+
+                        </div>
+                        <div class="card-footer bg-transparent pb-2">
+                            <div class="row mt-3">
+                                {% for link in links %}
+                                    <div class="text-center col-{% widthratio 12 links|length 1 %}">
+                                        <a href="{{ link.href }}"
+                                           class="text-light"><small>{{ link.title }}</small></a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </section><!-- /.banner-one -->
+
+
+{% endblock %}

@@ -1,0 +1,126 @@
+{% extends 'dashboard/base.html' %}
+{#{% load django_tables2 %}#}
+{% load widget_tweaks %}
+{% block nav %}
+    {% include 'dashboard/company/partials/nav.html' %}
+{% endblock %}
+{% block main %}
+
+
+
+
+    <div class="main-content" id="panel">
+        <!-- Topnav -->
+        {% include 'dashboard/company/partials/top-nav.html' %}
+        <!-- Header -->
+        <!-- Header -->
+        {% include 'dashboard/company/partials/header.html' %}
+        <!-- Page content -->
+        <div class="container-fluid mt--6">
+            <!-- Table -->
+            <div class="row">
+                <div class="col ">
+                    <div class="card mb-4">
+                        <!-- Card header -->
+                        <div class="card-header form-inline justify-content-between">
+                            <h2 class="mb-0">{{ page_title }}</h2>
+                            <a href="{% url 'company-edit-client' client_id %}"
+                               class="btn btn-primary"
+                               style="padding-right: 10px;padding-left: 20px "><span><i class="fa fa-pen "> </i>Edit
+                                Client</span></a>
+
+                        </div>
+
+                        <!-- Card body -->
+                        <div class="card-body">
+
+                            {% if messages %}
+                                <ul class="messages">
+                                    {% for message in messages %}
+                                        <div class="alert-box">
+                                            <li class="{{ message.tags }}">
+                                                {{ message|safe }}
+                                                <a href="#" class="alert-cancel-btn">&times;</a>
+                                            </li>
+                                        </div>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            <!-- Form groups used in grid -->
+
+                            <form method="post" class="mannan_form" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {% if client_form %}
+                                    <div class="row">
+                                    <div class="col-md-12 mt-3">
+                                        {% if client_form %}
+                                            <div class="col-md-12 col-md-3">
+                                                <h2>{{ user_profile_tag }}</h2>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    {% for field in user_profile %}
+                                        <div class="col-md-4">
+                                            <div class="form-group" id="client_payment_id">
+                                                <label class="form-control-label">{{ field.label }}</label>
+                                                {% render_field field class="form-control" readonly="readonly" placeholder=field.label %}
+                                                <small style="color: red">
+                                                    {{ field.errors }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                    <div class="col-md-12 mt-3">
+                                        {% if client_form %}
+                                            <div class="col-md-12 col-md-3">
+                                            <hr class="bold">
+{#                                                <h2>{{ client_form_tag }}</h2>#}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    {% for field in client_form %}
+                                        <div class="col-md-4">
+                                            <div class="form-group" id="client_payment_id">
+                                                <label class="form-control-label">{{ field.label }}</label>
+                                                {% render_field field class="form-control" readonly="readonly" placeholder=field.label %}
+                                                <small style="color: red">
+                                                    {{ field.errors }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                    {% for field in client_adress_form %}
+                                        <div class="col-md-4">
+                                            <div class="form-group" id="client_payment_id">
+                                                <label class="form-control-label">{{ field.label }}</label>
+                                                {% render_field field class="form-control" readonly="readonly" placeholder=field.label %}
+                                                <small style="color: red">
+                                                    {{ field.errors }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+
+
+                            </form>
+
+                        </div>
+                        <div class="card-footer form-inline justify-content-between">
+                            <a href="{% url 'company-delete-client' client_id %}"
+                               class="btn btn-outline-danger text-black"
+                               style="padding-right: 10px;padding-left: 20px "><i class="fa fa-trash "></i> Delete Client</a>
+                            <a href="{% url 'company-all-clients'%}"
+                               class="btn btn-primary text-black"
+                               style="padding-right: 10px;padding-left: 20px "><i class="fa fa-arrow-left "></i>Back</a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

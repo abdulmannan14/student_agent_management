@@ -1,0 +1,124 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block nav %}
+    {#    {% include 'accounts/nav.html' %}#}
+{% endblock %}
+{% block main %}
+    <div class="main-content">
+        {#        {% if messages %}#}
+        {#            <ul class="messages" style="display: flex;justify-content: center;align-content: center">#}
+        {#                {% for message in messages %}#}
+        {#                    <div class="alter-box">#}
+        {#                        <li class="{{ message.tags }}">#}
+        {#                            {{ messgae|safe }}#}
+        {#                            <a href="" class="alert-cancel-btn"></a>#}
+        {#                        </li>#}
+        {#                    </div>#}
+        {#                {% endfor %}#}
+        {##}
+        {##}
+        {#            </ul>#}
+        {##}
+        {#        {% endif %}#}
+        <!-- Header -->
+        <div class="header bg-gradient-primary py-7 py-lg-8 pt-lg-9">
+            <div class="container">
+                <div class="header-body text-center mb-7">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-5 col-lg-6 col-md-8 px-5">
+                            <h1 class="text-white">{{ page_title }}</h1>
+                            <p class="text-lead text-white">{{ page_subtitle }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="separator separator-bottom separator-skew zindex-100">
+                <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
+                </svg>
+            </div>
+        </div>
+        <!-- Page content -->
+        <div class="container mt--8 pb-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-md-12">
+                    <div class="card bg-secondary border-0 mb-0">
+                        <div class="card-body px-lg-5 py-lg-5" style="background: #071a22">
+
+                            <div class="row">
+                                <div style="display: flex" class="col-lg-8 col-md-10">
+                                    <img style="margin: auto;display: block" width="90%"
+                                         src="{% static 'assets/img/mockup1.png' %}">
+                                </div>
+                                <div class="col-lg-4 col-md-2">
+                                    <div class="text-center text-muted mb-4">
+                                        <small>{{ form.title }}</small>
+                                    </div>
+                                    <form class="account-form" method="post"
+                                          {% if form.action %}action="{{ form.action }}" {% endif %}>
+                                        {% csrf_token %}
+                                        {% include 'forms.html' with form=form.form %}
+                                        {% if form.extra_form %}
+                                            {% include 'forms.html' with form=form.extra_form %}
+                                        {% endif %}
+
+
+
+                                        <div class="text-center ">
+                                            {% for extra in extras %}
+                                                {{ extra }}
+                                            {% endfor %}
+                                        </div>
+                                        <div class="text-center text-danger msg text-emphasized"></div>
+                                        <div class="text-center">
+                                            <button type="submit"
+                                                    class="btn btn-primary my-4 {{ main_btn.classes }}">
+                                                <span>{{ main_btn.title }}</span>
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <hr style="background: white">
+                                    <div class="row mt-3">
+                                        {% for link in links %}
+                                            <div class="col-{% widthratio 12 links|length 1 %}">
+                                                <a href="{{ link.href }}"
+                                                   class="text-light"><small>{{ link.title }}</small></a>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {#<link rel="stylesheet" href="{% static "dashboard/assets/css/messages.css" %}>#}
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        var url = new URL(window.location.href);
+        var success = url.searchParams.get("success");
+        var message = url.searchParams.get("message");
+        var next = url.searchParams.get("next");
+        if (success === true || success === "true") {
+            _class = "text-success"
+            remove_class = "text-danger"
+        } else {
+            _class = "text-danger"
+            remove_class = "text-success"
+        }
+        if (next) {
+            var form = $(".account-form")
+            form.attr("action", form.attr("action") + "?next=" + next)
+        }
+        $(".msg").html(message).addClass(_class).removeClass(remove_class)
+    </script>
+
+{% endblock %}

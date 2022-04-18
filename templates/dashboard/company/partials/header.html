@@ -1,0 +1,75 @@
+<div class="header bg-primary pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-12 col-xl-12 col-sm-12 col-md-12 ">
+
+                    {% if header_msg and header_small_msg %}
+                        <div class="">
+                            <h1 class="text-white text-center">{{ header_msg }}</h1>
+
+                        </div>
+                        <div>
+                            <h5 class="text-white text-center"> {{ header_small_msg }}</h5>
+                        </div>
+
+                    {% endif %}
+                    {% if help_header_tag %}
+                        <div style="margin-bottom: -5%">
+                            <h4 class="text-white text-center">{{ help_header_tag }}</h4>
+                            <div class="input-group" style="width: 36%;margin-left: 33%">
+
+                                <input class="form-control py-2 border-right-0 border" type="search"
+                                       value="Search for help on specific topics"
+                                       id="example-search-input">
+                                <span class="input-group-append">
+                                <div class="input-group-text bg-white" style="color: #212061"><span>Search</span></div>
+                            </span>
+
+                            </div>
+                        </div>
+
+                    {% endif %}
+
+                </div>
+                {#                <div class="col-lg-6 col-5 text-right">#}
+                {#                    {% for link in links %}#}
+                {#                        {% if link.log == "log" %}#}
+                {#                            <a {{ link.attrs }} class="btn btn-sm text-white close_account {{ link.color_class }}"><i#}
+                {#                                    class="{{ link.icon }}"></i> {{ link.title }}</a>#}
+                {#                        {% endif %}#}
+                {#                        {% if  not link.log == "log" and link.log == "log2" %}#}
+                {#                            <a {{ link.attrs }} class="btn btn-sm text-white reservation_btn {{ link.color_class }}"#}
+                {#                            ><i class="{{ link.icon }}"></i> {{ link.title }}</a>#}
+                {#                        {% endif %}#}
+                {#                        {% if  not link.log == "log" and not link.log == "log2" %}#}
+                {#                            <a {{ link.attrs }} href="{{ link.href }}" class="btn btn-sm {{ link.color_class }}"><i#}
+                {#                                    class="{{ link.icon }}"></i> {{ link.title }}</a>#}
+                {##}
+                {#                        {% endif %}#}
+                {#                    {% endfor %}#}
+                {#                    {% for link in links %}#}
+                {#                        {% if link.title == "Add Client" %}#}
+                {#                            <a {{ link.attrs }} class="btn btn-sm text-white {{ link.color_class }}" id="close_account"><i#}
+                {#                                    class="{{ link.icon }}"></i> {{ link.title }}</a>#}
+                {#                        {% endif %}#}
+                {#                        {% if  not link.title == "Add Client" %}#}
+                {#                            {% if link.title == "Create New Client" %}#}
+                {#                                <a {{ link.attrs }} class="btn btn-sm text-white {{ link.color_class }}"#}
+                {#                                                    id="create_new_client"><i#}
+                {##}
+                {#                                        class="{{ link.icon }}"></i> {{ link.title }}</a>#}
+                {#                            {% endif %}#}
+                {#                            {% if not link.title == "Create New Client" %}#}
+                {#                                <a {{ link.attrs }} href="{{ link.href }}" class="btn btn-sm {{ link.color_class }}"><i#}
+                {#                                        class="{{ link.icon }}"></i> {{ link.title }}</a>#}
+                {#                            {% endif %}#}
+                {#                        {% endif %}#}
+                {#                    {% endfor %}#}
+                {##}
+                {#                </div>#}
+            </div>
+        </div>
+    </div>
+
+</div>

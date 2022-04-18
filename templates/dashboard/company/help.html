@@ -1,0 +1,161 @@
+{% extends 'dashboard/base.html' %}
+{% block extra_styles %}
+    {% load widget_tweaks %}
+    {% include 'dashboard/partials/datatable-styles.html' %}
+{% endblock %}
+{% block nav %}
+    {% include 'dashboard/company/partials/nav.html' %}
+{% endblock %}
+{% block main %}
+    <div class="main-content" id="panel">
+        <!-- Topnav -->
+        {% include 'dashboard/company/partials/top-nav.html' %}
+        <!-- Header -->
+        <!-- Header -->
+        {% include 'dashboard/company/partials/header.html' %}
+        <!-- Page content -->
+        <div class="container-fluid mt-3">
+            <!-- Table -->
+            <div class="row">
+                <div class="col-6">
+                    <div class="bg-primary">
+                    </div>
+                </div>
+                <div class="col-6">
+                </div>
+            </div>
+            <div class="row justify-content-around">
+                {% for card in data %}
+                    <div class="col-xl-3 col-md-12">
+                        <a href="javascript:" class="card card-help card-stats dashboard-card ">
+                            <!-- Card body -->
+                            <div class="card-body">
+                                <div class=" help-container">
+
+                                        <h5 class="card-title text-uppercase " style="text-align: center;color: #212061">{{ card.title }}</h5>
+
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+                <span style="width:100%;text-align: center">If you have a question that is not mentioned in our guide, please email our support team </span>
+
+            </div>
+            <div class="text-center" style="margin-top: 2%">
+                <button type="button" class="btn btn-primary emailus-button">
+                    <span>Email us</span>
+                </button>
+            </div>
+        </div>
+        <div class="modal fade" id="helpmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <form method="post" action="{% url 'company-help' %}">
+                    {% csrf_token %}
+                    <div class="modal-content">
+                        <div class="modal-header bg-modal">
+                            <h5 class="modal-title" id="exampleModalLabel" style="color:#FFFFFF ;"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true" class="text-white">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-5 ">
+                                    <input class="form-control" name='username' id="user-data-username" readonly
+                                           value="">
+                                </div>
+                                <div class="col-7 ">
+                                    <input class="form-control" name='email' id="user-data-email"
+                                           style="margin-left: -10%;width: 110%;"
+                                           readonly
+                                           value="">
+                                </div>
+                            </div>
+                            <div class="form-inline mt-2"><input name='subject' class="form-control"
+                                                                 id="user-data-subject"
+                                                                 style="width: 100%;" readonly value="">
+                            </div>
+
+                            <div class="mt-2">
+                            <textarea placeholder="Message" style=color:#000000;"
+                                      class="form-control" id="user-data-message"
+                                      name="message" rows="8" cols="50" required></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary confirm"><span>Submit</span></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal fade" id="emailmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <form method="post" action="{% url 'company-help' %}">
+                    {% csrf_token %}
+                    <div class="modal-content">
+                        <div class="modal-header bg-modal">
+                            <h5 class="modal-title" id="email-header" style="color:#FFFFFF ;"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true" class="text-white">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-inline mt-2">
+                                <input placeholder="Subject" name='subject' class="form-control text-dark"id="user-data-subject"style="width: 100%;"  value="">
+                            </div>
+                            <div class="mt-2">
+                            <textarea placeholder="Message" style=color:#000000;"
+                                      class="form-control" id="user-data-message"
+                                      name="message" rows="8" cols="50" required></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary confirm"><span>Submit</span></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+
+{% endblock %}
+{% block extra_js %}
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                showNotification("", "{{message}}", "{{ message.tags }}", "fa fa-check")
+            </script>
+        {% endfor %}
+    {% endif %}
+
+    <script>
+        $(".dashboard-card").on('click', function () {
+            let card_values = $(this).find('h5').html()
+            url = "{% url 'get_data_for_help_modal' %}"
+            $.get(url, function (response, success) {
+                $("#exampleModalLabel").html(`Help in <strong>${card_values}</strong>`)
+                $("#user-data-username").val(response.data['username'])
+                $("#user-data-email").val(response.data['email'])
+                $("#user-data-subject").val(card_values)
+            })
+            $('#helpmodal').modal('show')
+        })
+    </script>
+    <script>
+        $(".emailus-button").on('click', function () {
+            $('#emailmodal').modal('show')
+        })
+    </script>
+
+{% endblock %}
+{#data_url + "?name=" + name + '&reservation_id=' + reservation_id#}

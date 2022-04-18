@@ -1,0 +1,960 @@
+{% extends 'dashboard/base.html' %}
+{#{% load django_tables2 %}#}
+{% load widget_tweaks %}
+{% block nav %}
+    {{ nav_bar }}
+{% endblock %}
+{% block main %}
+
+
+    <div class="main-content" id="panel">
+        <!-- Topnav -->
+        {% include 'dashboard/company/partials/top-nav.html' %}
+        <!-- Header -->
+        <!-- Header -->
+        {% include 'dashboard/company/partials/header.html' %}
+        <!-- Page content -->
+        <div class="container-fluid mt--6">
+            <!-- Table -->
+            <div class="row">
+                <div class="col ">
+                    <div class="card mb-4">
+                        <!-- Card header -->
+                        <div class="card-header">
+                            <h2 class="mb-0">{{ page_title }}</h2>
+                            <h4 class="mb-0">{{ subtitle }}</h4>
+                        </div>
+
+                        {#                    {% if client_form %}#}
+
+                        {#                    <ul class=""#}
+                        {#                         role="tablist">#}
+                        {##}
+                        {#                        <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active" role="tab"#}
+                        {#                             tabindex="0" aria-controls="tabs-1" aria-labelledby="ui-id-1" aria-selected="true">#}
+                        {#                             <a href="#tabs-1" class="ui-tabs-anchor" role="presentation" tabindex="-1"#}
+                        {#                            id="ui-id-1">Individual Contacts</a></li>#}
+                        {#                        <li class="ui-state-default ui-corner-top" role="tab" tabindex="-1"#}
+                        {#                             aria-controls="tabs-2" aria-labelledby="ui-id-2" aria-selected="false"><a#}
+                        {#                             href="#tabs-2" class="ui-tabs-anchor" role="presentation" tabindex="-1"#}
+                        {#                            id="ui-id-2">Corporate Contacts</a></li>#}
+                        {#                    </ul>#}
+                        {##}
+                        {# {% endif %}#}
+                        <!-- Card body -->
+                        <div class="card-body">
+                            {#                            {% if messages %}#}
+                            {#                                <ul class="messages">#}
+                            {#                                    {% for message in messages %}#}
+                            {#                                        <script>#}
+                            {#                                            showNotification("", "{{message}}", "{{ message.tags }}", "fa fa-check")#}
+                            {#                                        </script>#}
+                            {#                                        <div class="alert-box" style="width: 510px;margin-left: 130px;">#}
+                            {#                                            <li class="{{ message.tags }}">#}
+                            {#                                                {{ message|safe }}#}
+                            {#                                                <a href="javascript:;" class="alert-cancel-btn">&times;</a>#}
+                            {#                                            </li>#}
+                            {#                                        </div>#}
+                            {#                                    {% endfor %}#}
+                            {#                                </ul>#}
+                            {#                            {% endif %}#}
+                            <!-- Form groups used in grid -->
+
+                            <form method="post" class="mannan_form" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {% if total_amount %}
+                                    <div class="col-md-12 col-md-3">
+                                        <h2>${{ total_amount }}</h2>
+                                    </div>
+
+                                {% endif %}
+                                {% if employee_form %}
+                                    <div class="row">
+                                        <div class="col-md-12 mt-3">
+                                            {% if employee_form_tag %}
+                                                <div class="col-md-12 col-md-3">
+                                                    <h2>{{ employee_form_tag }}</h2>
+                                                </div>
+                                            {% endif %}
+                                            <h2>{{ employee_form_name }}</h2>
+                                        </div>
+                                        {% for field in employee_form %}
+                                            {% if field.name == "title" %}
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <button class="btn-sm btn-primary" style="margin-top: 5px"
+                                                                type="button" id="id-btn">
+                                                            <span>&plus; Add New Position</span>
+                                                        </button>
+                                                        <div id="id-input" style="display: none">
+                                                            <input id="id-input-field-add-position"
+                                                                   class="add-manual-design"
+                                                                   placeholder="Add New Position "
+                                                            />
+                                                            <div class="text-white ml-8 mt-1 form-inline"
+                                                                 style="float: right">
+                                                                <a id="id-submit" class="btn-sm btn-primary mr-1"><span>
+                                                                    Add</span></a>
+                                                                <a id="id-cancel" class="btn-sm btn-danger">Cancel</a>
+                                                            </div>
+                                                        </div>
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if not field.name == "title" %}
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                {% if form1 %}
+                                    <div class="row">
+                                        <div class="col-md-12 mt-3">
+                                            {% if form1_tag %}
+                                                <div class="col-md-12 col-md-3">
+                                                    <h2>{{ form1_tag }}</h2>
+                                                </div>
+                                            {% endif %}
+                                            <h2>{{ form1_name }}</h2>
+                                        </div>
+{#                                        {% if readonly %}#}
+                                            {% for field in form1 %}
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                            {% endfor %}
+{#                                        {% endif %}#}
+                                        {% if address_form %}
+                                            {% for field in address_form %}
+                                                {% if field.label == 'vin' %}
+
+                                                {% endif %}
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                        {% if profile_form %}
+                                            {% for field in profile_form %}
+                                                {% if field.label == 'vin' %}
+
+                                                {% endif %}
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                                {% if current_taxes %}
+                                <table class="table">
+                                <thead class="bg-primary">
+                                  <tr>
+                                    <th class="text-white">Rate</th>
+                                    <th class="text-white">Effective Date</th>
+                                  </tr>
+                                  </thead>
+                                  <tbody>
+                                  {% for tax in current_taxes %}
+                                  <tr>
+                                    <td>{{ tax.rate}}</td>
+                                    <td>{{ tax.effective_date}}</td>
+                                    </tr>
+                                  {% endfor %}
+                                   </tbody>
+
+                                </table>
+                                {% endif %}
+                                {% if form2 %}
+                                    <div class="row">
+                                        <div class="col-md-12 mt-3">
+                                            {% if form2_tag %}
+                                                <div class="col-md-12 col-md-3">
+                                                    <h2>{{ form2_tag }}</h2>
+                                                </div>
+                                            {% endif %}
+                                            <h2>{{ form2_name }}</h2>
+                                        </div>
+
+                                        {% for field in form2 %}
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    {# {% if field.label =='vehicle_type' %}#}
+                                                    {# <label class="form-control-label">{{ field.label }}</label>#}
+                                                    {# {% endif %}#}
+                                                    <label class="form-control-label">{{ field.label }}</label>
+                                                    {% render_field field class="form-control" placeholder=field.label %}
+                                                    <small style="color: red">
+                                                        {{ field.errors }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                        {% if form_address %}
+                                            {% for field in form_address %}
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        {# {% if field.label =='vehicle_type' %}#}
+                                                        {# <label class="form-control-label">{{ field.label }}</label>#}
+                                                        {# {% endif %}#}
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                        {% if form_phone_number %}
+                                            {% for field in form_phone_number %}
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        {# {% if field.label =='vehicle_type' %}#}
+                                                        {# <label class="form-control-label">{{ field.label }}</label>#}
+                                                        {# {% endif %}#}
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+
+                                    </div>
+                                {% endif %}
+
+                                {% if client_payment_info %}
+                                    <div class="row">
+                                    <div class="col-md-12 mt-3">
+                                        {% if client_payment_info_tag %}
+                                            <div class="col-md-12 col-md-3">
+                                                <h2>{{ client_payment_info_tag }}</h2>
+                                            </div>
+                                        {% endif %}
+                                        <h2>{{ client_payment_info_name }}</h2>
+                                    </div>
+
+                                    {% for field in client_payment_info %}
+                                        {% if field.name == "payment_method" %}
+                                            <div class="col-md-4">
+                                                <div class="form-group" id="client_payment_id">
+                                                    <label class="form-control-label">{{ field.label }}</label>
+                                                    {% render_field field class="form-control" placeholder=field.label %}
+                                                    <small style="color: red">
+                                                        {{ field.errors }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        {% if not field.name == "payment_method" %}
+                                            <div class="col-md-4 credit_card_info" style="display: none">
+                                                <div class="form-group" id="client_payment_id">
+                                                    <label class="form-control-label">{{ field.label }}</label>
+                                                    {% render_field field class="form-control" placeholder=field.label %}
+                                                    <small style="color: red">
+                                                        {{ field.errors }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {#                                    <div #}
+                                {% endif %}
+                                {% if vehicle_type %}
+                                    <div class="row border-top mt-3">
+                                        <div class="col-md-12 mt-3">
+                                            {% if vehicle_type_tag %}
+                                                <div class="col-md-12 mt-2 md-3 ml-2">
+                                                    <h2>{{ vehicle_type_tag }}</h2>
+                                                </div>
+                                            {% endif %}
+                                            <h1>{{ vehicle_type_name }}</h1>
+                                        </div>
+                                        {% for field in vehicle_type %}
+                                            {% if field.name == "all_vehicle_type_name" %}
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <button class="btn-sm btn-primary" style="margin-top: 5px"
+                                                                type="button" id="id-btn"><span>&plus; Add New Vehicle Type</span>
+                                                        </button>
+                                                        <div id="id-input" style="display: none">
+                                                            <input id="id-input-field-vehicle" class="add-manual-design"
+                                                                   placeholder="Add New Vehicle Type "
+                                                            />
+                                                            <div class="text-white ml-8 form-inline mt-1"
+                                                                 style="float:right;">
+                                                                <a id="id-submit" class="btn-sm btn-primary mr-1"><span>Add</span></a>
+                                                                <a id="id-cancel" class="btn-sm btn-danger">Cancel</a>
+                                                            </div>
+                                                        </div>
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if not field.name == "all_vehicle_type_name" %}
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                {% if service_type %}
+                                    <div class="row border-top mt-3">
+                                        <div class="col-md-12 mt-3">
+                                            {% if service_type_tag %}
+                                                <div class="col-md-12 mt-2 md-3 ml-2">
+                                                    <h2>{{ service_type_tag }}</h2>
+                                                </div>
+                                            {% endif %}
+                                            <h1>{{ service_type_name }}</h1>
+                                        </div>
+                                        {% for field in service_type %}
+                                            {% if field.name == "all_service_type_name" %}
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <button class="btn-sm btn-primary" style="margin-top: 5px"
+                                                                type="button" id="id-btn"><span>&plus; Add New Service Type</span>
+                                                        </button>
+                                                        <div id="id-input" style="display: none">
+                                                            <input id="id-input-field-service" class="add-manual-design"
+                                                                   placeholder="Add New Service Type "/>
+                                                            <div class="text-white ml-8 form-inline mt-1"
+                                                                 style="float: right">
+                                                                <a id="id-submit" class="btn-sm btn-primary mr-1"><span>Add</span></a>
+                                                                <a id="id-cancel" class="btn-sm btn-danger">Cancel</a>
+                                                            </div>
+                                                        </div>
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if not field.name == "all_service_type_name" %}
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                {% if add_vehicle %}
+                                    <div class="row border-top mt-3">
+                                        <div class="col-md-12 mt-3">
+                                            {% if add_vehicle_tag %}
+                                                <div class="col-md-12 mt-2 md-3 ml-2">
+                                                    <h2>{{ add_vehicle_tag }}</h2>
+                                                </div>
+                                            {% endif %}
+                                            <h1>{{ add_vehicle_name }}</h1>
+                                        </div>
+                                        {% for field in add_vehicle %}
+                                            {% if field.name == "all_vehicle_name" %}
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <button class="btn-sm btn-primary" style="margin-top: 5px"
+                                                                type="button" id="id-btn">
+                                                            <span>&plus; Add New Fleet</span>
+                                                        </button>
+                                                        <div id="id-input" style="display: none">
+                                                            <input id="id-input-field-add-vehicle"
+                                                                   class="add-manual-design"
+                                                                   placeholder="Add New Fleet "/>
+                                                            <div class="text-white ml-8 form-inline mt-1"
+                                                                 style="float: right">
+                                                                <a id="id-submit" class="btn-sm btn-primary mr-1"><span>Add</span></a>
+                                                                <a id="id-cancel" class="btn-sm btn-danger">Cancel</a>
+                                                            </div>
+
+
+                                                        </div>
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if not field.name == "all_vehicle_name" %}
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                {% if form3 %}
+                                    <div class="row border-top mt-3">
+                                        <div class="col-md-12 mt-3">
+                                            {% if form3_tag %}
+                                                <div class="col-md-12 mt-3 ml-2">
+                                                    <h2>{{ form3_tag }}</h2>
+                                                </div>
+                                            {% endif %}
+                                            <h1>{{ form3_name }}</h1>
+                                        </div>
+                                        {% for field in form3 %}
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">{{ field.label }}</label>
+                                                    {% render_field field class="form-control" placeholder=field.label %}
+                                                    <small style="color: red">
+                                                        {{ field.errors }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                {% if form4 %}
+                                    <div class="row border-top mt-3">
+
+                                        <div class="col-md-12 mt-3">
+                                            {% if form4_tag %}
+                                                <div class="col-md-12 mt-3 ml-2">
+                                                    <h2>{{ form4_tag }}</h2>
+                                                </div>
+                                            {% endif %}
+                                            <h1>{{ form4_name }}</h1>
+                                        </div>
+                                        <input style="display: none" id="client_address_latlong" type="text"
+                                               name="client_address_latlong">
+                                        {% for field in form4 %}
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">{{ field.label }}</label>
+                                                    {% render_field field class="form-control" placeholder=field.label %}
+                                                    <small style="color: red">
+                                                        {{ field.errors }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+
+                                {% if form5 %}
+                                    <div class="row border-top mt-3">
+                                        <div class="col-md-12 mt-3">
+                                            {% if form5_tag %}
+                                                <div class="col-md-12">
+                                                    <h2>{{ form5_tag }}</h2>
+                                                </div>
+                                            {% endif %}
+                                            <h1>{{ form5_name }}</h1>
+                                        </div>
+
+                                        {% for field in form5 %}
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+
+                                                    <label class="form-control-label">{{ field.label }}</label>
+                                                    {% render_field field class="form-control" placeholder=field.label %}
+
+                                                    <small style="color: red">
+                                                        {{ field.errors }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col col-lg-5" id="ajax_div_chargetype"></div>
+                                    <div class="col col-lg-6" id="hours_rows"></div>
+                                {% endif %}
+                                {% if form6 %}
+                                    <div class="row border-top mt-3">
+                                        <div class="col-md-12 mt-3">
+                                            {% if form6_tag %}
+                                                <div class="col-md-12">
+                                                    <h2>{{ form6_tag }}</h2>
+                                                </div>
+                                            {% endif %}
+                                            <h1>{{ form6_name }}</h1>
+                                        </div>
+                                        {% for field in form6 %}
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">{{ field.label }}</label>
+                                                    {% render_field field class="form-control" placeholder=field.label %}
+                                                    <small style="color: red">
+                                                        {{ field.errors }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                {% if form7 %}
+                                    <div class="row border-top mt-3">
+                                        <div class="col-md-12 mt-3">
+                                            {% if form7_tag %}
+                                                <div class="col-md-12">
+                                                    <h2>{{ form7_tag }}</h2>
+                                                </div>
+                                            {% endif %}
+                                            <h1>{{ form7_name }}</h1>
+                                        </div>
+                                        {% for field in form7 %}
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">{{ field.label }}</label>
+                                                    {% render_field field class="form-control" placeholder=field.label %}
+                                                    <small style="color: red">
+                                                        {{ field.errors }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="col-md-8">
+                                </div>
+                                <div class="row d-flex justify-content-lg-end ">
+                                    <div class="col-md-4 " style="margin-right: 50px">
+                                        {% if skip_btn %}
+                                            {% for btn in skip_btn %}
+
+                                                <a href="{{ btn.href }}"
+                                                   class="{{ btn.color_class }}"
+                                                   style="height: 35px"><span>
+                                                    {{ btn.title }} <i class="{{ btn.icon }}"></i></span></a>
+
+
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-3 ml-3">
+                                        {% if button_back %}
+                                            {% for btn in button_back %}
+                                                <a href="{{ btn.href }}"
+
+                                                   class="{{ btn.color_class }}" style="height: 35px"><span>
+
+                                                    <i class="{{ btn.icon }}"> </i>{{ btn.title }}</span></a>
+
+                                            {% endfor %}
+
+                                        {% endif %}
+                                    </div>
+                                    <div class="mr-1">
+                                        {% if cancel_button %}
+                                            <a href="{{ cancel_button_url }}" type="button"
+                                               class="btn btn-primary  submit-btn">
+                                                <span>{{ cancel_button }}</span>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                    {% if button %}
+                                        <button type="submit"
+                                                class="btn btn-primary submit-btn">
+                                            <span>{{ button }}</span>
+                                        </button>
+                                    {% endif %}
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <div id="ordermodal" class="modal fade">
+            <div class="modal-dialog" style="width:5250px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" style="align-content: center">Select Payment Methode</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <a href="javascript;;" class="btn btn-primary ak" value="0" style="width:200px"
+                           data-dismiss="modal"><span>CASH</span></a>
+                        <a href="javascript;;" class="btn btn-primary ak" value="1" style="width:200px"
+                           data-dismiss="modal"><span>CREDIT CARD</span></a>
+                    </div>
+                    {#                    <div class="modal-footer">#}
+                    {#                        #}
+                    {#                    </div>#}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const cancel_btn = document.querySelector('.alert-cancel-btn');
+        if (cancel_btn) {
+            cancel_btn.addEventListener("click", () => {
+                const alert = document.querySelector(".alert-box");
+                alert.style.display = "none"
+            })
+        }
+    </script>
+    <script>
+        $('#id-cancel').click(function () {
+            $("#id-input").hide();
+            $("#id-btn").show();
+        });
+    </script>
+{% endblock %}
+
+{% block extra_js %}
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                showNotification("", "{{message}}", "{{ message.tags }}", "fa fa-check")
+            </script>
+        {% endfor %}
+    {% endif %}
+
+    <script>
+        $(document).ready(function () {
+            $('select').select2();
+        });
+    </script>
+    {#    <script>#}
+    {#        var searchInput_dest = 'id_name';#}
+    {#        $(document).ready(function () {#}
+    {#            var autocomplete = new google.maps.places.Autocomplete((document.getElementById(searchInput_dest)), {#}
+    {#                types: ['geocode'],#}
+    {#            });#}
+    {#        })#}
+    {#    </script>#}
+    <script>
+        var searchInput_dest = 'id_destination_address';
+        $(document).ready(function () {
+            var autocomplete = new google.maps.places.Autocomplete((document.getElementById(searchInput_dest)), {
+                types: ['geocode'],
+            });
+            google.maps.event.addListener(autocomplete, 'place_changed', function () {
+                var near_place = autocomplete.getPlace();
+                console.log("Near Place: ", near_place)
+
+                var destination_lat = near_place.geometry.location.lat();
+                var destination_long = near_place.geometry.location.lng();
+                var destination = $("#destination_latlong")
+                destination.val(destination_lat.toString() + ',' + destination_long.toString())
+            });
+        });
+    </script>
+    <script>
+        var searchInput_dest = 'id_pickup_address';
+        $(document).ready(function () {
+            var autocomplete = new google.maps.places.Autocomplete((document.getElementById(searchInput_dest)), {
+                types: ['geocode'],
+            });
+            google.maps.event.addListener(autocomplete, 'place_changed', function () {
+                var near_place = autocomplete.getPlace();
+                console.log("Near Place: ", near_place)
+
+                var destination_lat = near_place.geometry.location.lat();
+                var destination_long = near_place.geometry.location.lng();
+                var destination = $("#destination_latlong")
+                destination.val(destination_lat.toString() + ',' + destination_long.toString())
+            });
+        });
+    </script>
+    <script>
+        $('#id_vehicle_type').on("change", function () {
+            let select = $(this)
+            let vehicletype = select.val()
+            name = select.find("option:selected").html()
+            let url = "{% url 'get-vehicle-type' %}?type=" + name
+            $.get(url, function (response, success) {
+                let html = response.data
+                vehicles = response.data
+                let options = "";
+                for (let vehicle of vehicles) {
+                    options += `<option value="${vehicle.id}">${vehicle.name}</option>`
+                }
+                $('#id_vehicle').html(options)
+            })
+        })
+    </script>
+    <script>
+        function myfunc(input) {
+            input = $(input)
+            let name = input.attr("name")
+            let distance_in_miles = $("#id_distance_in_miles")
+            let rate_per_mile = $("#id_rate_per_mile")
+            distance_in_miles = distance_in_miles.val()
+            rate_per_mile = rate_per_mile.val()
+            console.log(distance_in_miles)
+            console.log(rate_per_mile)
+            let total = distance_in_miles * rate_per_mile
+            $('#id_fare_amount').val(total)
+
+        }
+    </script>
+    <script>
+        function durfunc(input) {
+            {
+                input = $(input)
+
+            }
+            let duration = $('#id_duration')
+            duration = duration.val()
+            duration = duration.replace("hrs", " ");
+            duration = parseInt(duration)
+            let fields = "";
+            for (let i = 0; i < duration; i++) {
+                fields += `<p><input type="text" placeholder="$0.00" value= "${10}" name="${i}hr" style="margin-left: auto">${i} hr</input></p>`
+            }
+            console.log(fields)
+            $('#hours_rows').html(fields)
+        }
+    </script>
+    <script>
+        function datefunc(input) {
+            let from_date = $('#id_from_date')
+            from_date = from_date.val()
+            let to_date = $('#id_to_date')
+            to_date = to_date.val()
+            from_date = Date.parse(from_date)
+            to_date = Date.parse(to_date)
+            let no_of_day = to_date - from_date
+            no_of_day = no_of_day / 86400000
+            $('#id_no_of_days').val(no_of_day)
+            let rate_per_day = $('#id_rate_per_day')
+            rate_per_day = rate_per_day.val()
+            let fare_of_total_days = rate_per_day * no_of_day
+            $('#id_base_fare').val(fare_of_total_days)
+        }
+    </script>
+    <script>
+        $('#id_charge_by').on('change', function () {
+            let form = $('.mannan_form')
+            let get_name = form.serializeArray()
+            dataobj = {}
+            $(get_name).each(function (i, field) {
+                dataobj[field.name] = field.value
+            })
+            let vehicle_type = dataobj.vehicle_type
+            let service_type = dataobj.service_type
+            let charge_by_type = dataobj.charge_by
+            if (vehicle_type && service_type && charge_by_type) {
+                let url = "{% url 'get-charge-by-type' %}?vehicle_type=" + vehicle_type + '&service_type=' + service_type + '&charge_by=' + charge_by_type
+                $.get(url, function (response, success) {
+                    let html = response.data
+                    for (var tax of response.taxes) {
+                        $(`#${tax.id}`).val(tax.value)
+                    }
+                    $("#ajax_div_chargetype").html(html)
+                })
+            } else {
+                let select = $(this)
+                let chargetype = select.val()
+                {
+                    console.log("this is charge by value", chargetype)
+                }
+                let url = "{% url 'get-charge-by-type' %}?charge_by=" + chargetype
+                $.get(url, function (response, success) {
+                    let html = response.data
+                    $("#hours_rows").html(' ')
+                    $("#ajax_div_chargetype").html(html)
+                })
+            }
+
+
+        })
+    </script>
+
+    <script>
+        $('#id-btn').on('click', function () {
+            $('#id-input').show()
+            $('#id-btn').hide()
+        })
+    </script>
+    <script>
+        $('#id-submit').on('click', function () {
+            let obj = $('#id-input-field-vehicle')
+            let obj1 = $('#id-input-field-service')
+            let obj2 = $('#id-input-field-add-vehicle')
+            let obj3 = $('#id-input-field-add-position')
+            let value = ''
+            let place = ''
+            if (obj.val() != null) {
+                value = obj.val()
+                console.log("the lord", value)
+                place = obj.attr('id')
+
+            }
+            if (obj1.val() != null) {
+                value = obj1.val()
+                console.log("the lord", value)
+                place = obj1.attr('id')
+            }
+            if (obj2.val() != null) {
+                value = obj2.val()
+                console.log("the lord", value)
+                place = obj2.attr('id')
+
+            }
+            if (obj3.val() != null) {
+                value = obj3.val()
+                console.log("the lord", value)
+                place = obj3.attr('id')
+
+            }
+
+            let url = ''
+            if (value != '') {
+                if (place == "id-input-field-service") {
+                    url = "{% url 'add-new-service-type-company' %}?type=" + value
+                }
+                if (place == "id-input-field-vehicle") {
+                    url = "{% url 'add-new-vehicle-type-company' %}?type=" + value
+                }
+                if (place == "id-input-field-add-vehicle") {
+                    url = "{% url 'add-new-vehicle-company' %}?type=" + value
+                }
+                if (place == "id-input-field-add-position") {
+                    url = "{% url 'add-new-position-company' %}?type=" + value + "&company=" + "{{ company_id }}"
+
+                }
+                $.get(url, function (response, success) {
+                    location.reload()
+                })
+
+
+            }
+
+        })
+    </script>
+    <script>
+        $("#client_payment_id").on('change', function () {
+            let valuee = $(this)
+            let show_value = $(".credit_card_info")
+            valuee = valuee.find("option:selected").html()
+            if (valuee == 'CREDIT CARD') {
+                console.log("entered in if")
+                show_value.show()
+            } else {
+                console.log("entered in else")
+                show_value.hide()
+
+            }
+        })
+    </script>
+
+    <script>
+        valid_email = false
+        valid_username = false
+        key = $("#id_username").val()
+        console.log("thiws is the previous value of trhe username", key)
+        $("#id_username").on("change", function () {
+
+            validate_details($(this))
+        })
+        $("#id_email").on("change", function () {
+            validate_details($(this))
+        })
+
+
+        function validate_details(elem) {
+            let value = elem.val()
+            let name = elem.attr("name")
+
+            let btn = $(".submit-btn")
+            url = `{% url 'check-email-exist' %}?name=${name}&value=${value}&key=${key}`
+            $.get(url, function (response, success) {
+                if (name.includes("email")) {
+                    valid_email = response.success
+                    valid_username = response.success
+                } else {
+                    valid_username = response.success
+                    valid_email = response.success
+                }
+                if (!response.success) {
+                    elem.siblings("small").html(response.message).css("color", "red")
+                    validate_btn(btn)
+                } else {
+                    elem.siblings("small").html(response.message).css("color", "green")
+                    validate_btn(btn)
+                }
+            })
+        }
+
+        function validate_btn(btn) {
+            if (valid_email && valid_username) {
+                btn.removeAttr("disabled")
+            } else {
+                btn.attr("disabled", "")
+            }
+        }
+    </script>
+
+
+
+     <script>
+        $('#id_order_items').on('click', function () {
+            $("#ordermodal").modal('show');
+
+        })
+    </script>
+
+
+{% endblock %}

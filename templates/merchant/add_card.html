@@ -1,0 +1,51 @@
+<div class="row">
+    <div class="col-md-12">
+        <input class="form-control" id="cardholder-name" placeholder="Card holder name" type="text">
+    </div>
+    <div style="margin-top: 20px" class="col-md-12" id="card-element"></div>
+    <small style="color: red" class="col-md-12" id="card-result"></small>
+</div>
+
+
+<!-- placeholder for Elements -->
+{#<div id="card-element"></div>#}
+
+<button style="margin-top: 20px" class="btn btn-primary" id="card-button">Save Card</button>
+
+<script>
+    redirect_url = "{{ webhook }}"
+    var stripe = Stripe('{{ public_key }}');
+    var elements = stripe.elements();
+    var cardElement = elements.create('card');
+    cardElement.mount('#card-element');
+    var cardholderName = document.getElementById('cardholder-name');
+    var cardButton = document.getElementById('card-button');
+    var resultContainer = document.getElementById('card-result');
+    cardButton.addEventListener('click', function (ev) {
+        if (cardholderName.value.length < 1) {
+            resultContainer.textContent = "Enter the card holder name"
+            return false;
+        } else {
+            resultContainer.textContent = ""
+        }
+        stripe.createPaymentMethod({
+                type: 'card',
+                card: cardElement,
+                billing_details: {
+                    name: cardholderName.value,
+                },
+            }
+        ).then(function (result) {
+            if (result.error) {
+                // Display error.message in your UI
+                resultContainer.textContent = result.error.message;
+            } else {
+                console.log(result)
+                // You have successfully created a new PaymentMethod
+                resultContainer.textContent = "Card added successfully!"
+                $(resultContainer).css("color", "green")
+                window.location.href = redirect_url + "?payment_method_id=" + result.paymentMethod.id
+            }
+        });
+    });
+</script>

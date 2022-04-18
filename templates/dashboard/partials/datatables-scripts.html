@@ -1,0 +1,35 @@
+{% load static %}
+
+<script src="{% static 'dashboard/assets/vendor/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'dashboard/assets/vendor/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'dashboard/assets/vendor/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'dashboard/assets/vendor/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'dashboard/assets/vendor/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'dashboard/assets/vendor/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+<script src="{% static 'dashboard/assets/vendor/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'dashboard/assets/vendor/datatables.net-select/js/dataTables.select.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        function make_datatable(class_name = "table") {
+            $(class_name).DataTable({
+                'lengthMenu': [[10, 20, 40, 100, -1], [10, 20, 40, 100, "All"]],
+                    "language": {
+                    "paginate": {
+                        "next": ">",
+                        "previous": "<",
+                    }
+                }
+
+            })
+            $("th>a").attr("href", "javascript:;")
+        }
+
+        make_datatable(".data-table")
+    })
+</script>
+{#<script>#}
+{#    window.onload = function () {#}
+{#        document.querySelector('.pagination li a').innerHTML = 'Prev'#}
+{#    };#}
+{##}
+{#</script>#}

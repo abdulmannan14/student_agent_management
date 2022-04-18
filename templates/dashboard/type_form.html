@@ -1,0 +1,381 @@
+{% load widget_tweaks %}
+
+<script>
+    let itr = 0;
+</script>
+<script>
+    all_prices = []
+    {%for price in prices  %}
+        all_prices.push({{ price }})
+    {% endfor %}
+    console.log("here is the array", all_prices)
+</script>
+{#<form method="post" enctype="multipart/form-data">#}
+{% if form1 %}
+    <div class="row">
+        <div class="col-md-12 mt-3">
+            {% if form1_tag %}
+                <div class="col-md-12 col-md-3">
+                    <h2>{{ form1_tag }}</h2>
+                </div>
+            {% endif %}
+            <h2>{{ form1_name }}</h2>
+        </div>
+
+        {% for field in form1 %}
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-control-label">{{ field.label }}</label>
+                    {% render_field field class="form-control calculate_fare" placeholder=field.label %}
+                    <small style="color: red">
+                        {{ field.errors }}
+                    </small>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{#{% if form_hourly %}#}
+{#    {% for field in form_hourly %}#}
+{#        {% for i in ranger %}#}
+{#            <div class="col-md-12">#}
+{#                <div class="form-group">#}
+{#                    <div class="row">#}
+{#                        <div class="col-md-4 pull-left" style="margin-top: 7px">#}
+{#                            <label class="form-control-label">#}
+{#                                {% if field.label == "Rate" %}{{ i }} hr {% else %}{{ field.label }}{% endif %}:#}
+{#                            </label>#}
+{#                        </div>#}
+{#                        <div class="col-md-8 pull-right">#}
+{#                            {% render_field field class="form-control" placeholder=field.label %}#}
+{#                            <small style="color: red">#}
+{#                                {{ field.errors }}#}
+{#                            </small>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        {% endfor %}#}
+{#    {% endfor %}#}
+{#{% endif %}#}
+{#{% if dict_zone %}#}
+{#    {% for field in dict_zone %}#}
+{#        <div class="col-md-8 pull-right">#}
+{#            <input name="hours_" value="{{ field.from_zone }}" placeholder="{{ field.from_zone }}"#}
+{#                   class="form-control"/>#}
+{#            <input name="hours_" value="{{ field.to_zone }}" placeholder="{{ field.to_zone }}" class="form-control"/>#}
+{#            <input name="hours_" value="{{ field.price }}" placeholder="{{ field.price }}" class="form-control"/>#}
+{#            {% render_field field class="form-control" value='{{ field.rate }}' placeholder=field.label %}#}
+{#        </div>#}
+{#    {% endfor %}#}
+{#{% endif %}#}
+{% if dict_hour %}
+    {% for field in dict_hour %}
+        <div class="col-md-4 pull-left" style="margin-top: 7px">
+            <label class="form-control-label">{{ field.hour }} hrs</label>
+        </div>
+        <div class="col-md-8 pull-right">
+            <input name="hours_" value="{{ field.rate }}" placeholder="{{ field.hour }}"
+                   class="form-control"/>
+            {#            {% render_field field class="form-control" value='{{ field.rate }}' placeholder=field.label %}#}
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if zone_form %}
+    <div>
+        <div class="zone-form">
+            <div class="row">
+                {% for field in zone_form %}
+                    <div class="zone-div" style="margin-left: 10%">
+
+                        {#                            <label class="form-control-label">{{ field }}</label>#}
+                        <label class="form-control-label">{{ field.label }}</label>
+                        {% if field.name == "to_zone" %}
+                            {% render_field field class="form-control calculate_fare" placeholder=field.label %}
+                        {% elif field.name == 'from_zone' %}
+                            {% render_field field class="form-control calculate_fare" placeholder=field.label %}
+                        {% elif field.name == 'price' %}
+                            {% render_field field class="form-control calculate_fare" placeholder=field.label style="width:6em" %}
+                        {% endif %}
+
+
+
+                        <small style="color: red">
+                            {{ field.errors }}
+                        </small>
+
+                    </div>
+                {% endfor %}
+                <button type="button" class="btn btn-primary btn-md"
+                        style="margin-left: 78%;margin-top: 20px;width: fit-content" id="add_button"
+                        onclick="append_div(this);"><span>Add</span>
+                </button>
+                <div id="zone_div">
+                    <table class="zone_table table table_responsive" style="margin-top: 10px;text-align: center">
+                        <thead>
+                        <tr>
+                            <th>From Zone</th>
+                            <th>To Zone</th>
+                            <th>Price</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="zone-tbody">
+
+
+                        </tbody>
+
+                    </table>
+                    <table class="zone_table table table_responsive" id="exampletable"
+                           style="margin-top: 10px;text-align: center">
+                        {% if dict_zone %}
+                            {% for field in dict_zone %}
+                                <div class="col-md-8 pull-right">
+                                    <tr id="{{ field.id }}">
+                                        <td class="from_zone">
+                                            {{ field.from_zone }}
+                                        </td>
+                                        <td class="to_zone">
+                                            {{ field.to_zone }}
+                                        </td>
+                                        <td class="price">
+                                            {{ field.price }}
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
+                                                    data-target="#exampleModal"
+                                                    onclick="remove_tr(this)">&times;
+                                            </button>
+                                        </td>
+                                        {#            {% render_field field class="form-control" value='{{ field.rate }}' placeholder=field.label %}#}
+                                    </tr>
+                                    <script>
+                                        itr = {{ forloop.counter1 }}+1
+                                    </script>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                    <a href="javascript:;" type="button" class="btn btn-danger confirm">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endif %}
+{% if distance_form %}
+    {% for field in distance_form %}
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="form-control-label">{{ field.label }}</label>
+                {% render_field field class="form-control calculate_fare" placeholder=field.label %}
+                <small style="color: red">
+                    {{ field.errors }}
+                </small>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+{% if charge_by_form %}
+    {% for field in charge_by_form %}
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="form-control-label design-res">{{ field.label }}</label>
+                {% render_field field class="form-control calculate_fare" placeholder=field.label %}
+
+                <small style="color: red">
+                    {{ field.errors }}
+                </small>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+
+
+
+<script type="text/javascript">
+
+
+    function append_div(btn) {
+        let zone_div = $(".zone-form")
+        {#let form = $("<form method='post'></form>")#}
+        {#form.html(zone_div)#}
+        let url
+        let input_list = $(".zone-form :input").serializeArray()
+        console.log(" input list is:", input_list)
+        var tbl = $('.zone_table tr').get().map(function (row) {
+            return $(row).find('td').get().map(function (cell) {
+                return $(cell).html();
+            });
+        });
+
+        let fields = ''
+        let tbody = $("#zone-tbody")
+        let from_z = 0
+        let to_z = 0
+        let new_input_list = []
+        if (validate_values(input_list)) {
+            let tr = `<tr id='tr_${itr}'>`
+            for (let input of input_list) {
+                if (input.name.includes("_input")) {
+                } else {
+                    let select = $(`*[name=${input.name}]`)
+                    let name = ""
+                    if (input.name === "price") {
+                        name = input.value
+                    } else {
+                        name = select.find("option:selected").html()
+                    }
+                    new_input_list.push({
+                        key: input.name,
+                        value: name
+                    })
+                    let td = `<td class="${input.name}">${name}
+                          <input value="${input.value}" name="${input.name}_input" hidden/>
+                           </td>`
+                    let alpha = `${input.value}`
+                    if (`${input.name}` == 'price') {
+                    } else if (`${input.name}` == 'from_zone') {
+                        from_z = alpha
+                    } else {
+                        to_z = alpha
+                    }
+                    tr += td
+                }
+            }
+            console.log(new_input_list)
+            if (from_z == to_z) {
+                alert("fields must be different")
+            } else {
+
+                console.log("this is tbl ", tbl)
+                for (let row of tbl) {
+                    if (row.length > 0) {
+                        if (row && row[1].includes(new_input_list[1].value)) {
+                            if (row[0].includes(new_input_list[0].value)) {
+                                alert("Row with the same data is already exists")
+                                return false
+                            }
+
+                        }
+
+                    }
+                }
+
+                td = `<td> <button type="button" class="btn btn-sm btn-danger"  data-target="exampleModal"  onclick="remove_tr(this)" >&times;</button></td>`
+                tr += td
+                tr += "</tr>"
+                itr += 1
+                tbody.html(tbody.html() + tr)
+                tr = ""
+            }
+        }
+
+        input_list.forEach(function (input) {
+            {#$(`*[name=${input.name}]`).val("")#}
+        })
+        {#return false#}
+    }
+
+    function get_inputs(form) {
+        let inputs = form.find("input")
+        let selects = form.find("select")
+        for (var input of inputs) {
+            selects.push(input)
+        }
+        return selects
+    }
+
+    function validate_values(inputs) {
+        for (var input of inputs) {
+            {#console.log(select, select.value)#}
+            if (input.value === "" || input.value === undefined) {
+                console.log(input.name)
+                $(`*[name='${input.name}']`).focus()
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function remove_tr(btn) {
+        btn = $(btn)
+        console.log("im pressed")
+        let tr = btn.parent('td').parent('tr')
+        let from_zone = ''
+        let to_zone = ''
+        let url = "{% url 'delete-zone-to-zone' %}?from_zone=" + from_zone + "&to_zone=" + to_zone
+        {#$.get(url, function (response, success) {#}
+        {#    let html = response.data#}
+        {#    vehicles = response.data#}
+        {#tr.remove()#}
+        console.log("i am here")
+        let modal = $('#exampleModal')
+        let zone_to_zone = `${tr.find(".from_zone").text()} to ${tr.find(".to_zone").text()}`
+        modal.modal("show")
+
+        modal.find(".modal-body").find("code").html(zone_to_zone)
+        modal.find(".modal-title").find("strong").html(zone_to_zone)
+        id = tr.attr("id")
+        modal.find(".confirm").attr("data-url", url).attr("onclick", `remove_zone_to_zone(this,"${id}")`)
+        return false
+    }
+</script>
+
+<script>
+    $('#exampleModal').on('show.bs.modal', function (event) {
+        console.log("hello  i am pressed")
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var name = button.data('from_zone') + '  to  ' + button.data('to_zone') // Extract info from data-* attributes
+        var url = button.data('whatever') // Extract info from data-* attributes
+        var modal = $(this)
+        modal.find('.modal-title').html(`<h>Delete <strong> ${name} </strong> <h> ?`)
+        modal.find('.modal-body')
+            .html(`<p>Make sure before you delete. This action will delete every data related to <code>${name}</code></p>`)
+        modal.find('a.confirm').attr('href', url)
+    })
+</script>
+<script>
+    function remove_zone_to_zone(a, tr_id) {
+        a = $(a)
+        let tr = $(`#${tr_id}`)
+        let url = a.attr("data-url")
+        let modified_url = url + tr_id
+        $.get(modified_url, function (response, success) {
+            tr.remove()
+            $('#exampleModal').modal("hide")
+        })
+    }
+</script>
+
+{#<script>#}
+{#    all_prices=[]#}
+{#    {%for price in taxes  %}#}
+{#        all_prices.push({{ price }})#}
+{#        console.log("these are the prices",{{ price }})#}
+{#    {% endfor %}#}
+{#    console.log("here is the array2",all_prices)#}
+{##}
+{##}
+{#</script>#}

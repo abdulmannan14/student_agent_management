@@ -1,0 +1,190 @@
+{% extends 'accounting/base.html' %}
+
+{% block content %}
+
+    <div class="page-content">
+        <div class="page-title">
+            <div class="row justify-content-between align-items-center">
+                <div
+                        class="col-xl-4 col-lg-4 col-md-4 d-flex align-items-center justify-content-between justify-content-md-start mb-3 mb-md-0">
+                    <div class="d-inline-block">
+                        <h5 class="h4 d-inline-block font-weight-400 mb-0 "> Manage Bills
+                        </h5>
+                    </div>
+                </div>
+                <div
+                        class="col-xl-8 col-lg-8 col-md-8 d-flex align-items-center justify-content-between justify-content-md-end">
+
+                    <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-12 pt-lg-3 pt-xl-2">
+                        <div class="all-button-box">
+                            <a href="create_bill"
+                               class="btn btn-xs btn-white btn-icon-only width-auto">
+                                <i class="fas fa-plus"></i> Create
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-12 pt-lg-3 pt-xl-2">
+                        <div class="all-button-box">
+                            <a href="http://127.0.0.1:5000/export/Bill"
+                               class="btn btn-xs btn-white btn-icon-only width-auto">
+                                <i class="fa fa-file-excel"></i> Export
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body py-0 mt-2">
+                        <div class="row d-flex justify-content-end">
+                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+                                <form method="GET" action="http://127.0.0.1:5000/bill" accept-charset="UTF-8"
+                                      id="frm_submit">
+                                    <div class="all-select-box">
+                                        <div class="btn-box">
+                                            <label for="bill_date" class="text-type">Date</label>
+                                            <input class="month-btn form-control datepicker-range" name="bill_date"
+                                                   type="text" id="bill_date">
+                                        </div>
+                                    </div>
+                            </div>
+
+                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+                                <div class="all-select-box">
+                                    <div class="btn-box">
+                                        <label for="vender" class="text-type">Vender</label>
+                                        <select class="form-control select2" id="vender" name="vender">
+                                            <option value="" selected="selected">All</option>
+                                            <option value="1">vendor test</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+                                <div class="all-select-box">
+                                    <div class="btn-box">
+                                        <label for="status" class="text-type">Status</label>
+                                        <select class="form-control select2" id="status" name="status">
+                                            <option value="" selected="selected">All</option>
+                                            <option value="0">Draft</option>
+                                            <option value="1">Sent</option>
+                                            <option value="2">Unpaid</option>
+                                            <option value="3">Partialy Paid</option>
+                                            <option value="4">Paid</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto my-auto">
+                                <a href="#" class="apply-btn"
+                                   onclick="document.getElementById('frm_submit').submit(); return false;"
+                                   data-toggle="tooltip" data-original-title="apply">
+                                    <span class="btn-inner--icon"><i class="fas fa-search"></i></span>
+                                </a>
+                                <a href="http://127.0.0.1:5000/bill" class="reset-btn" data-toggle="tooltip"
+                                   data-original-title="Reset">
+                                    <span class="btn-inner--icon"><i class="fas fa-trash-restore-alt"></i></span>
+                                </a>
+
+
+                            </div>
+                        </div>
+                        </form>
+                        <div class="table-responsive">
+                            <table class="table table-striped mb-0 dataTable">
+                                <thead>
+                                <tr>
+                                    <th> Bill</th>
+                                    <th> Vendor</th>
+                                    <th> Category</th>
+                                    <th> Bill Date</th>
+                                    <th> Due Date</th>
+                                    <th>Status</th>
+                                    <th> Action</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="commonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div>
+                    <h4 class="h4 font-weight-400 float-left modal-title" id="exampleModalLabel"></h4>
+                    <a href="#" class="more-text widget-text float-right close-icon" data-dismiss="modal"
+                       aria-label="Close">Close</a>
+                </div>
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        var dataTabelLang = {
+            paginate: {previous: "Previous", next: "Next"},
+            lengthMenu: "Show _MENU_ entries",
+            zeroRecords: "No data available in table",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoEmpty: " ",
+            search: "Search:"
+        }
+    </script>
+
+
+    <script>
+        var toster_pos = "right";
+    </script>
+
+    <script>
+        var date_picker_locale = {
+            format: 'YYYY-MM-DD',
+            daysOfWeek: [
+                "Sun",
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thu",
+                "Fri",
+                "Sat"
+            ],
+            monthNames: [
+                "January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+                "July",
+                "August",
+                "September",
+                "October",
+                "November",
+                "December"
+            ],
+        };
+        var calender_header = {
+            today: "today",
+            month: 'month',
+            week: 'week',
+            day: 'day',
+            list: 'list'
+        };
+    </script>
+
+
+
+{% endblock %}

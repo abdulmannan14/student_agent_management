@@ -1,0 +1,382 @@
+{% extends 'accounting/base.html' %}
+
+
+{% block content %}
+
+    <div class="page-content">
+
+
+        <div class="page-title">
+            <div class="row justify-content-between align-items-center">
+                <div
+                        class="col-xl-4 col-lg-4 col-md-4 d-flex align-items-center justify-content-between justify-content-md-start mb-3 mb-md-0">
+                    <div class="d-inline-block">
+                        <h5 class="h4 d-inline-block font-weight-400 mb-0 "> Manage Vendor-Detail
+                        </h5>
+                    </div>
+                </div>
+                <div
+                        class="col-xl-8 col-lg-8 col-md-8 d-flex align-items-center justify-content-between justify-content-md-end">
+                    <div class="row d-flex justify-content-end">
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-6">
+                            <div class="all-button-box">
+                                <a href="{% url 'create-vendor-bill' %}"
+                                   class="btn btn-xs btn-white btn-icon-only width-auto">
+                                    Create Bill
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-xl-1 col-lg-2 col-md-2 col-sm-6 col-6">
+                            <div class="all-button-box">
+                                <a href="#" class="btn btn-xs btn-white btn-icon-only width-auto" data-size="2xl"
+                                   data-toggle="modal" data-target="#commonModal"
+                                   data-url="{% url "vendor-edit" vendor.pk %}" data-ajax-popup="true"
+                                   data-title="Edit Vendor" data-toggle="tooltip" data-original-title="Edit">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-xl-1 col-lg-2 col-md-2 col-sm-6 col-6">
+                            <div class="all-button-box">
+                                <a href="#" class="btn btn-xs btn-white bg-danger btn-icon-only width-auto"
+                                   data-toggle="tooltip" data-original-title="Delete"
+                                   data-confirm="Are You Sure?|This action can not be undone. Do you want to continue?"
+                                   data-confirm-yes="document.getElementById('delete-form-1').submit();">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <form method="POST" action="{% url "vendor-delete" vendor.pk %}" accept-charset="UTF-8"
+                              id="delete-form-1"><input name="_method" type="hidden" value="DELETE">
+                            {% csrf_token %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-lg-4 col-xl-4">
+                <div class="card pb-0 customer-detail-box">
+                    <h3 class="small-title">Vendor Info</h3>
+                    <div class="p-4">
+                        <h5 class="report-text gray-text mb-0">{{ vendor.name }}</h5>
+                        <h5 class="report-text gray-text mb-0">{{ vendor.email }}</h5>
+                        <h5 class="report-text gray-text mb-0">{{ vendor.contact }}</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4 col-xl-4">
+                <div class="card pb-0 customer-detail-box">
+                    <h3 class="small-title">Billing Info</h3>
+                    <div class="p-4">
+                        <h5 class="report-text gray-text mb-0">{{ vendor.billing_name }}</h5>
+                        <h5 class="report-text gray-text mb-0">{{ vendor.country }}</h5>
+                        <h5 class="report-text gray-text mb-0">{{ vendor.state }}</h5>
+                        <h5 class="report-text gray-text mb-0">{{ vendor.city }}</h5>
+                        <h5 class="report-text gray-text mb-0">{{ vendor.address }}</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4 col-xl-4">
+                <div class="card pb-0 customer-detail-box">
+                    <h3 class="small-title">Extra Info</h3>
+                    <div class="p-4">
+                        <h5 class="report-text gray-text mb-0">Vendor Type : {{ vendor.vendor_type }}</h5>
+                        <h5 class="report-text gray-text mb-0">Zip code :{{ vendor.zip }}</h5>
+                        <h5 class="report-text gray-text mb-0">Vendor SSN :{{ vendor.ssn }}</h5>
+                        <h5 class="report-text gray-text mb-0">Vendor EIN :{{ vendor.ein }}</h5>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card pb-0">
+                    <h3 class="small-title">Company Info</h3>
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6">
+                            <div class="p-4">
+                                <h5 class="report-text gray-text mb-0">Vendor Id</h5>
+                                <h5 class="report-text mb-3">#VEND00001</h5>
+                                <h5 class="report-text gray-text mb-0">Total Sum of Bills</h5>
+                                <h5 class="report-text mb-0">$0.00</h5>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="p-4">
+                                <h5 class="report-text gray-text mb-0">Date of Creation</h5>
+                                <h5 class="report-text mb-3">Feb 4, 2022</h5>
+                                <h5 class="report-text gray-text mb-0">Quantity of Bills</h5>
+                                <h5 class="report-text mb-0">0</h5>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="p-4">
+                                <h5 class="report-text gray-text mb-0">Balance</h5>
+                                <h5 class="report-text mb-3">$-1,000.00</h5>
+                                <h5 class="report-text gray-text mb-0">Average Sales</h5>
+                                <h5 class="report-text mb-0">$0.00</h5>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="p-4">
+                                <h5 class="report-text gray-text mb-0">Overdue</h5>
+                                <h5 class="report-text mb-3">$0.00</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <h5 class="h4 d-inline-block font-weight-400 mb-4">Bills</h5>
+                <div class="card">
+                    <div class="card-body py-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped mb-0 dataTable">
+                                <thead>
+                                <tr>
+                                    <th>Bill</th>
+                                    <th>Bill Date</th>
+                                    <th>Due Date</th>
+                                    <th>Due Amount</th>
+                                    <th>Status</th>
+                                    <th> Action</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="commonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-content">
+                    <div>
+                        <h4 class="h4 font-weight-400 float-left modal-title" id="exampleModalLabel">Create New
+                            Designation</h4>
+                        <a href="#" class="more-text widget-text float-right close-icon" data-dismiss="modal"
+                           aria-label="Close">Close</a>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card bg-none card-box">
+                            <form method="POST" action={% url "vendor-edit" vendor.id %} accept-charset="UTF-8">
+
+                                {% csrf_token %}
+                                <h5 class="sub-title">Basic Info</h5>
+                                <input value="{{ vendor.id }}" hidden name="id">
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="name" class="form-control-label">Name</label>
+                                            <div class="form-icon-user">
+                                                <span><i class="fas fa-address-card"></i></span>
+                                                <input class="form-control" required="required" name="name" type="text"
+                                                       value="{{ vendor.name }}"
+                                                       id="name">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="contact" class="form-control-label">Contact</label>
+                                            <div class="form-icon-user">
+                                                <span><i class="fas fa-mobile-alt"></i></span>
+                                                <input class="form-control" required="required" name="contact"
+                                                       value="{{ vendor.contact }}"
+                                                       type="text" id="contact">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="email" class="form-control-label">Email</label>
+                                            <div class="form-icon-user">
+                                                <span><i class="fas fa-envelope"></i></span>
+                                                <input class="form-control" required="required" name="email"
+                                                       type="email" value="{{ vendor.email }}"
+                                                       id="email">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="type" class="form-control-label">Vendor Type</label>
+
+
+                                            <select name="type" id="type" class="form-control">
+                                                <option {% if vendor.vendor_type == "REGULAR" %}selected{% endif %}
+                                                        value="REGULAR">REGULAR
+                                                </option>
+                                                <option {% if vendor.vendor_type == "INDIVIDUAL" %}selected{% endif %}
+                                                        value="INDIVIDUAL">INDIVIDUAL
+                                                </option>
+                                                <option {% if vendor.vendor_type == "CONTRACTOR" %}selected{% endif %}
+                                                        value="CONTRACTOR">CONTRACTOR
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group " id="vndr">
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <h5 class="sub-title">BIlling Address</h5>
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="billing_name" class="form-control-label">Name</label>
+                                            <div class="form-icon-user">
+                                                <span><i class="fas fa-address-card"></i></span>
+                                                <input class="form-control" name="billing_name" type="text"
+                                                       value="{{ vendor.billing_name }}"
+                                                       id="billing_name">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="billing_country" class="form-control-label">Country</label>
+                                            <div class="form-icon-user">
+                                                <span><i class="fas fa-flag"></i></span>
+                                                <input class="form-control" name="country" type="text"
+                                                       value="{{ vendor.country }}"
+                                                       id="country">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="billing_state" class="form-control-label">State</label>
+                                            <div class="form-icon-user">
+                                                <span><i class="fas fa-chess-pawn"></i></span>
+                                                <input class="form-control" name="state" type="text"
+                                                       value="{{ vendor.state }}"
+                                                       id="state">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="billing_city" class="form-control-label">City</label>
+                                            <div class="form-icon-user">
+                                                <span><i class="fas fa-city"></i></span>
+                                                <input class="form-control" name="city" type="text"
+                                                       value="{{ vendor.city }}"
+                                                       id="city">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="billing_phone" class="form-control-label">Phone</label>
+                                            <div class="form-icon-user">
+                                                <span><i class="fas fa-mobile-alt"></i></span>
+                                                <input class="form-control" name="billing_phone" type="text"
+                                                       value="{{ vendor.billing_phone }}"
+                                                       id="billing_phone">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="billing_zip" class="form-control-label">Zip Code</label>
+                                            <div class="form-icon-user">
+                                                <span><i class="fas fa-crosshairs"></i></span>
+                                                <input class="form-control" placeholder="Zip" value="{{ vendor.zip }}"
+                                                       name="zip" type="text" id="zip">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="billing_address" class="form-control-label">Address</label>
+                                            <div class="input-group">
+                                                <textarea class="form-control" rows="3" name="address" cols="50"
+                                                          id="address">{{ vendor.address }}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12 px-0">
+                                    <input type="submit" value="Update" class="btn-create badge-blue">
+                                    <input type="button" value="Cancel" class="btn-create bg-gray"
+                                           data-dismiss="modal">
+                                </div>
+                            </form>
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <script>
+                    $(document).ready(function () {
+                        render_vendor_type($("#type"))
+
+                        $("#type").on("change", function () {
+                            let field = $(this)
+                            render_vendor_type(field)
+
+                        })
+
+                        function render_vendor_type(field) {
+                            let model = $('#vndr');
+                            if (field.val() === 'INDIVIDUAL') {
+                                model.html(` <div class="col-lg-12 col-md-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="shipping_zip" class="form-control-label">SSN</label>
+                                                <div class="form-icon-user">
+                                                    <input class="form-control" placeholder="Enter SSN" name="ssn" type="text" id="ssn" value="{{ vendor.ssn }}">
+                                                </div>
+                                            </div>
+                                        </div>`)
+                            } else if (field.val() === 'CONTRACTOR') {
+                                model.html(` <div class="col-lg-12 col-md-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="shipping_zip" class="form-control-label">EIN</label>
+                                                <div class="form-icon-user">
+                                                    <input class="form-control" placeholder="Enter EIN" name="ein" type="text" id="ein" value="{{ vendor.ein }}">
+                                                </div>
+                                            </div>
+                                        </div>`)
+
+
+                            } else {
+                                model.html(` `)
+
+                            }
+                        }
+
+                    })
+
+                </script>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

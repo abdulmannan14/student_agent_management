@@ -1,0 +1,584 @@
+{% extends 'accounting/base.html' %}
+
+{% block content %}
+
+    <div class="page-content">
+        <div class="page-title">
+            <div class="row justify-content-between align-items-center">
+                <div
+                        class="col-xl-4 col-lg-4 col-md-4 d-flex align-items-center justify-content-between justify-content-md-start mb-3 mb-md-0">
+                    <div class="d-inline-block">
+                        <h5 class="h4 d-inline-block font-weight-400 mb-0 "> Manage Chart of Accounts
+                        </h5>
+                    </div>
+                </div>
+                <div
+                        class="col-xl-8 col-lg-8 col-md-8 d-flex align-items-center justify-content-between justify-content-md-end">
+                    <div class="all-button-box row d-flex justify-content-end">
+                        <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
+                            <a href="#" data-url="http://127.0.0.1:5000/chart-of-account/create" data-ajax-popup="true"
+                               data-toggle="modal" data-target="#createmodal"
+                               data-title="Create New Account" class="btn btn-xs btn-white btn-icon-only width-auto">
+                                <i class="fas fa-plus"></i> Create
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6>Assets</h6>
+                    </div>
+                    <div class="card-body py-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th> Code</th>
+                                    <th> Name</th>
+                                    <th> Category</th>
+
+                                    <th> Balance</th>
+                                    <th> Status</th>
+                                    <th> Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for account in accounts %}
+                                    {% if account.account_type == account.ASSET %}
+
+                                        <tr>
+                                            <td>{{ account.code }}</td>
+                                            <td><a href="">{{ account.name }}</a>
+                                            </td>
+
+                                            <td>
+                                                {{ account.category }}
+
+                                            </td>
+                                             <td>
+                                              --
+
+                                            </td>
+                                            <td>
+                                                {% if account.is_enabled == True %}
+                                                    <span class="badge badge-success">Enabled</span>
+                                                {% else %}
+                                                    <span class="badge badge-danger">Disabled</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="Action">
+                                                <a href="http://127.0.0.1:5000/report/ledger?account=2"
+                                                   class="edit-icon bg-info" data-toggle="tooltip"
+                                                   data-original-title="Ledger Summary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="#" class="edit-icon"
+                                                   data-url="{% url 'edit-chart-of-account' account.id %}"
+                                                   data-ajax-popup="true" data-title="Edit Unit"
+                                                   data-original-title="Edit"
+                                                   data-toggle="modal" data-target="#commonModal">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </a>
+                                                <a href="#" class="delete-icon" data-toggle="tooltip"
+                                                   data-original-title="Delete"
+                                                   data-confirm="Are You Sure?|This action can not be undone. Do you want to continue?"
+                                                   data-confirm-yes="document.getElementById('{{ account.id }}').submit();">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                                <form method="POST"
+                                                      action="{% url 'delete-chart-of-account' account.id %}"
+                                                      accept-charset="UTF-8" id="{{ account.id }}"><input name="_method"
+                                                                                                          type="hidden"
+                                                                                                          value="DELETE">
+                                                    {% csrf_token %}
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6>Liabilities</h6>
+                    </div>
+                    <div class="card-body py-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th> Code</th>
+                                    <th> Name</th>
+                                    <th> Category</th>
+
+                                    <th> Balance</th>
+                                    <th> Status</th>
+                                    <th> Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for account in accounts %}
+                                    {% if account.account_type == account.LIABILITY %}
+
+                                        <tr>
+                                            <td>{{ account.code }}</td>
+                                            <td><a href="">{{ account.name }}</a>
+                                            </td>
+
+                                            <td>
+                                                {{ account.category }}
+
+                                            </td>
+                                             <td>
+                                                --
+
+                                            </td>
+                                            <td>
+                                                {% if account.is_enabled == True %}
+                                                    <span class="badge badge-success">Enabled</span>
+                                                {% else %}
+                                                    <span class="badge badge-danger">Disabled</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="Action">
+                                                <a href="http://127.0.0.1:5000/report/ledger?account=2"
+                                                   class="edit-icon bg-info" data-toggle="tooltip"
+                                                   data-original-title="Ledger Summary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="#" class="edit-icon"
+                                                   data-url="{% url 'edit-chart-of-account' account.id %}"
+                                                   data-ajax-popup="true" data-title="Edit Unit"
+                                                   data-original-title="Edit"
+                                                   data-toggle="modal" data-target="#commonModal">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </a>
+                                                <a href="#" class="delete-icon" data-toggle="tooltip"
+                                                   data-original-title="Delete"
+                                                   data-confirm="Are You Sure?|This action can not be undone. Do you want to continue?"
+                                                   data-confirm-yes="document.getElementById('{{ account.id }}').submit();">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                                <form method="POST"
+                                                      action="{% url 'delete-chart-of-account' account.id %}"
+                                                      accept-charset="UTF-8" id="{{ account.id }}"><input name="_method"
+                                                                                                          type="hidden"
+                                                                                                          value="DELETE">
+                                                    {% csrf_token %}
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6>Income</h6>
+                    </div>
+                    <div class="card-body py-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th> Code</th>
+                                    <th> Name</th>
+                                    <th>Category</th>
+
+                                    <th> Balance</th>
+                                    <th> Status</th>
+                                    <th> Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for account in accounts %}
+                                    {% if account.account_type == account.INCOME %}
+
+                                        <tr>
+                                            <td>{{ account.code }}</td>
+                                            <td><a href="">{{ account.name }}</a>
+                                            </td>
+
+                                            <td>
+                                                {{ account.category }}
+                                            </td>
+                                             <td>
+                                                --
+
+                                            </td>
+                                            <td>
+                                                {% if account.is_enabled == True %}
+                                                    <span class="badge badge-success">Enabled</span>
+                                                {% else %}
+                                                    <span class="badge badge-danger">Disabled</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="Action">
+                                                <a href="http://127.0.0.1:5000/report/ledger?account=2"
+                                                   class="edit-icon bg-info" data-toggle="tooltip"
+                                                   data-original-title="Ledger Summary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="#" class="edit-icon"
+                                                   data-url="{% url 'edit-chart-of-account' account.id %}"
+                                                   data-ajax-popup="true" data-title="Edit Unit"
+                                                   data-toggle="modal" data-target="#commonModal"
+                                                   data-original-title="Edit">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </a>
+                                                <a href="#" class="delete-icon" data-toggle="tooltip"
+                                                   data-original-title="Delete"
+                                                   data-confirm="Are You Sure?|This action can not be undone. Do you want to continue?"
+                                                   data-confirm-yes="document.getElementById('{{ account.id }}').submit();">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                                <form method="POST"
+                                                      action="{% url 'delete-chart-of-account' account.id %}"
+                                                      accept-charset="UTF-8" id="{{ account.id }}"><input name="_method"
+                                                                                                          type="hidden"
+                                                                                                          value="DELETE">
+                                                    {% csrf_token %}
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6>Expenses</h6>
+                    </div>
+                    <div class="card-body py-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th> Code</th>
+                                    <th> Name</th>
+                                    <th>Category</th>
+
+                                    <th> Balance</th>
+                                    <th> Status</th>
+                                    <th> Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for account in accounts %}
+                                    {% if account.account_type == account.EXPENSE %}
+
+                                        <tr>
+                                            <td>{{ account.code }}</td>
+                                            <td><a href="">{{ account.name }}</a>
+                                            </td>
+
+                                            <td>
+                                                {{ account.category }}
+                                            </td>
+
+                                             <td>
+                                              --
+
+                                            </td>
+                                            <td>
+                                                {% if account.is_enabled == True %}
+                                                    <span class="badge badge-success">Enabled</span>
+                                                {% else %}
+                                                    <span class="badge badge-danger">Disabled</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="Action">
+                                                <a href="http://127.0.0.1:5000/report/ledger?account=2"
+                                                   class="edit-icon bg-info" data-toggle="tooltip"
+                                                   data-original-title="Ledger Summary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="#" class="edit-icon edit-icon-btn"
+                                                   data-url="{% url 'edit-chart-of-account' account.id %}"
+                                                   data-ajax-popup="true" data-title="Edit Unit" data-toggle="modal"
+                                                   data-target="#commonModal"
+                                                   data-original-title="Edit">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </a>
+                                                <a href="#" class="delete-icon" data-toggle="tooltip"
+                                                   data-original-title="Delete"
+                                                   data-confirm="Are You Sure?|This action can not be undone. Do you want to continue?"
+                                                   data-confirm-yes="document.getElementById('{{ account.id }}').submit();">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                                <form method="POST"
+                                                      action="{% url 'delete-chart-of-account' account.id %}"
+                                                      accept-charset="UTF-8" id="{{ account.id }}"><input name="_method"
+                                                                                                          type="hidden"
+                                                                                                          value="DELETE">
+                                                    {% csrf_token %}
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6>Equity</h6>
+                    </div>
+                    <div class="card-body py-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th> Code</th>
+                                    <th> Name</th>
+                                    <th> Category</th>
+
+                                    <th> Balance</th>
+                                    <th> Status</th>
+                                    <th> Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for account in accounts %}
+                                    {% if account.account_type == account.EQUITY %}
+
+                                        <tr>
+                                            <td>{{ account.code }}</td>
+                                            <td><a href="">{{ account.name }}</a>
+                                            </td>
+
+                                            <td>
+                                                {{ account.category }}
+
+                                            </td>
+                                             <td>
+                                                 {{ account.account_type }}
+
+                                            </td>
+                                            <td>
+                                                {% if account.is_enabled == True %}
+                                                    <span class="badge badge-success">Enabled</span>
+                                                {% else %}
+                                                    <span class="badge badge-danger">Disabled</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="Action">
+                                                <a href="http://127.0.0.1:5000/report/ledger?account=2"
+                                                   class="edit-icon bg-info" data-toggle="tooltip"
+                                                   data-original-title="Ledger Summary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="#" class="edit-icon"
+                                                   data-url="{% url 'edit-chart-of-account' account.id %}"
+                                                   data-ajax-popup="true" data-title="Edit Unit"
+                                                   data-original-title="Edit"
+                                                   data-toggle="modal" data-target="#commonModal">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </a>
+                                                <a href="#" class="delete-icon" data-toggle="tooltip"
+                                                   data-original-title="Delete"
+                                                   data-confirm="Are You Sure?|This action can not be undone. Do you want to continue?"
+                                                   data-confirm-yes="document.getElementById('{{ account.id }}').submit();">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                                <form method="POST"
+                                                      action="{% url 'delete-chart-of-account' account.id %}"
+                                                      accept-charset="UTF-8" id="{{ account.id }}"><input name="_method"
+                                                                                                          type="hidden"
+                                                                                                          value="DELETE">
+                                                    {% csrf_token %}
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="modal fade" id="commonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-content">
+                    <div>
+                        <h4 class="h4 font-weight-400 float-left modal-title" id="exampleModalLabel">Update vendor</h4>
+                        <a href="#" class="more-text widget-text float-right close-icon" data-dismiss="modal"
+                           aria-label="Close">Close</a>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="createmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div>
+                    <h4 class="h4 font-weight-400 float-left modal-title" id="exampleModalLabel">Create New Account</h4>
+                    <a href="#" class="more-text widget-text float-right close-icon" data-dismiss="modal"
+                       aria-label="Close">Close</a>
+                </div>
+                <div class="modal-body">
+                    <div class="card bg-none card-box">
+                        <form method="POST" action="{% url 'chart-of-accounts' %}" accept-charset="UTF-8">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="name" class="form-control-label">Name</label>
+                                    <input class="form-control" required="required" name="name" type="text" value=""
+                                           id="name">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="code" class="form-control-label">Code</label>
+                                    <input class="form-control" required="required" name="code" type="text" value=""
+                                           id="code">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="type" class="form-control-label">Account Type</label>
+                                    <select data-url="{% url 'chart-of-accounts-categories' %}"
+                                            class="form-control select2 select2-hidden-accessible " required="required"
+                                            onchange="populate_select(this,'sub_type')"
+                                            id="type" name="account_type">
+                                        {% for type in account_types %}
+                                            <option value="{{ type }}">{{ type }}</option>
+                                        {% endfor %}
+
+
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="sub_type" class="form-control-label">Category</label>
+                                    <select class="form-control select2 select2-hidden-accessible sub_type"
+                                            name="category"
+                                            id="sub_type" required="" data-select2-id="sub_type" tabindex="-1"
+                                            aria-hidden="true">
+                                            {% for cat in account_categories %}
+                                            <option value="{{ cat }}">{{ cat }}</option>
+                                        {% endfor %}
+
+
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-md-6">
+
+                                    <label for="is_enabled" class="form-control-label">Is Enabled</label>
+                                    <div class="custom-control custom-switch">
+
+                                        <input type="checkbox" class="email-template-checkbox custom-control-input"
+                                               name="is_enabled" id="is_enabled" checked="">
+                                        <label class="custom-control-label form-control-label" for="is_enabled"></label>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <label for="description" class="form-control-label">Description</label>
+                                    <textarea class="form-control" rows="2" name="description" cols="50"
+                                              id="description"></textarea>
+                                </div>
+                                <div class="col-md-12">
+                                    <input type="submit" value="Create" class="btn-create badge-blue">
+                                    <input type="button" value="Cancel" class="btn-create bg-gray" data-dismiss="modal">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function populate_select(source,target_id) {
+            source=$(source)
+            let target=$(`#${target_id}`)
+            target.empty()
+            target.append(`<option value="">Loading...</option>`);
+            $.ajax({
+                url: source.data("url"),
+                type: 'GET',
+                data: {
+                    "account_type": source.val(),
+                },
+                success: function (data) {
+                    {#console.log(data)#}
+                    target.empty()
+                    $.each(data, function (index, value) {
+                        target.append(`<option value="${value}">${value}</option>`);
+                    });
+
+                },error:function (error){
+                                target.empty()
+                                $(".select2-selection").css("border","1px solid red")
+
+ target.append(`<option value="">Something went wrong</option>`);
+                }
+            });
+
+
+            console.log("type change test")
+
+        };
+
+    </script>
+
+
+    <script>
+        var dataTabelLang = {
+            paginate: {previous: "Previous", next: "Next"},
+            lengthMenu: "Show _MENU_ entries",
+            zeroRecords: "No data available in table",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoEmpty: " ",
+            search: "Search:"
+        }
+    </script>
+
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,351 @@
+{% extends 'accounting/base.html' %}
+
+{% block content %}
+
+    <div class="page-content">
+        <div class="page-title">
+            <div class="row justify-content-between align-items-center">
+                <div
+                        class="col-xl-4 col-lg-4 col-md-4 d-flex align-items-center justify-content-between justify-content-md-start mb-3 mb-md-0">
+                    <div class="d-inline-block">
+                        <h5 class="h4 d-inline-block font-weight-400 mb-0 "> Manage Vendors
+                        </h5>
+                    </div>
+                </div>
+                <div
+                        class="col-xl-8 col-lg-8 col-md-8 d-flex align-items-center justify-content-between justify-content-md-end">
+                    <div class="all-button-box row d-flex justify-content-end">
+                        <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
+                            <a href="#" data-size="2xl" data-url="{% url 'vendor-add' %}"
+                               data-ajax-popup="true"
+                               data-title="Create New Vendor" data-toggle="modal" data-target="#addModal"
+                               class="btn btn-xs btn-white btn-icon-only width-auto commonModal">
+                                <i class="fas fa-plus"></i> Create
+                            </a>
+                        </div>
+                        <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
+                            <div class="all-button-box">
+                                <a href=""
+                                   class="btn btn-xs btn-white btn-icon-only width-auto">
+                                    <i class="fa fa-file-excel"></i> Export
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
+                            <div class="all-button-box">
+                                <a href="#" class="btn btn-xs btn-white btn-icon-only width-auto"
+                                   data-url="http://127.0.0.1:5000/import/vender/file" data-ajax-popup="true"
+                                   data-title="Import vendor CSV file">
+                                    <i class="fa fa-file-csv"></i> Import
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body py-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped mb-0 dataTable">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Contact</th>
+                                    <th>Email</th>
+                                    <th>Balance</th>
+                                    <th>Type</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for vendor in vendors %}
+                                    <tr class="cust_tr" id="vend_detail">
+                                        <td class="Id">
+                                            <a href="{% url 'vendor-detail' vendor.id %}">
+                                                {{ vendor.id }}
+                                            </a>
+                                        </td>
+                                        <td>{{ vendor.name }}</td>
+                                        <td>{{ vendor.contact }}</td>
+                                        <td>{{ vendor.email }}</td>
+                                        <td>{{ vendor.balance }}</td>
+                                        <td>{{ vendor.vendor_type }}</td>
+                                        <td class="Action">
+                                            <span>
+                                                <a href="{% url 'vendor-detail' vendor.id %}"
+                                                   class="edit-icon bg-info"
+                                                   data-toggle="tooltip"
+                                                   data-original-title="View">
+                                                    <i class="fas fa-eye"></i>
+                                                        </a>
+                                                <a href="#" class="edit-icon" data-size="2xl"
+                                                   data-url="{% url "vendor-edit" vendor.pk %}"
+                                                   data-ajax-popup="true"
+                                                   data-title="Edit Vendor"
+                                                   data-toggle="modal"
+                                                   data-target="#commonModal"
+                                                   data-toggle="tooltip"
+                                                   data-original-title="Edit">
+                                                            <i class="fas fa-pencil-alt"></i>
+                                                        </a>
+                                                <a href="#"
+                                                   class="delete-icon "
+                                                   data-toggle="tooltip"
+                                                   data-original-title="Delete"
+                                                   data-confirm="Are You Sure?|This action can not be undone. Do you want to continue?"
+                                                   data-confirm-yes="document.getElementById('{{ vendor.id }}').submit();">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                        <form method="POST" action="{% url 'vendor-delete' vendor.id %}"
+                                                              accept-charset="UTF-8" id="{{ vendor.id }}"><input
+                                                                name="_method" type="hidden" value="DELETE">
+                                                            {% csrf_token %}
+                                                        </form>
+                                                                                                                                                </span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="commonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-content">
+                    <div>
+                        <h4 class="h4 font-weight-400 float-left modal-title" id="exampleModalLabel">Update vendor</h4>
+                        <a href="#" class="more-text widget-text float-right close-icon" data-dismiss="modal"
+                           aria-label="Close">Close</a>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-content">
+                    <div>
+                        <h4 class="h4 font-weight-400 float-left modal-title" id="exampleModalLabel1">Create New
+                            Vendor</h4>
+                        <a href="#" class="more-text widget-text float-right close-icon" data-dismiss="modal"
+                           aria-label="Close">Close</a>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card bg-none card-box">
+                            <form method="POST" action="{% url "vendor-add" %}" accept-charset="UTF-8">
+                                {% csrf_token %}
+                                <h5 class="sub-title">Basic Info</h5>
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="name" class="form-control-label">Name</label>
+                                            <div class="form-icon-user">
+                                                <span><i class="fas fa-address-card"></i></span>
+                                                <input class="form-control" required="required" name="name" type="text"
+                                                       id="name">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="contact" class="form-control-label">Contact</label>
+                                            <div class="form-icon-user">
+                                                <span><i class="fas fa-mobile-alt"></i></span>
+                                                <input class="form-control" required="required" name="contact"
+                                                       type="text" id="contact">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="email" class="form-control-label">Email</label>
+                                            <div class="form-icon-user">
+                                                <span><i class="fas fa-envelope"></i></span>
+                                                <input class="form-control" required="required" name="email"
+                                                       type="email"
+                                                       id="email">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="type" class="form-control-label">Vendor Type</label>
+
+
+                                            <select name="type" id="type" class="form-control">
+                                                <option value="REGULAR">REGULAR</option>
+                                                <option value="INDIVIDUAL">INDIVIDUAL</option>
+                                                <option value="CONTRACTOR">CONTRACTOR</option>
+
+                                            </select>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group " id="add_type">
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <h5 class="sub-title">Billing Address</h5>
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="billing_name" class="form-control-label">Name</label>
+                                            <div class="form-icon-user">
+                                                <span><i class="fas fa-address-card"></i></span>
+                                                <input class="form-control" name="billing_name" type="text"
+                                                       id="billing_name">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="billing_country" class="form-control-label">Country</label>
+                                            <div class="form-icon-user">
+                                                <span><i class="fas fa-flag"></i></span>
+                                                <input class="form-control" name="country" type="text"
+                                                       id="country">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="billing_state" class="form-control-label">State</label>
+                                            <div class="form-icon-user">
+                                                <span><i class="fas fa-chess-pawn"></i></span>
+                                                <input class="form-control" name="state" type="text"
+                                                       id="state">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="billing_city" class="form-control-label">City</label>
+                                            <div class="form-icon-user">
+                                                <span><i class="fas fa-city"></i></span>
+                                                <input class="form-control" name="city" type="text"
+                                                       id="city">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="billing_phone" class="form-control-label">Phone</label>
+                                            <div class="form-icon-user">
+                                                <span><i class="fas fa-mobile-alt"></i></span>
+                                                <input class="form-control" name="billing_phone" type="text"
+                                                       id="billing_phone">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="billing_zip" class="form-control-label">Zip Code</label>
+                                            <div class="form-icon-user">
+                                                <span><i class="fas fa-crosshairs"></i></span>
+                                                <input class="form-control" placeholder="Enter User Email"
+                                                       name="zip" type="text" id="zip">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="billing_address" class="form-control-label">Address</label>
+                                            <div class="input-group">
+                                                <textarea class="form-control" rows="3" name="address" cols="50"
+                                                          id="address"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12 px-0">
+                                    <input type="submit" value="Create" class="btn-create badge-blue">
+                                    <input type="button" value="Cancel" class="btn-create bg-gray"
+                                           data-dismiss="modal">
+                                </div>
+                            </form>
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+
+            $("#type").on("change", function () {
+                let field = $(this)
+                console.log(field.val())
+                let model = $('#add_type');
+                if (field.val() === 'INDIVIDUAL') {
+                    model.html(` <div class="col-lg-12 col-md-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="shipping_zip" class="form-control-label">SSN</label>
+                                                <div class="form-icon-user">
+                                                    <input class="form-control" placeholder="Enter SSN" name="ssn" type="text" id="ssn">
+                                                </div>
+                                            </div>
+                                        </div>`)
+                } else if (field.val() === 'CONTRACTOR') {
+                    model.html(` <div class="col-lg-12 col-md-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="shipping_zip" class="form-control-label">EIN</label>
+                                                <div class="form-icon-user">
+                                                    <input class="form-control" placeholder="Enter EIN" name="ein" type="text" id="ein">
+                                                </div>
+                                            </div>
+                                        </div>`)
+
+
+                } else {
+                    model.html(` `)
+
+                }
+            })
+
+        })
+
+    </script>
+
+
+    <script>
+        var dataTabelLang = {
+            paginate: {previous: "Previous", next: "Next"},
+            lengthMenu: "Show _MENU_ entries",
+            zeroRecords: "No data available in table",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoEmpty: " ",
+            search: "Search:"
+        }
+    </script>
+
+{% endblock %}

@@ -1,0 +1,303 @@
+{% extends 'dashboard/accounts/base.html' %}
+{#{% load django_tables2 %}#}
+{% load widget_tweaks %}
+{% block nav %}
+    {{ nav_bar }}
+{% endblock %}
+{% block main %}
+
+
+
+
+    <div class="main-content" id="panel">
+        <!-- Topnav -->
+        {% include 'dashboard/accounts/partials/top-nav.html' %}
+        <!-- Header -->
+        <!-- Header -->
+        {% include 'dashboard/accounts/partials/header.html' %}
+        <!-- Page content -->
+        <div class="container-fluid mt--6">
+            <!-- Table -->
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <div class="card mb-4">
+                        <!-- Card header -->
+                        <div class="card-header">
+                            <h2 class="mb-0">{{ page_title }}</h2>
+                            <h4 class="mb-0">{{ subtitle }}</h4>
+                        </div>
+                        {#                    {% if client_form %}#}
+                        {#                        <ul class=""#}
+                        {#                            role="tablist">#}
+                        {#                            <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active" role="tab"#}
+                        {#                                tabindex="0" aria-controls="tabs-1" aria-labelledby="ui-id-1" aria-selected="true">#}
+                        {#                                <a href="#tabs-1" class="ui-tabs-anchor" role="presentation" tabindex="-1"#}
+                        {#                                   id="ui-id-1">Individual Contacts</a></li>#}
+                        {#                            <li class="ui-state-default ui-corner-top" role="tab" tabindex="-1"#}
+                        {#                                aria-controls="tabs-2" aria-labelledby="ui-id-2" aria-selected="false"><a#}
+                        {#                                    href="#tabs-2" class="ui-tabs-anchor" role="presentation" tabindex="-1"#}
+                        {#                                    id="ui-id-2">Corporate Contacts</a></li>#}
+                        {#                        </ul>#}
+                        {##}
+                        {#                    {% endif %}#}
+                        <!-- Card body -->
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="card-body row">
+                                <!-- Form groups used in grid -->
+                                <div class="col col-lg-7">
+
+
+                                    {% if total_amount %}
+                                        <div class="col-md-12 col-md-3">
+                                            <h2>${{ total_amount }}</h2>
+                                        </div>
+
+                                    {% endif %}
+
+                                    {% if form1 %}
+                                        <div class="row">
+                                            <div class="col-md-12 mt-3">
+                                                {% if form1_tag %}
+                                                    <div class="col-md-12 col-md-3">
+                                                        <h2>{{ form1_tag }}</h2>
+                                                    </div>
+                                                {% endif %}
+                                                <h2>{{ form1_name }}</h2>
+                                            </div>
+
+                                            {% for field in form1 %}
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+
+                                    {% if form2 %}
+
+                                        <div class="row border-top mt-3">
+                                            <div class="col-md-12 mt-3">
+                                                {% if form2_tag %}
+                                                    <div class="col-md-12 mt-2 md-3 ml-2">
+                                                        <h2>{{ form2_tag }}</h2>
+                                                    </div>
+                                                {% endif %}
+                                                <h1>{{ form2_name }}</h1>
+                                            </div>
+                                            {% for field in form2 %}
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+
+                                    {% if form3 %}
+                                        <div class="row border-top mt-3">
+                                            <div class="col-md-12 mt-3">
+                                                {% if form3_tag %}
+                                                    <div class="col-md-12 mt-3 ml-2">
+                                                        <h2>{{ form3_tag }}</h2>
+                                                    </div>
+                                                {% endif %}
+                                                <h1>{{ form3_name }}</h1>
+                                            </div>
+                                            {% for field in form3 %}
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+
+                                    {% if form4 %}
+                                        <div class="row border-top mt-3">
+
+                                            <div class="col-md-12 mt-3">
+                                                {% if form4_tag %}
+                                                    <div class="col-md-12 mt-3 ml-2">
+                                                        <h2>{{ form4_tag }}</h2>
+                                                    </div>
+                                                {% endif %}
+                                                <h1>{{ form4_name }}</h1>
+                                            </div>
+
+                                            {% for field in form4 %}
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+
+
+                                    {% if form5 %}
+                                        <div class="row border-top mt-3">
+                                            <div class="col-md-12 mt-3">
+                                                {% if form5_tag %}
+                                                    <div class="col-md-12">
+                                                        <h2>{{ form5_tag }}</h2>
+                                                    </div>
+                                                {% endif %}
+                                                <h1>{{ form5_name }}</h1>
+                                            </div>
+                                            {% for field in form5 %}
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    {% if form6 %}
+                                        <div class="row border-top mt-3">
+                                            <div class="col-md-12 mt-3">
+                                                {% if form6_tag %}
+                                                    <div class="col-md-12">
+                                                        <h2>{{ form6_tag }}</h2>
+                                                    </div>
+                                                {% endif %}
+                                                <h1>{{ form6_name }}</h1>
+                                            </div>
+                                            {% for field in form6 %}
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    {% if form7 %}
+                                        <div class="row border-top mt-3">
+                                            <div class="col-md-12 mt-3">
+                                                {% if form7_tag %}
+                                                    <div class="col-md-12">
+                                                        <h2>{{ form7_tag }}</h2>
+                                                    </div>
+                                                {% endif %}
+                                                <h1>{{ form7_name }}</h1>
+                                            </div>
+                                            {% for field in form7 %}
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">{{ field.label }}</label>
+                                                        {% render_field field class="form-control" placeholder=field.label %}
+                                                        <small style="color: red">
+                                                            {{ field.errors }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="row">
+                                        <div class="col-md-3 ml-3">
+                                            <button class="btn btn-primary"><span>{{ button }}</span></button>
+                                        </div>
+                                        {% if skip_btn %}
+                                            {% for btn in skip_btn %}
+                                                <div class="col-md-6">
+                                                    <a href="{{ btn.href }}"
+                                                       class="btn btn-primary{{ btn.color_class }}"><span>
+                                                        {{ btn.title }}<i class="ml-2 {{ btn.icon }}"></i></span></a>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+
+
+                                </div>
+                                <div class="col col-lg-5 Cart-Container"
+                                     style="background-color: #ffffff;border-radius: 20px;box-shadow: 0px 25px 40px #1687d933;">
+                                    <div id="ajax_div_airport"></div>
+
+                                    <div id="ajax_div"></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+{% block extra_js %}
+    <script>
+        function get_pricebasis(select) {
+            let servicetype = select.val()
+            let ano_url = window.location.href
+            full_url = ano_url.replace("http://127.0.0.1:8000/setting/all_pricing/edit/", " ")
+            customized_url = full_url.replace("/", "")
+            let url = "{% url 'get-price-basis' %}?type=" + servicetype + '&id=' + customized_url
+            $.get(url, function (response, success) {
+                let html = response.data
+                $("#ajax_div_airport").html(html)
+            })
+        }
+
+        $(document).ready(function () {
+            setTimeout(function () {
+                let select = $("#id_price_type")
+                if (select.val()) {
+                    get_pricebasis(select)
+                }
+                select.on("change", function () {
+                    get_pricebasis($(this))
+                })
+
+            }, 0)
+
+        })
+    </script>
+
+{% endblock %}

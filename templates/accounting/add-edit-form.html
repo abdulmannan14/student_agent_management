@@ -1,0 +1,17 @@
+{% load widget_tweaks %}
+<div class="row">
+    {% for field in form %}
+        {% if  field.field.widget.attrs.splitter %}
+            <br>
+        {% endif %}
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label for="name" class="form-control-label">{{ field.label }}</label>
+                <div class="form-icon-user">
+{#                    <span><i class="{{ field.field.widget.attrs.data_icon }}"></i></span>#}
+                    {% render_field field class="form-control" %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

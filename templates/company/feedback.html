@@ -1,0 +1,113 @@
+{% extends 'dashboard/base.html' %}
+{#{% load django_tables2 %}#}
+{% load widget_tweaks %}
+{% block nav %}
+    {% include 'dashboard/company/partials/nav.html' %}
+{% endblock %}
+<style>
+    .form-control::placeholder {
+        color: #000000;
+        opacity: 1;
+    }
+</style>
+{% block main %}
+
+
+
+
+    <div class="main-content" id="panel">
+        <!-- Topnav -->
+        {% include 'dashboard/company/partials/top-nav.html' %}
+        <!-- Header -->
+        <!-- Header -->
+        {% include 'dashboard/company/partials/header.html' %}
+        <!-- Page content -->
+        <div class="container-fluid mt--6">
+            <!-- Table -->
+            <div class="row ">
+                <div class="col">
+                    <div class="card mb-4" style="width: 60%;align-items: center;margin-left: 20%">
+                        <!-- Card header -->
+                        {#                        <div class="card-header rounded-5">#}
+                        {##}
+                        {#                        </div>#}
+
+
+                        <!-- Card body -->
+                        <div class="card-body ">
+                            <form method="post">
+                            {% csrf_token %}
+                                <div class="pb-4 text-center">
+                                    <!-- <span><i class="icon icon-user"></i></span> -->
+                                    <span style="color: #3c4ea7">Fill out the form and we'll be in touch as soon as possible!</span>
+                                </div>
+                                {% if feedback %}
+                                    {% for field in feedback %}
+                                        <div class="col">
+                                            <div class="form-group">
+                                                {% render_field field class="form-control" style="border: 2px solid #3c4ea7;" placeholder=field.label %}
+                                                <small style="color: red">
+                                                    {{ field.errors }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                                <div style="text-align: center">
+                                    <button type="submit" class="btn  btn-primary" style="width:30%"><span>Send</span>
+                                    </button>
+                                </div>
+                            </form>
+                            <!-- Form groups used in grid -->
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!-- Table -->
+
+        {#            <div class="registration-form">#}
+        {#                <form>#}
+        {##}
+        {#                    <div class="pb-4 text-center">#}
+        {#                        <!-- <span><i class="icon icon-user"></i></span> -->#}
+        {#                        <span>Fill out the form and we'll be in touch as soon as possible!</span>#}
+        {#                    </div>#}
+        {#                    {% if feedback %}#}
+        {#                        {% for field in feedback %}#}
+        {#                            <div class="col">#}
+        {#                                <div class="form-group">#}
+        {#                                    {% render_field field class="form-control" style="border: 2px solid #3c4ea7;" placeholder=field.label %}#}
+        {#                                    <small style="color: red">#}
+        {#                                        {{ field.errors }}#}
+        {#                                    </small>#}
+        {#                                </div>#}
+        {#                            </div>#}
+        {#                        {% endfor %}#}
+        {##}
+        {##}
+        {#                    {% endif %}#}
+        {#                <div class="form-group">#}
+        {#                    <input type="text" class="form-control item" id="username" placeholder="FullName">#}
+        {#                </div>#}
+        {#                    <div style="text-align: center">#}
+        {#                        <button type="button" class="btn  btn-primary" style="width:30%"><span>Send</span></button>#}
+        {#                    </div>#}
+        {##}
+        {#                </form>#}
+        {##}
+        {#        </div>#}
+    </div>
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                showNotification("", "{{message}}", "{{ message.tags }}", "fa fa-check")
+            </script>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}

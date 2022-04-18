@@ -1,0 +1,82 @@
+{% load static %}
+<!-- Favicon -->
+<link rel="icon" href="{% static 'assets/img/favicons/favicon-96x96.png' %}" type="image/png">
+<!-- Fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+<!-- Icons -->
+<link rel="stylesheet" href="{% static 'dashboard/assets/vendor/nucleo/css/nucleo.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'dashboard/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css' %}"
+      type="text/css">
+<!-- Page plugins -->
+<!-- Argon CSS -->
+<link rel="stylesheet" href="{% static 'dashboard/assets/css/argon.css?v=1.2.0' %}" type="text/css">
+{#<link rel="stylesheet" href="{% static 'dashboard/assets/css/circularbar.css' %}" type="text/css">#}
+
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(
+                87deg, #027975 0, #211860 100%) !important;
+                {#87deg, #5ABBDD 0, #A9EDCB 100%) !important;#}
+        padding-top: 4rem !important;
+        padding-bottom: 4rem !important;
+    }
+
+    .bg-primary {
+        background: linear-gradient(
+                87deg, #027975, #211860 100%) !important;
+    }
+
+        .bg-modal {
+        background: linear-gradient(
+                270deg, #027975, #211860 100%) !important;
+    }
+
+    .sidebar-icons {
+        filter: invert(.15) sepia(1) saturate(5) hue-rotate(175deg) !important;
+
+    }
+
+    {#.sidebar-icons {#}
+    {#       fill: red !important;#}
+    {#   }#}
+
+
+    .btn-limou {
+        background: linear-gradient(87deg, #027975, #211860 100%) !important;
+        border-color: transparent;
+        color: white;
+    }
+
+    .select2-container .select2-selection--single {
+        height: calc(1.5em + 1.25rem + 2px) !important;
+    }
+
+    .nav-item {
+        color: #FFFFFF;
+    !important;
+    }
+
+    .nav-item:hover {
+        color: black
+    }
+    /*gradient color to font Awsome icons */
+.fa-gradient {
+    background: linear-gradient(to right, #027975 0%, #211860 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+ /*class for company registration form */
+.Company_Registration{
+        {#margin-left: 70px;#}
+        {#margin-right: 70px;#}
+        {#border-radius: 4px;#}
+    display: flex;
+    justify-content: center;
+}
+.card_round1{
+    border-radius: 10px;
+}
+.card_round2{
+    border-radius: 80px;
+}
+</style>

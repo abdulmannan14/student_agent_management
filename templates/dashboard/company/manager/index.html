@@ -1,0 +1,382 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+{% block nav %}
+    {% include 'dashboard/company/manager/partials/nav.html' %}
+{% endblock %}
+{% block main %}
+    <div class="main-content" id="panel">
+    {% if messages %}
+            <ul class="messages" style="display: flex;justify-content: center;align-content: center">
+                {% for message in messages %}
+                    <div class="alert-box">
+                        <li class="{{ message.tags }}">
+                            {{ message|safe }}
+                            <a href="" class="alert-cancel-btn">&times;</a>
+                        </li>
+                    </div>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <!-- Topnav -->
+        {% include 'dashboard/company/manager/partials/top-nav.html' %}
+        <!-- Header -->
+        <!-- Header -->
+        {% include 'dashboard/company/manager/partials/header.html' %}
+        <!-- Page content -->
+        <div class="container-fluid mt--6">
+            <div class="row">
+                <div class="col-xl-2 col-md-12">
+                    <div class="card card-stats">
+                        <!-- Card body -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="card-title text-uppercase text-muted mb-0">{{ total_clients_tag }}</h5>
+                                    <span class="h2 font-weight-bold mb-0">{{ total_clients_quantity }}</span>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
+                                        <i class="fa fa-users "></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="mt-3 mb-0 text-sm">
+                                <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+                                <span class="text-nowrap">Since last month</span>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-xl-2 col-md-12">
+                    <div class="card card-stats">
+                        <!-- Card body -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="card-title text-uppercase text-muted mb-0">{{ total_individual_clients_tag }}</h5>
+                                    <span class="h2 font-weight-bold mb-0">{{ individual_count }}</span>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon icon-shape bg-gradient-yellow text-white rounded-circle">
+
+                                        <i class="fa fa-user"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="mt-3 mb-0 text-sm">
+                                <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+                                <span class="text-nowrap">Since last month</span>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-xl-2 col-md-12">
+                    <div class="card card-stats">
+                        <!-- Card body -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="card-title text-uppercase text-muted mb-0">{{ total_corporate_clients_tag }}</h5>
+                                    <span class="h2 font-weight-bold mb-0">{{ corporate_count }}</span>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon icon-shape bg-gradient-purple text-white rounded-circle shadow">
+                                        {#                                        <i class="fa fa-user-crown"></i>#}
+                                        <i class="fa fa-user-tie"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="mt-3 mb-0 text-sm">
+                                <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+                                <span class="text-nowrap">Since last month</span>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-xl-2 col-md-12">
+                    <div class="card card-stats">
+                        <!-- Card body -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="card-title text-uppercase text-muted mb-0">{{ total_employees_tag }}</h5>
+                                    <span class="h2 font-weight-bold mb-0">{{ total_employees_quantity }}</span>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
+                                        <i class="ni ni-briefcase-24"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="mt-3 mb-0 text-sm">
+                                <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+                                <span class="text-nowrap">Since last month</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2 col-md-12">
+                    <div class="card card-stats">
+                        <!-- Card body -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="card-title text-uppercase text-muted mb-0">{{ total_vehicles_tag }}</h5>
+                                    <span class="h2 font-weight-bold mb-0">{{ total_vehicles_quantity }}</span>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon icon-shape bg-gradient-gray-dark text-white rounded-circle shadow">
+                                        <i class="fa fa-car"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="mt-3 mb-0 text-sm">
+                                <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+                                <span class="text-nowrap">Since last month</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2 col-md-12">
+                    <div class="card card-stats">
+                        <!-- Card body -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="card-title text-uppercase text-muted mb-0">{{ total_reservations_tag }}</h5>
+                                    <span class="h2 font-weight-bold mb-0">{{ total_reservations_quantity }}</span>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
+                                        <i class="ni ni-chart-bar-32"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="mt-3 mb-0 text-sm">
+                                <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+                                <span class="text-nowrap">Since last month</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-8">
+                    <div class="card bg-default">
+                        <div class="card-header bg-transparent">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h6 class="text-light text-uppercase ls-1 mb-1">7 Day Outlook Tuesday Sep 07 -
+                                        Monday Sep 13</h6>
+                                    <h5 class="h3 text-white mb-0">Reservation Count Day By Day</h5>
+                                </div>
+                                <div class="col">
+                                    <ul class="nav nav-pills justify-content-end">
+                                        <li class="nav-item mr-2 mr-md-0" data-toggle="chart-bars"
+                                            data-target="#chart-sales-dark"
+                                            data-update='{"data":{"datasets":[{"data":[0, 20, 10, 30, 15, 40, 20, 60, 60]}]}}'
+                                            data-prefix="$" data-suffix="k">
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Chart -->
+                            <div class="chart">
+                                <!-- Chart wrapper -->
+                                <canvas id="chart-bars" class="chart-canvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-gradient-green">
+                        <!-- Card body -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h5 class="card-title text-uppercase text-muted mb-0 text-black-50">{{ total_marked_paid_reservation_this_week }}</h5>
+                                        </div>
+                                        <div class="col-auto">
+                                            <div class="icon icon-shape bg-white text-dark rounded-circle shadow">
+                                                <i class="fa fa-check"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-md-8 d-flex justify-content-center align-items-start flex-column">
+                                            <span class="h2 font-weight-bold mb-0 text-black">Billed</span>
+                                            <span class="h2 font-weight-bold mb-0 text-black">{{ number_of_paid_reservations }}</span>
+                                        </div>
+                                        <div class="col-md-4 d-flex justify-content-center align-items-center ">
+                                            <span class="h2 font-weight-bold mb-0 text-black">$</span>
+                                            <span class="h2 font-weight-bold mb-0 text-black">{{ amount_of_paid_reservations }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card bg-danger">
+                        <!-- Card body -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h5 class="card-title text-uppercase text-muted mb-0 text-black-50">{{ total_marked_not_paid_reservation_this_week }}</h5>
+                                        </div>
+                                        <div class="col-auto">
+                                            <div class="icon icon-shape bg-white text-dark rounded-circle shadow">
+                                                <i class="fa fa-times"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-md-8 d-flex justify-content-center align-items-start flex-column">
+                                            <span class="h2 font-weight-bold mb-0 text-black">Not Billed</span>
+                                            <span class="h2 font-weight-bold mb-0 text-black">{{ number_of_not_paid_reservations }}</span>
+                                        </div>
+                                        <div class="col-md-4 d-flex justify-content-center align-items-center">
+                                            <span class="h2 font-weight-bold mb-0 text-black">$</span>
+                                            <span class="h2 font-weight-bold mb-0 text-black">{{ amount_of_not_paid_reservations }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="row">
+                <div class="col-xl-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="fa fa-user ">{{ driver_run_count_chart }}</h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas class="testChart" width="50" height="50"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="fa fa-car mr-2"> {{ vehicle_run_count_chart }}</h3>
+
+                        </div>
+                        <div class="card-body">
+                            <canvas class="testChart_s" width="50" height="50"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Footer -->
+        <footer class="footer pt-0">
+            <div class="row align-items-center justify-content-lg-between">
+                <div class="col-lg-6">
+                    <div class="copyright text-center  text-lg-center  text-muted">
+                        &copy; 2021 <a href="https://www.limou_cloud.com" class="font-weight-bold ml-1"
+                                       target="_blank">Limou Cloud</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                        <li class="nav-item">
+                            <a href="https://www.Limou_cloud.com" class="nav-link" target="_blank">Limou
+                                Cloud</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://www.Limou_cloud.com/presentation" class="nav-link" target="_blank">About
+                                Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="http://blog.Limou_cloud.com" class="nav-link" target="_blank">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://www.Limou_cloud.com/license" class="nav-link"
+                               target="_blank">License</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+    </div>
+    </div>
+    </div>
+
+<link rel="stylesheet" href="{% static 'dashboard/assets/css/messages.css' %}">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"
+            integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q=="
+            crossOrigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        var ctx = document.querySelector('.testChart').getContext('2d');
+        const data = {
+            labels: [
+                'Unassigned',
+                'Assigned',
+            ],
+            datasets: [{
+                label: 'My First Dataset',
+                data: [{{total_drivers}}, {{ driver_run_count }},],
+                backgroundColor: [
+                    'rgb(50, 130, 255)',
+                    'rgb(255, 255, 0)',
+                    'rgb(255, 255, 0)',
+                ],
+                hoverOffset: 4
+            }]
+        };
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: data,
+        });
+
+    </script>
+    <script>
+        var ctx = document.querySelector('.testChart_s').getContext('2d');
+        const d = {
+            labels: [
+                'Unassigned',
+                'Assigned',
+            ],
+            datasets: [{
+                label: 'My First Dataset',
+                data: [{{total_vehicle}}, {{ vehicle_run_count }},],
+                backgroundColor: [
+                    'rgb(50, 130, 255)',
+                    'rgb(255, 255, 0)',
+                    'rgb(54, 162, 235)',
+                ],
+                hoverOffset: 4
+            }]
+        };
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: d,
+        });
+    </script>
+
+    <script>
+        const cancel_btn = document.querySelector('.alert-cancel-btn');
+        if (cancel_btn) {
+            cancel_btn.addEventListener("click", () => {
+                const alert = document.querySelector(".alert-box");
+                alert.style.display = "none"
+            })
+        }</script>
+{% endblock %}
+

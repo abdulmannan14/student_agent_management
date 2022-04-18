@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% load static %}
+{% block main %}
+    <!-- Hero section -->
+    <section id="hero" style="background-image: linear-gradient(
+            to right,
+            rgba(0, 172, 217, 0.62),
+            rgba(105, 240, 174, 0.52)
+            ), url('{% static "assets/img/hero-bg.jpg" %}') !important;">
+
+        <div class="container">
+
+            <div class="row main-hero-content">
+
+                <div class="col-md-6">
+                    <h1>The ALL-IN-ONE LIMO SOFTWARE</h1>
+                    <p>LimouCloud provides an all in one solution for your limo business needs. From accounting to
+                        reservations. Visit our features page to view all features or start a FREE 7 day trial
+                        below.</p>
+                    <div class="hero-buttons">
+{#                        <a href="/" class="btn btn-outline-primary btn-white">GET STARTED</a>#}
+                        <a href="{% url 'account-login' %}" class="btn btn-start_up">StartUp</a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="image-box">
+                        <img src="{% static "assets/img/newImages/all964-602.png" %}" class="img-fluid" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- About section -->
+    <section id="about">
+
+        <div class="container">
+
+            <div class="row section-title justify-content-center">
+                <h2 class="section-title-heading">about limoucloud</h2>
+            </div>
+
+            <div class="row justify-content-center text-center mt-5">
+
+                <div class="col-md-4">
+                    <i class="fas fa-cloud fa-3x mb-2"></i>
+                    <h3>cloud based</h3>
+                    <p>LimouCloud is a cloud based software allowing you to run your business from anywhere in the
+                        world. </p>
+                </div>
+                <div class="col-md-4">
+                    <i class="fas fa-university fa-3x mb-2"></i>
+                    <h3>Built-In Accounting Suite</h3>
+                    <p>LimouCloud's Built-In Accounting Suite allows you to manage your financials in the one place.
+                        Track
+                        sales, run reports, handle invoicing and more!</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="fas fa-code fa-3x mb-2"></i>
+                    <h3>Web & App Development</h3>
+                    <p>LimouCloud also provides web solutions for your limo business. We provide high end websites as
+                        well
+                        as white label apps (Driver/Passenger Apps with your own branding). </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Driver App Feature section -->
+    <section id="dfeatures">
+
+        <div class="container">
+
+            <div class="row section-title justify-content-center">
+                <h2 class="section-title-heading">driver app features</h2>
+            </div>
+
+            <div class="row mt-5">
+
+                <div class="col-md-4">
+                    <div class="dfeature-block">
+                        <img src="{% static "assets/img/featureicon1.png" %}" alt="">
+                        <h3 class="text-center">Collect Payments</h3>
+                        <p>Drivers can collect payments for completed trips from the app.</p>
+                    </div>
+                    <div class="dfeature-block mt-5">
+                        <img src="{% static "assets/img/featureicon2.png" %}" alt="">
+                        <h3 class="text-center">Vehicle Checklist</h3>
+                        <p>Drivers can perform vehicle safety checklists with our form. The safety checklists are then
+                            saved
+                            and can be viewed in the app or on the dispatcher's dashboard. </p>
+                    </div>
+                </div>
+                <div class="col-md-4 device">
+                    <img src="{% static "assets/img/newImages/driver368-619.png" %}" class="img-fluid" alt="">
+                </div>
+                <div class="col-md-4">
+                    <div class="dfeature-block">
+                        <img src="{% static "assets/img/featureicon3.png" %}" alt="">
+                        <h3 class="text-center">View Trips</h3>
+                        <p>Drivers can view trip history, current trips, and upcoming trips. </p>
+                    </div>
+                    <div class="dfeature-block mt-5">
+                        <img src="{% static "assets/img/featureicon4.png" %}" alt="">
+                        <h3 class="text-center">Work History</h3>
+                        <p>Track your pay here! Drivers can view their payments here by trip or time period. </p>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+    <!-- Passenger App Feature section -->
+    <section id="pfeatures">
+
+        <div class="container">
+
+            <div class="row section-title justify-content-center">
+                <h2 class="section-title-heading">Passenger app features</h2>
+            </div>
+
+            <div class="row mt-5">
+
+                <div class="col-md-4">
+                    <div class="pfeature-block">
+                        <img src="{% static "assets/img/featureicon5.png" %}" alt="">
+                        <h3 class="text-center">Create Trips</h3>
+                        <p>LimouCloud's reservation system allows your customers can create trips in 3 easy steps
+                            through
+                            the app. </p>
+                    </div>
+                    <div class="pfeature-block mt-5">
+                        <img src="{% static "assets/img/featureicon6.png" %}" alt="">
+                        <h3 class="text-center">Manage Account</h3>
+                        <p>Manage trips, payment methods, and more from your account settings. </p>
+                    </div>
+                </div>
+                <div class="col-md-4 device">
+                    <img src="{% static "assets/img/newImages/passenger368-619.png" %}" class="img-fluid" alt="">
+                </div>
+                <div class="col-md-4">
+                    <div class="pfeature-block">
+                        <img src="{% static "assets/img/featureicon7.png" %}" alt="">
+                        <h3 class="text-center">Ride Updates</h3>
+                        <p>Passenger's can get up to date driver location and text updates for their trips. </p>
+                    </div>
+                    <div class="pfeature-block mt-5">
+                        <img src="{% static "assets/img/featureicon8.png" %}" alt="">
+                        <h3 class="text-center">Available on Android & iOS</h3>
+                        <p>LimouCloud apps are available on both Anrdoid and iOS. Download today!</p>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+{% endblock %}

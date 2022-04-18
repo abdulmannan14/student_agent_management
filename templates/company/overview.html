@@ -1,0 +1,157 @@
+{% extends 'dashboard/base.html' %}
+{#{% load django_tables2 %}#}
+{% load widget_tweaks %}
+{% block nav %}
+    {% include 'dashboard/company/partials/nav.html' %}
+{% endblock %}
+{% block main %}
+
+
+
+
+    <div class="main-content" id="panel">
+        <!-- Topnav -->
+        {% include 'dashboard/company/partials/top-nav.html' %}
+        <!-- Header -->
+        <!-- Header -->
+        {% include 'dashboard/company/partials/header.html' %}
+        <!-- Page content -->
+        <div class="container-fluid mt--6">
+            <!-- Table -->
+            <div class="row Company_Registration ">
+                <div class="col">
+                    <div class="card mb-4 rounded-5 ">
+                        <!-- Card header -->
+                        <div class="card-header rounded-5">
+                            <h2 class="mb-0">{{ page_title }}</h2>
+                            <h4 class="mb-0">{{ subtitle }}</h4>
+                        </div>
+
+
+                        <!-- Card body -->
+                        <div class="card-body ">
+                            <span>{{ card_msg }}</span>
+                            {% if messages %}
+                                <ul class="messages">
+                                    {% for message in messages %}
+                                        <div class="alert-box">
+                                            <li class="{{ message.tags }}">
+                                                {{ message|safe }}
+                                                <a href="#" class="alert-cancel-btn">&times;</a>
+                                            </li>
+                                        </div>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            <!-- Form groups used in grid -->
+
+                            <form method="post" class="mannan_form" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+
+                                {% if company_info %}
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <h1>Company Info</h1>
+                                            <div class="row ">
+                                                <div class="col-md-5 mt-3 mb-2">
+                                                    <label style="margin-top: 0.5rem;width: max-content;">Restaurant
+                                                        Name:</label>
+                                                    <div>
+                                                        <input class="form-control"
+                                                               style="background-color: #ffffff;width:250%;"
+                                                               value="{{ restaurant }}" readonly>
+                                                    </div>
+                                                    <label style="margin-top: 0.5rem;width: max-content;">Contact
+                                                        Name:</label>
+                                                    <div>
+                                                        <input class="form-control"
+                                                               style="background-color: #ffffff;width:250%;"
+                                                               value="{{ contact_first_Name }} {{ contact_last_name }}({{ contact_user_name }})"
+                                                               readonly>
+                                                    </div>
+                                                    <label style="margin-top: 0.5rem;width: max-content;">Email:</label>
+                                                    <div>
+                                                        <input class="form-control"
+                                                               style="background-color: #ffffff;width:250%;"
+                                                               value="{{ email }}" readonly>
+                                                    </div>
+                                                    <label style="margin-top: 0.5rem;width: max-content;">Phone
+                                                        Number:</label>
+                                                    <div>
+                                                        <input class="form-control"
+                                                               style="background-color: #ffffff;width:250%;"
+                                                               value="{{ business_phone }}" readonly>
+                                                    </div>
+
+                                                    <label style="margin-top: 0.5rem;width: max-content;">Address:</label>
+                                                    <div>
+                                                        <input class="form-control"
+                                                               style="background-color: #ffffff;width:250%;"
+                                                               value="{{ address }}" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <h1>Other</h1>
+                                            <div class="row ">
+                                                <div class="col-md-5 mt-3 mb-2">
+                                                    <label style="margin-top: 0.5rem;width: max-content;">Last Paid
+                                                        Date:</label>
+                                                    <div>
+                                                        <input class="form-control"
+                                                               style="background-color: #ffffff;width:250%;"
+                                                               value="{{ last_paid_date }}" readonly>
+                                                    </div>
+                                                    <label style="margin-top: 0.5rem;width: max-content;">Active
+                                                        Status:</label>
+                                                    <div>
+                                                        <input class="form-control"
+                                                               style="background-color: #ffffff;width:250%;"
+                                                               value="{{ active_status }}"
+                                                               readonly>
+                                                    </div>
+                                                    <label style="margin-top: 0.5rem;width: max-content;">Sales
+                                                        Tax:</label>
+                                                    <div>
+                                                        <input class="form-control"
+                                                               style="background-color: #ffffff;width:250%;"
+                                                               value="{{ sales_tax }}" readonly>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+
+                                {#                                {% if feedback %}#}
+                                {#                                    {% for field in feedback %}#}
+                                {#                                            <div class="col">#}
+                                {#                                                <div class="form-group">#}
+                                {#                                                    {% render_field field class="form-control" placeholder=field.label %}#}
+                                {#                                                    <small style="color: red">#}
+                                {#                                                        {{ field.errors }}#}
+                                {#                                                    </small>#}
+                                {#                                                </div>#}
+                                {#                                            </div>#}
+                                {#                                        {% endfor %}#}
+                                {##}
+                                {##}
+                                {#                                {% endif %}#}
+
+                                {#                            <button type="submit" class="btn btn btn-primary"><span>Send</span></button>#}
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

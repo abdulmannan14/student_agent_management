@@ -1,0 +1,813 @@
+{% extends 'accounting/base.html' %}
+
+{% block content %}
+
+
+    <div class="page-content">
+
+        <div class="page-title">
+            <div class="row justify-content-between align-items-center">
+                <div class="col-xl-4 col-lg-4 col-md-4 d-flex align-items-center justify-content-between justify-content-md-start mb-3 mb-md-0">
+                    <div class="d-inline-block">
+                        <h5 class="h4 d-inline-block font-weight-400 mb-0 "> Balance Sheet
+                        </h5>
+                    </div>
+                </div>
+                <div class="col-xl-8 col-lg-8 col-md-8 d-flex align-items-center justify-content-between justify-content-md-end">
+                    <div class="row d-flex justify-content-end">
+                        <div class="col-auto">
+                            <form method="GET" action=""
+                                  accept-charset="UTF-8" id="report_bill_summary">
+                                <div class="all-select-box">
+                                    <div class="btn-box">
+                                        <label for="start_date" class="text-type">Start Date</label>
+                                        <input class="month-btn form-control" name="start_date" type="date"
+                                               value="" id="start_date">
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="all-select-box">
+                                <div class="btn-box">
+                                    <label for="end_date" class="text-type">End Date</label>
+                                    <input class="month-btn form-control" name="end_date" type="date" value=""
+                                           id="end_date">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto my-auto">
+                            <a href="#" class="apply-btn"
+                               onclick="document.getElementById('report_bill_summary').submit(); return false;"
+                               data-toggle="tooltip" data-original-title="apply">
+                                <span class="btn-inner--icon"><i class="fas fa-search"></i></span>
+                            </a>
+                            <a href="http:{% url 'balance-sheet' %}" class="reset-btn" data-toggle="tooltip"
+                               data-original-title="Reset">
+                                <span class="btn-inner--icon"><i class="fas fa-trash-restore-alt"></i></span>
+                            </a>
+                            <a href="#" class="action-btn" onclick="saveAsPDF()" data-toggle="tooltip"
+                               data-original-title="Download">
+                                <span class="btn-inner--icon"><i class="fas fa-download"></i></span>
+                            </a>
+                        </div>
+                    </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <div id="printableArea">
+            <div class="row mt-4">
+                <div class="col">
+                    <input type="hidden" value="Balance Sheet Report of 2022-02-01 to 2022-02-28" id="filename">
+                    <div class="card p-4 mb-4">
+                        <h5 class="report-text gray-text mb-0">Report :</h5>
+                        <h5 class="report-text mb-0">Balance Sheet</h5>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card p-4 mb-4">
+                        <h5 class="report-text gray-text mb-0">Duration :</h5>
+                        <h5 class="report-text mb-0">{% if start_date and end_date  %}{{ start_date }} to {{ end_date }}{% else %}All{% endif %}</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="card p-4 mb-4">
+                        <h5 class="report-text gray-text mb-0">Total Assets</h5>
+                        <h5 class="report-text mb-0">
+                            {% if  total_asset < 0 %}
+                                Cr. ${% widthratio total_asset 1 -1 %}
+                            {% elif  total_asset > 0 %}
+                                Dr. ${{ total_asset }}
+                            {% else %}
+                                $0.0
+                            {% endif %}
+                        </h5>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card p-4 mb-4">
+                        <h5 class="report-text gray-text mb-0">Total Liabilities</h5>
+                        <h5 class="report-text mb-0">
+                            {% if  total_liability < 0 %}
+                                Dr. ${% widthratio total_liability 1 -1 %}
+                            {% elif  total_liability > 0 %}
+                                Cr. ${{ total_liability }}
+                            {% else %}
+                                $0.0
+                            {% endif %}
+                        </h5>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card p-4 mb-4">
+                        <h5 class="report-text gray-text mb-0">Total Expenses</h5>
+                        <h5 class="report-text mb-0">
+                            {% if  total_expense < 0 %}
+                                Cr. ${% widthratio total_expense 1 -1 %}
+                            {% elif  total_expense > 0 %}
+                                Dr. ${{ total_expense }}
+                            {% else %}
+                                $0.0
+                            {% endif %}
+                        </h5>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card p-4 mb-4">
+                        <h5 class="report-text gray-text mb-0">Total Income</h5>
+                        <h5 class="report-text mb-0">
+                            {% if  total_income < 0 %}
+                                Dr. ${% widthratio total_income 1 -1 %}
+                            {% elif  total_income > 0 %}
+                                Cr. ${{ total_income }}
+                            {% else %}
+                                $0.0
+                            {% endif %}
+                        </h5>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card p-4 mb-4">
+                        <h5 class="report-text gray-text mb-0">Total Equity</h5>
+                        <h5 class="report-text mb-0">
+                            {% if  total_equity < 0 %}
+                                Dr. ${% widthratio total_equity 1 -1 %}
+                            {% elif  total_equity > 0 %}
+                                Cr. ${{ total_equity }}
+                            {% else %}
+                                $0.0
+                            {% endif %}
+                        </h5>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-lg-12 mb-4">
+                    <h5 class="text-muted">Assets</h5>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 mb-4">
+                            <div class="card card-fluid">
+                                <table class="table table-flush">
+                                    <thead>
+                                    <tr>
+                                        <th colspan="2" width="80%"><h6>Cash and Bank</h6></th>
+                                    </tr>
+                                    <tr>
+                                        <th width="80%"> Account</th>
+                                        <th> Amount</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="balance-sheet-body">
+                                    {% for account in account_list %}
+                                        {% if account.type == 'Asset' %}
+                                            {% if account.category == 'Cash and Bank' %}
+                                                <tr>
+                                                    <td>{{ account.account }}</td>
+                                                    <td>
+                                                        ${{ account.amount }}
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endif %}
+
+                                    {% endfor %}
+                                    </tbody>
+                                    <thead>
+                                    <tr>
+                                        <th>Total Cash and Bank</th>
+                                        <th>
+                                            {% if  cash_bank < 0 %}
+
+                                                Cr. ${% widthratio cash_bank 1 -1 %}
+                                            {% elif  cash_bank > 0 %}
+                                                Dr. ${{ cash_bank }}
+                                            {% else %}
+                                                $0.0
+                                            {% endif %}
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 mb-4">
+                            <div class="card card-fluid">
+                                <table class="table table-flush">
+                                    <thead>
+                                    <tr>
+                                        <th colspan="2" width="80%"><h6>Expected Payments from Customers</h6></th>
+                                    </tr>
+                                    <tr>
+                                        <th width="80%"> Account</th>
+                                        <th> Amount</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="balance-sheet-body">
+                                    {% for account in account_list %}
+                                        {% if account.type == 'Asset' %}
+                                            {% if account.category == 'Expected Payments from Customers' %}
+                                                <tr>
+                                                    <td>{{ account.account }}</td>
+                                                    <td>
+                                                        ${{ account.amount }}
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endif %}
+
+                                    {% endfor %}
+                                    </tbody>
+                                    <thead>
+                                    <tr>
+                                        <th>Total Expected Payments from Customers</th>
+                                        <th>
+                                            {% if  payment_from_customers < 0 %}
+
+                                                Cr. ${% widthratio payment_from_customers 1 -1 %}
+                                            {% elif  payment_from_customers > 0 %}
+                                                Dr. ${{ payment_from_customers }}
+                                            {% else %}
+                                                $0.0
+                                            {% endif %}
+                                        </th>
+                                    </tr>
+
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 mb-4">
+                    <h5 class="text-muted">Liabilities</h5>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 mb-4">
+                            <div class="card card-fluid">
+                                <table class="table table-flush">
+                                    <thead>
+                                    <tr>
+                                        <th colspan="2" width="80%"><h6>Expected Payments to Vendors</h6></th>
+                                    </tr>
+                                    <tr>
+                                        <th width="80%"> Account</th>
+                                        <th> Amount</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="balance-sheet-body">
+                                    {% for account in account_list %}
+                                        {% if account.type == 'Liability' %}
+                                            {% if account.category == 'Expected Payments to Vendors' %}
+                                                <tr>
+                                                    <td>{{ account.account }}</td>
+                                                    <td>
+                                                        ${{ account.amount }}
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endif %}
+
+                                    {% endfor %}
+                                    </tbody>
+                                    <thead>
+                                    <tr>
+                                        <th>Total Expected Payments to Vendors</th>
+                                        <th>
+                                            {% if  payments_to_vendors < 0 %}
+
+                                                Dr. ${% widthratio payments_to_vendors 1 -1 %}
+                                            {% elif  payments_to_vendors > 0 %}
+                                                Cr. ${{ payments_to_vendors }}
+                                            {% else %}
+                                                $0.0
+                                            {% endif %}
+                                        </th>
+                                    </tr>
+
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 mb-4">
+                            <div class="card card-fluid">
+                                <table class="table table-flush">
+                                    <thead>
+                                    <tr>
+                                        <th colspan="2" width="80%"><h6>Sales Taxes</h6></th>
+                                    </tr>
+                                    <tr>
+                                        <th width="80%"> Account</th>
+                                        <th> Amount</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="balance-sheet-body">
+                                    {% for account in account_list %}
+                                        {% if account.type == 'Liability' %}
+                                            {% if account.category == 'Sales Taxes' %}
+                                                <tr>
+                                                    <td>{{ account.account }}</td>
+                                                    <td>
+                                                        ${{ account.amount }}
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endif %}
+
+                                    {% endfor %}
+                                    </tbody>
+                                    <thead>
+                                    <tr>
+                                        <th>Total Sales Taxes</th>
+                                        <th>
+                                            {% if  sales_taxes < 0 %}
+
+                                                Dr. ${% widthratio sales_taxes 1 -1 %}
+                                            {% elif  sales_taxes > 0 %}
+                                                Cr. ${{ sales_taxes }}
+                                            {% else %}
+                                                $0.0
+                                            {% endif %}
+                                        </th>
+                                    </tr>
+
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 mb-4">
+                            <div class="card card-fluid">
+                                <table class="table table-flush">
+                                    <thead>
+                                    <tr>
+                                        <th colspan="2" width="80%"><h6>Due for Payroll</h6></th>
+                                    </tr>
+                                    <tr>
+                                        <th width="80%"> Account</th>
+                                        <th> Amount</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="balance-sheet-body">
+                                    {% for account in account_list %}
+                                        {% if account.type == 'Liability' %}
+                                            {% if account.category == 'Due for Payroll' %}
+                                                <tr>
+                                                    <td>{{ account.account }}</td>
+                                                    <td>
+                                                        ${{ account.amount }}
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endif %}
+
+                                    {% endfor %}
+                                    </tbody>
+                                    <thead>
+                                    <tr>
+                                        <th>Total Due for Payroll</th>
+                                        <th>
+                                            {% if  due_for_payroll < 0 %}
+
+                                                Dr. ${% widthratio due_for_payroll 1 -1 %}
+                                            {% elif  due_for_payroll > 0 %}
+                                                Cr. ${{ due_for_payroll }}
+                                            {% else %}
+                                                $0.0
+                                            {% endif %}
+                                        </th>
+                                    </tr>
+
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 mb-4">
+                            <div class="card card-fluid">
+                                <table class="table table-flush">
+                                    <thead>
+                                    <tr>
+                                        <th colspan="2" width="80%"><h6>Other Short-Term Liability</h6></th>
+                                    </tr>
+                                    <tr>
+                                        <th width="80%"> Account</th>
+                                        <th> Amount</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="balance-sheet-body">
+                                    {% for account in account_list %}
+                                        {% if account.type == 'Liability' %}
+                                            {% if account.category == 'Other Short-Term Liability' %}
+                                                <tr>
+                                                    <td>{{ account.account }}</td>
+                                                    <td>
+                                                        ${{ account.amount }}
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endif %}
+
+                                    {% endfor %}
+                                    </tbody>
+                                    <thead>
+                                    <tr>
+                                        <th>Total Other Short-Term Liability</th>
+                                        <th>
+                                            {% if  short_term_liability < 0 %}
+
+                                                Dr. ${% widthratio short_term_liability 1 -1 %}
+                                            {% elif  short_term_liability > 0 %}
+                                                Cr. ${{ short_term_liability }}
+                                            {% else %}
+                                                $0.0
+                                            {% endif %}
+                                        </th>
+                                    </tr>
+
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 mb-4">
+                    <h5 class="text-muted">Expenses</h5>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 mb-4">
+                            <div class="card card-fluid">
+                                <table class="table table-flush">
+                                    <thead>
+                                    <tr>
+                                        <th colspan="2" width="80%"><h6>Operating Expense</h6></th>
+                                    </tr>
+                                    <tr>
+                                        <th width="80%"> Account</th>
+                                        <th> Amount</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="balance-sheet-body">
+                                    {% for account in account_list %}
+                                        {% if account.type == 'Expense' %}
+                                            {% if account.category == 'Operating Expense' %}
+                                                <tr>
+                                                    <td>{{ account.account }}</td>
+                                                    <td>
+                                                        ${{ account.amount }}
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endif %}
+
+                                    {% endfor %}
+                                    </tbody>
+                                    <thead>
+                                    <tr>
+                                        <th>Total Operating Expense</th>
+                                        <th>
+                                            {% if  operating_expense_sum < 0 %}
+
+                                                Cr. ${% widthratio operating_expense_sum 1 -1 %}
+                                            {% elif  operating_expense_sum > 0 %}
+                                                Dr. ${{ operating_expense_sum }}
+                                            {% else %}
+                                                $0.0
+                                            {% endif %}
+                                        </th>
+                                    </tr>
+
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 mb-4">
+                            <div class="card card-fluid">
+                                <table class="table table-flush">
+                                    <thead>
+                                    <tr>
+                                        <th colspan="2" width="80%"><h6>Payroll Expense</h6></th>
+                                    </tr>
+                                    <tr>
+                                        <th width="80%"> Account</th>
+                                        <th> Amount</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="balance-sheet-body">
+                                    {% for account in account_list %}
+                                        {% if account.type == 'Expense' %}
+                                            {% if account.category == 'Payroll Expense' %}
+                                                <tr>
+                                                    <td>{{ account.account }}</td>
+                                                    <td>
+                                                        ${{ account.amount }}
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endif %}
+
+                                    {% endfor %}
+                                    </tbody>
+                                    <thead>
+                                    <tr>
+                                        <th>Total Payroll Expense</th>
+                                        <th>
+                                            {% if  payroll_expense_sum < 0 %}
+
+                                                Cr. ${% widthratio payroll_expense_sum 1 -1 %}
+                                            {% elif  payroll_expense_sum > 0 %}
+                                                Dr. ${{ payroll_expense_sum }}
+                                            {% else %}
+                                                $0.0
+                                            {% endif %}
+                                        </th>
+                                    </tr>
+
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 mb-4">
+                            <div class="card card-fluid">
+                                <table class="table table-flush">
+                                    <thead>
+                                    <tr>
+                                        <th colspan="2" width="80%"><h6>Uncategorized Expense</h6></th>
+                                    </tr>
+                                    <tr>
+                                        <th width="80%"> Account</th>
+                                        <th> Amount</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="balance-sheet-body">
+                                    {% for account in account_list %}
+                                        {% if account.type == 'Expense' %}
+                                            {% if account.category == 'Uncategorized Expense' %}
+                                                <tr>
+                                                    <td>{{ account.account }}</td>
+                                                    <td>
+                                                        ${{ account.amount }}
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endif %}
+
+                                    {% endfor %}
+                                    </tbody>
+                                    <thead>
+                                    <tr>
+                                        <th>Total Uncategorized Expense</th>
+                                        <th>
+                                            {% if  uncategorized_expense < 0 %}
+
+                                                Cr. ${% widthratio uncategorized_expense 1 -1 %}
+                                            {% elif  uncategorized_expense > 0 %}
+                                                Dr. ${{ uncategorized_expense }}
+                                            {% else %}
+                                                $0.0
+                                            {% endif %}
+                                        </th>
+                                    </tr>
+
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-4">
+            <h5 class="text-muted">Income</h5>
+            <div class="row">
+
+                <div class="col-lg-4 col-md-4 mb-4">
+                    <div class="card card-fluid">
+                        <table class="table table-flush">
+                            <thead>
+                            <tr>
+                                <th colspan="2" width="80%"><h6>Income</h6></th>
+                            </tr>
+                            <tr>
+                                <th width="80%"> Account</th>
+                                <th> Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody class="balance-sheet-body">
+                            {% for account in account_list %}
+                                {% if account.type == 'Income' %}
+                                    {% if account.category == 'Income' %}
+                                        <tr>
+                                            <td>{{ account.account }}</td>
+                                            <td>
+                                                ${{ account.amount }}
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endif %}
+
+                            {% endfor %}
+                            </tbody>
+                            <thead>
+                            <tr>
+                                <th>Total Income</th>
+                                <th>
+                                    {% if  income < 0 %}
+
+                                        Dr. ${% widthratio income 1 -1 %}
+                                    {% elif  income > 0 %}
+                                        Cr. ${{ income }}
+                                    {% else %}
+                                        $0.0
+                                    {% endif %}
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-4 mb-4">
+                    <div class="card card-fluid">
+                        <table class="table table-flush">
+                            <thead>
+                            <tr>
+                                <th colspan="2" width="80%"><h6>Uncategorized Income</h6></th>
+                            </tr>
+                            <tr>
+                                <th width="80%"> Account</th>
+                                <th> Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody class="balance-sheet-body">
+                            {% for account in account_list %}
+                                {% if account.type == 'Income' %}
+                                    {% if account.category == 'Uncategorized Income' %}
+                                        <tr>
+                                            <td>{{ account.account }}</td>
+                                            <td>
+                                                ${{ account.amount }}
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endif %}
+
+                            {% endfor %}
+                            </tbody>
+                            <thead>
+                            <tr>
+                                <th>Total Uncategorized Income</th>
+                                <th>
+                                    {% if  uncategorized_income < 0 %}
+
+                                        Dr. ${% widthratio uncategorized_income 1 -1 %}
+                                    {% elif  uncategorized_income > 0 %}
+                                        Cr. ${{ uncategorized_income }}
+                                    {% else %}
+                                        $0.0
+                                    {% endif %}
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-4">
+            <h5 class="text-muted">Equity</h5>
+            <div class="row">
+
+                <div class="col-lg-4 col-md-4 mb-4">
+                    <div class="card card-fluid">
+                        <table class="table table-flush">
+                            <thead>
+                            <tr>
+                                <th colspan="2" width="80%"><h6>Business Owner Contribution and Drawing</h6></th>
+                            </tr>
+                            <tr>
+                                <th width="80%"> Account</th>
+                                <th> Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody class="balance-sheet-body">
+                            {% for account in account_list %}
+                                {% if account.type == 'Equity' %}
+                                    {% if account.category == 'Business Owner Contribution and Drawing' %}
+                                        <tr>
+                                            <td>{{ account.account }}</td>
+                                            <td>
+                                                ${{ account.amount }}
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endif %}
+
+                            {% endfor %}
+                            </tbody>
+                            <thead>
+                            <tr>
+                                <th>Total Business Owner Contribution and Drawing</th>
+                                <th>
+                                    {% if  contribution_and_drawing < 0 %}
+
+                                        Dr. ${% widthratio contribution_and_drawing 1 -1 %}
+                                    {% elif  contribution_and_drawing > 0 %}
+                                        Cr. ${{ contribution_and_drawing }}
+                                    {% else %}
+                                        $0.0
+                                    {% endif %}
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 mb-4">
+                    <div class="card card-fluid">
+                        <table class="table table-flush">
+                            <thead>
+                            <tr>
+                                <th colspan="2" width="80%"><h6>Retained Earnings: Profit</h6></th>
+                            </tr>
+                            <tr>
+                                <th width="80%"> Account</th>
+                                <th> Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody class="balance-sheet-body">
+                            {% for account in account_list %}
+                                {% if account.type == 'Equity' %}
+                                    {% if account.category == 'Retained Earnings: Profit' %}
+                                        <tr>
+                                            <td>{{ account.account }}</td>
+                                            <td>
+                                                ${{ account.amount }}
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endif %}
+
+                            {% endfor %}
+                            </tbody>
+                            <thead>
+                            <tr>
+                                <th>Total Retained Earnings: Profit</th>
+                                <th>
+                                    {% if  retained_earnings < 0 %}
+
+                                        Dr. ${% widthratio retained_earnings 1 -1 %}
+                                    {% elif  retained_earnings > 0 %}
+                                        Cr. ${{ retained_earnings }}
+                                    {% else %}
+                                        $0.0
+                                    {% endif %}
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+
+    <div class="modal fade" id="commonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div>
+                    <h4 class="h4 font-weight-400 float-left modal-title" id="exampleModalLabel"></h4>
+                    <a href="#" class="more-text widget-text float-right close-icon" data-dismiss="modal"
+                       aria-label="Close">Close</a>
+                </div>
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        var filename = $('#filename').val();
+
+        function saveAsPDF() {
+            var element = document.getElementById('printableArea');
+            var opt = {
+                margin: 0.3,
+                filename: filename,
+                image: {type: 'jpeg', quality: 1},
+                html2canvas: {scale: 4, dpi: 72, letterRendering: true},
+                jsPDF: {unit: 'in', format: 'A2'}
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+    </script>
+
+
+{% endblock %}

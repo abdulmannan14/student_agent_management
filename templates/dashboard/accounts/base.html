@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description"
+          content="LimouCloud provides an all in one solution for your limo business needs. From accounting to reservations.">
+    <meta name="author" content="LimouCloud">
+    <title>LimouCLoud-{{ title }}</title>
+    {% include 'dashboard/partials/styles.html' %}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'dashboard/assets/css/messages.css' %}">
+    <script src="{% static 'dashboard/assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+    {% block extra_styles %}
+    {% endblock %}
+    <style>
+        .nav-link.active {
+            background-color: #9ee6ce !important;
+        }
+    </style>
+</head>
+<body style="overflow-x: hidden">
+{% block nav %}
+{% endblock %}
+{% block main %}
+{% endblock %}
+
+{% include 'dashboard/partials/scripts.html' %}
+<script>
+    $(document).ready(function () {
+        $('.account-form').on('submit', function () {
+            let form = $(this)
+            form.find('button').append('<i>...</i>').attr("disabled", "")
+            post_form(form)
+            return false;
+        })
+
+        function post_form(form) {
+            let btn = form.find('button')
+            $.ajax({
+                url: form.attr("action"),
+                type: form.attr("method"),
+                data: form.serialize(),
+                success: function (response, text, xhr) {
+                    console.log(response, text, xhr)
+                    var msg = $(".msg")
+                    if (response.success) {
+                        msg.removeClass("text-danger")
+                        msg.addClass("text-success")
+                    } else {
+                        msg.removeClass("text-success")
+                        msg.addClass("text-danger")
+                    }
+                    msg.html(response.message)
+                    btn.find('i').remove()
+                    btn.removeAttr("disabled")
+
+                    if (response.data && response.data.redirect_url) {
+                        window.location.href = response.data.redirect_url
+                    }
+                },
+                error: function (error) {
+                    console.log(error)
+                    btn.find('i').remove()
+                    btn.removeAttr("disabled")
+                }
+            })
+        }
+    })
+
+</script>
+<script>
+    /*
+    $(document).ready(function () {
+        $("#forward").click(function () {
+            $.ajax('/forward');
+            $('a').removeClass('active');
+            $(this).find("#ak").addClass('active');
+
+        });
+    });*/
+</script>
+<script>
+    let collapse_class = "{{ nav_conf.collapse_class }}"
+    if (collapse_class.length > 0) {
+        collapse_class = $(".{{ nav_conf.collapse_class }}")
+    } else {
+        collapse_class = $("<h1></h1>")
+    }
+    {#collapse_class = $(".{{ nav_conf.collapse_class }}")#}
+    let active_classes = []
+    {% for active_class in nav_conf.active_classes %}
+        console.log("{{ active_class }}")
+        active_classes.push("{{ active_class }}")
+    {% endfor %}
+    $(document).ready(function () {
+        console.log(collapse_class, "collaspe", active_classes)
+        collapse_class.find("a").attr("aria-expanded", "false")
+        collapse_class.find(".collapse").addClass("show")
+        {#collapse_class.find("a").attr("aria-expanded", "false")#}
+        for (let active_class of active_classes) {
+            $(`.${active_class}`).children(".nav-link").addClass("active")
+        }
+    })
+</script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+{% block extra_js %}
+{% endblock %}
+<script src="{% static 'dashboard/assets/js/argon.js?v=1.2.0' %}"></script>
+
+</body>
+
+</html>

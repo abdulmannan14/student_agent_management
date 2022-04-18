@@ -1,0 +1,226 @@
+{% extends 'accounting/base.html' %}
+
+{% block content %}
+    <div class="page-content">
+        <div class="page-title">
+            <div class="row justify-content-between align-items-center">
+                <div
+                        class="col-xl-4 col-lg-4 col-md-4 d-flex align-items-center justify-content-between justify-content-md-start mb-3 mb-md-0">
+                    <div class="d-inline-block">
+                        <h5 class="h4 d-inline-block font-weight-400 mb-0 "> Ledger Summary
+                        </h5>
+                    </div>
+                </div>
+                <div
+                        class="col-xl-8 col-lg-8 col-md-8 d-flex align-items-center justify-content-between justify-content-md-end">
+                    <div class="row d-flex justify-content-end">
+                        <div class="col-auto">
+                            <form method="GET" action="" accept-charset="UTF-8"
+                                  id="report_ledger">
+                                {% csrf_token %}
+                                <div class="all-select-box">
+                                    <div class="btn-box">
+                                        <label for="start_date" class="text-type">Start Date</label>
+                                        <input class="month-btn form-control" name="start_date" type="date"
+                                               value="" id="start_date">
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="all-select-box">
+                                <div class="btn-box">
+                                    <label for="end_date" class="text-type">End Date</label>
+                                    <input class="month-btn form-control" name="end_date" type="date" value=""
+                                           id="end_date">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <div class="all-select-box">
+                                <div class="btn-box">
+                                    <label for="account" class="text-type">Account</label>
+                                    <select class="form-control select2" id="account" name="account">
+                                        {% for account in chart_of_accounts %}
+                                        <option value="{{ account.id }}">{{ account.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto my-auto">
+                            <a href="#" class="apply-btn"
+                               onclick="document.getElementById('report_ledger').submit(); return false;"
+                               data-toggle="tooltip" data-original-title="apply">
+                                <span class="btn-inner--icon"><i class="fas fa-search"></i></span>
+                            </a>
+                            <a href="{% url 'ledger-summary' %}" class="reset-btn" data-toggle="tooltip"
+                               data-original-title="Reset">
+                                <span class="btn-inner--icon"><i class="fas fa-trash-restore-alt"></i></span>
+                            </a>
+                            <a href="#" class="action-btn" onclick="saveAsPDF()" data-toggle="tooltip"
+                               data-original-title="Download">
+                                <span class="btn-inner--icon"><i class="fas fa-download"></i></span>
+                            </a>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div id="printableArea">
+            <div class="row mt-4">
+                <div class="col">
+                    <input type="hidden" value="Ledger Report of 2022-02-01 to 2022-02-28" id="filename">
+                    <div class="card p-4 mb-4">
+                        <h5 class="report-text gray-text mb-0">Report :</h5>
+                        <h5 class="report-text mb-0">Ledger Summary</h5>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card p-4 mb-4">
+                        <h5 class="report-text gray-text mb-0">Duration :</h5>
+                        <h5 class="report-text mb-0">{% if start_date and end_date %}
+                            {{ start_date }} to {{ end_date }}
+                            {% else %}
+                            All
+                            {% endif %}
+                        </h5>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col">
+                    <div class="card p-4 mb-4">
+                        <h5 class="report-text gray-text mb-0">Account Name :</h5>
+                        <h5 class="report-text mb-0">
+                            {% if account %}
+                            {{ account }}
+                            {% else %}
+                            All
+                            {% endif %}</h5>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card p-4 mb-4">
+                        <h5 class="report-text gray-text mb-0">Account Code :</h5>
+                        <h5 class="report-text mb-0">-</h5>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card p-4 mb-4">
+                        <h5 class="report-text gray-text mb-0">Total Debit :</h5>
+                        <h5 class="report-text mb-0">${{ debit_sum }}</h5>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card p-4 mb-4">
+                        <h5 class="report-text gray-text mb-0">Total Credit :</h5>
+                        <h5 class="report-text mb-0">${{ credit_sum }}</h5>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card p-4 mb-4">
+                        <h5 class="report-text gray-text mb-0">Balance :</h5>
+                        <h5 class="report-text mb-0"> {% if balance < 0 %}
+
+                                Cr. ${% widthratio balance 1 -1 %}
+                                    {% elif balance > 0 %}
+                                    Dr. ${{ balance }}
+                                    {% else %}
+                                    $0.0
+                                {% endif %}</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-12 mb-4">
+                    <table class="table table-flush">
+                        <thead>
+                        <tr>
+                            <th> #</th>
+                            <th> Transaction Date</th>
+                            <th> Create At</th>
+                            <th> Description</th>
+                            <th> Debit</th>
+                            <th> Credit</th>
+                            <th> Balance</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in journal_items %}
+                        <tr>
+
+                            <td class="Id">
+                                <a href="{% url 'journal-entry-detail' item.item.journal_entry.id %}">{{ item.item.journal_entry.id }}</a>
+                            </td>
+
+                            <td>{{ item.item.journal_entry.dated }}</td>
+                            <td>{{ item.item.created_at }}</td>
+                            {% if item.item.description %}
+                            <td>{{item.item.description }}</td>
+                            {% else %}
+                             <td></td>
+                            {% endif %}
+                            <td>${{ item.item.debit }}</td>
+                            <td>${{ item.item.credit }}</td>
+                            <td>
+                                {% if item.balance < 0 %}
+
+                                Cr. ${% widthratio item.balance 1 -1 %}
+                                    {% elif item.balance > 0 %}
+                                    Dr. ${{ item.balance }}
+                                    {% else %}
+                                    $0.0
+                                {% endif %}
+                            </td>
+
+                        </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    <div class="modal fade" id="commonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div>
+                    <h4 class="h4 font-weight-400 float-left modal-title" id="exampleModalLabel"></h4>
+                    <a href="#" class="more-text widget-text float-right close-icon" data-dismiss="modal"
+                       aria-label="Close">Close</a>
+                </div>
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <script>
+        var filename = $('#filename').val();
+
+        function saveAsPDF() {
+            var element = document.getElementById('printableArea');
+            var opt = {
+                margin: 0.3,
+                filename: filename,
+                image: {type: 'jpeg', quality: 1},
+                html2canvas: {scale: 4, dpi: 72, letterRendering: true},
+                jsPDF: {unit: 'in', format: 'A2'}
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+    </script>
+{% endblock %}

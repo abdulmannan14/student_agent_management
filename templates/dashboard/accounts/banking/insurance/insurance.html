@@ -1,0 +1,91 @@
+{% extends "dashboard/accounts/base.html" %}
+{% load static %}
+{% block nav %}
+    {% include 'dashboard/accounts/partials/nav.html' %}
+{% endblock %}
+</style>
+{% block main %}
+    <div class="main-content" id="panel">
+        {% if messages %}
+            <ul class="messages" style="display: flex;justify-content: center;align-content: center">
+                {% for message in messages %}
+                    <div class="alert-box">
+                        <li class="{{ message.tags }}">
+                            {{ message|safe }}
+                            <a href="" class="alert-cancel-btn">&times;</a>
+                        </li>
+                    </div>
+                {% endfor %}
+
+
+            </ul>
+        {% endif %}
+        <!-- Topnav -->
+        {% include 'dashboard/accounts/partials/top-nav.html' %}
+        <!-- Header -->
+        <!-- Header -->
+        {% include 'dashboard/accounts/partials/header.html' %}
+        <!-- Page content -->
+        <h1>hello we are in banking/insurance</h1>
+    </div>
+    </div>
+
+    <div class="row">
+        <!-- Footer -->
+        <footer class="footer pt-0 col-12 bg-primary">
+            <div class="row align-items-center justify-content-lg-between">
+                <div class="col-lg-6">
+                    <div class="copyright text-center  text-lg-center  text-muted text-white">
+                        &copy; 2021 <a href="https://www.limou_cloud.com" class="font-weight-bold ml-1"
+                                       target="_blank">Limou Cloud</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 ">
+                    <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                        <li class="nav-item ">
+                            <a href="https://www.Limou_cloud.com" class="nav-link " id="uniqueid"
+                               target="_blank">Limou
+                                Cloud</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://www.Limou_cloud.com/presentation" class="nav-link"
+                               target="_blank">About
+                                Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="http://blog.Limou_cloud.com" class="nav-link"
+                               target="_blank">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://www.Limou_cloud.com/license" class="nav-link"
+                               target="_blank">License</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+    </div>
+    </div>
+    </div>
+
+
+
+
+
+
+    <link rel="stylesheet" href={% static 'dashboard/assets/css/messages.css' %}>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"
+            integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q=="
+            crossOrigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        const cancel_btn = document.querySelector(".alert-cancel-btn");
+        if (cancel_btn) {
+            cancel_btn.addEventListener("click", () => {
+                const alert = document.querySelector('.alert-box');
+                alert.style.display = "none"
+            })
+        }
+    </script>
+{% endblock %}
+

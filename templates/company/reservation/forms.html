@@ -1,0 +1,44 @@
+{% load widget_tweaks %}
+{% csrf_token %}
+
+
+<div class="row" style="margin-top: 22px">
+    {% for field in form %}
+        <div class="form-group {{ form_class }}">
+            <small>{{ field.field.widget.attrs.label }}</small>
+            <div class="">
+                {% if readonly == 'readonly' %}
+                    <label class="form-control-label label-form-dex">{{ field.label }} :</label>
+                    {% render_field field class="form-control"  placeholder=field.label readonly=readonly %}
+                {% else %}
+                    <label class="form-control-label label-form-dex">{{ field.label }} :</label>
+                    {% with "form-control "|add:class_name as classnames %}
+                        {% render_field field class=classnames placeholder=field.label %}
+                    {% endwith %}
+
+                {% endif %}
+                {% for error in field.errors %}
+                    <p class="help-block">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    var searchInput_dest = 'id_address';
+    $(document).ready(function () {
+        var autocomplete = new google.maps.places.Autocomplete((document.getElementById(searchInput_dest)), {
+            types: ['geocode'],
+        });
+        google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            var near_place = autocomplete.getPlace();
+            console.log("Near Place: ", near_place)
+            var destination_lat = near_place.geometry.location.lat();
+            var destination_long = near_place.geometry.location.lng();
+            var destination = $("#client_address_latlong")
+            destination.val(destination_lat.toString() + ',' + destination_long.toString())
+        });
+    });
+</script>
+

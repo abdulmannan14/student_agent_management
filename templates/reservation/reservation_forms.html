@@ -1,0 +1,15 @@
+
+{% load widget_tweaks %}
+{% csrf_token %}
+{% for field in form %}
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="form-control-label"
+                   style="text-transform:capitalize">{{ field.label }}</label>
+            {% render_field field class="form-control" placeholder=field.label %}
+            <small style="color: red">
+                {{ field.errors }}
+            </small>
+        </div>
+    </div>
+{% endfor %}

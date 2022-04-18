@@ -1,0 +1,242 @@
+{% extends 'accounting/base.html' %}
+
+{% block content %}
+
+    <div class="page-content">
+        <div class="page-title">
+            <div class="row justify-content-between align-items-center">
+                <div class="col-xl-4 col-lg-4 col-md-4 d-flex align-items-center justify-content-between justify-content-md-start mb-3 mb-md-0">
+                    <div class="d-inline-block">
+                        <h5 class="h4 d-inline-block font-weight-400 mb-0 "> Account Statement
+                        </h5>
+                    </div>
+                </div>
+                <div class="col-xl-8 col-lg-8 col-md-8 d-flex align-items-center justify-content-between justify-content-md-end">
+                    <div class="row d-flex justify-content-end">
+                        <div class="col-auto">
+                            <form method="GET" action=""
+                                  accept-charset="UTF-8" id="report_account">
+                                <div class="all-select-box">
+                                    <div class="btn-box">
+                                        <label for="start_month" class="text-type">Start Date</label>
+                                        <input class="month-btn form-control" name="start_month" type="date" required
+                                               value="" id="start_month">
+                                    </div>
+                                </div>
+
+                        </div>
+                        <div class="col-auto">
+                            <div class="all-select-box">
+                                <div class="btn-box">
+                                    <label for="end_month" class="text-type">End Date</label>
+                                    <input class="month-btn form-control" name="end_month" type="date" value="" required
+                                           id="end_month">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="all-select-box">
+                                <div class="btn-box">
+                                    <label for="account" class="text-type">Account</label>
+                                    <select class="form-control select2 " id="account" data-select2-id="account"
+                                            aria-hidden="true"
+                                            name="account" aria-hidden="true">
+                                        <option value="">Select account</option>
+                                        {% for account in chart_of_accounts %}
+                                            <option value="{{ account.id }}">{{ account.name }}</option>
+                                        {% endfor %}
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="all-select-box">
+                                <div class="btn-box">
+                                    <label for="type" class="text-type">Type</label>
+                                    <select class="form-control select2 select2-hidden-accessible" id="type" name="type"
+                                            data-select2-id="type" tabindex="-1" aria-hidden="true">
+                                        <option value="">All</option>
+                                        <option value="Debit">Debit</option>
+                                        <option value="Credit">Credit</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-auto my-auto">
+                            <button class="apply-btn" type="submit"
+                            >
+                                <span class="btn-inner--icon"><i class="fas fa-search"></i></span>
+                            </button>
+                            </form>
+                            <a href="{% url 'account-statement' %}" class="reset-btn"
+                               data-toggle="tooltip" data-original-title="Reset">
+                                <span class="btn-inner--icon"><i class="fas fa-trash-restore-alt"></i></span>
+                            </a>
+                            <a href="#" class="action-btn" onclick="saveAsPDF()" data-toggle="tooltip"
+                               data-original-title="Download">
+                                <span class="btn-inner--icon"><i class="fas fa-download"></i></span>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col">
+                <input type="hidden" value="Account Statement Payment Report of Mar-2022 to Oct-2021" id="filename">
+                <div class="card p-4 mb-4">
+                    <h5 class="report-text gray-text mb-0">Report :</h5>
+                    <h5 class="report-text mb-0">Account Statement Summary</h5>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card p-4 mb-4">
+                    <h5 class="report-text gray-text mb-0">Account :</h5>
+
+                    <h5 class="report-text mb-0" id="account_value">{{ account }}</h5>
+
+                </div>
+            </div>
+            <div class="col">
+                <div class="card p-4 mb-4">
+                    <h5 class="report-text gray-text mb-0">Type :</h5>
+                    <h5 class="report-text mb-0">{{ type }}</h5>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card p-4 mb-4">
+                    <h5 class="report-text gray-text mb-0">Duration :</h5>
+                    <h5 class="report-text mb-0">{{ duration }}</h5>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row mt-3">
+            <div class="col">
+                <input type="hidden" value="Account Statement Payment Report of Mar-2022 to Oct-2021" id="filename">
+                <div class="card p-4 mb-4">
+                    <h5 class="report-text gray-text mb-0">Total Credit :</h5>
+                    <h5 class="report-text mb-0">${{ credit_sum }}</h5>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card p-4 mb-4">
+                    <h5 class="report-text gray-text mb-0">Total Debit</h5>
+                    <h5 class="report-text mb-0">${{ debit_sum }}</h5>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive pt-4">
+                        <table class="table table-striped mb-0 dataTable" id="report-dataTable">
+                            <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Account</th>
+                                <th>Credit</th>
+                                <th>Debit</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in journal_items %}
+                                <tr class="font-style">
+
+                                    <td>{{ item.updated_at }}</td>
+                                    <td>{{ item.account }}</td>
+                                    <td>{{ item.credit }}</td>
+                                    <td>{{ item.debit }}</td>
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+    {#    <div class="modal fade" id="commonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"#}
+    {#         aria-hidden="true">#}
+    {#        <div class="modal-dialog modal-dialog-centered" role="document">#}
+    {#            <div class="modal-content">#}
+    {#                <div>#}
+    {#                    <h4 class="h4 font-weight-400 float-left modal-title" id="exampleModalLabel"></h4>#}
+    {#                    <a href="#" class="more-text widget-text float-right close-icon" data-dismiss="modal"#}
+    {#                       aria-label="Close">Close</a>#}
+    {#                </div>#}
+    {#                <div class="modal-body">#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
+    <script>
+        var filename = $('#filename').val();
+
+        function saveAsPDF() {
+            var element = document.getElementById('printableArea');
+            var opt = {
+                margin: 0.3,
+                filename: filename,
+                image: {type: 'jpeg', quality: 1},
+                html2canvas: {scale: 4, dpi: 72, letterRendering: true},
+                jsPDF: {unit: 'in', format: 'A4'}
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        $(document).ready(function () {
+            var filename = $('#filename').val();
+            $('#dataTable').DataTable({
+                dom: 'lBfrtip',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        title: filename
+                    },
+                    {
+                        extend: 'pdf',
+                        title: filename
+                    }, {
+                        extend: 'csv',
+                        title: filename
+                    }
+                ]
+            });
+        });
+    </script>
+
+    <script>
+        var dataTabelLang = {
+            paginate: {previous: "Previous", next: "Next"},
+            lengthMenu: "Show _MENU_ entries",
+            zeroRecords: "No data available in table",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoEmpty: " ",
+            search: "Search:"
+        }
+    </script>
+{#    <script>#}
+{#        $(".apply-btn").click(function () {#}
+{#            console.log("helooooo")#}
+{#            let account_val = $("#select2-account-container").val()#}
+{#            console.log("thisis thecaccount vae=====", account_val)#}
+{#            $("#account_value").val(account_val)#}
+{#        })#}
+{#    </script>#}
+
+
+{% endblock %}

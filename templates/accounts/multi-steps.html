@@ -1,0 +1,152 @@
+{% extends "home/base.html" %}
+{% load widget_tweaks %}
+{% load static %}
+{% block extra_styles %}
+    <style>
+        .bg-secondary {
+            background: linear-gradient(87deg, #027975, #211860 100%) !important;
+            border-radius: 30px;
+        }
+
+        .banner-one {
+            padding-top: 200px;
+            padding-bottom: 90px;
+            position: relative;
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <section class="banner-one" id="home">
+        <img src="{% static "assets/index2_images/shapes/banner-shape-1-1.png" %}" class="banner-one__bg-shape-1"
+             alt="">
+        <div class="banner-one__bg"
+             style="background-image: url({% static "assets/index2_images/resources/banner-img.jpeg" %});">
+        </div><!-- /.banner-one__bg -->
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-8">
+                    <div class="card bg-secondary border-0">
+                        <div class="card-header bg-transparent pb-2">
+                            <div class="text-white text-center mt-3">
+                                <p>{{ page_title }}</p>
+                            </div>
+                            <div class="text-center text-white">
+                                <small>{{ page_subtitle }}</small>
+                            </div>
+                        </div>
+                        <div class="card-body px-lg-5 py-lg-5">
+
+                            <form class="account-form" method="post"
+                                  {% if form.action %}action="{{ form.action }}" {% endif %}>
+                            {% csrf_token %}
+                                {% include "accounts/account-forms.html" with form=form.form %}
+                                <div class="text-center ">
+                                    {% for extra in extras %}
+                                        {{ extra }}
+                                    {% endfor %}
+                                </div>
+                                <div class="text-center text-danger msg text-emphasized"></div>
+                                <div class="text-center">
+                                    <button type="submit"
+                                            class="btn btn-primary my-4 {{ main_btn.classes }}">
+                                        <span>{{ main_btn.title }}</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-footer bg-transparent pb-2">
+                            <div class="row mt-3">
+                                {% for link in links %}
+                                    <div class="text-center col-{% widthratio 12 links|length 1 %}">
+                                        <a href="{{ link.href }}"
+                                           class="text-light"><small>{{ link.title }}</small></a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        {#        <div class="row">#}
+        {#            <div class="col-lg-7">#}
+        {#                <div class="banner-one__content">#}
+        {##}
+        {#                </div>#}
+        {#                <!-- /.banner-one__content -->#}
+        {#            </div>#}
+        {#            <!-- /.col-lg-7 -->#}
+        {#        </div><!-- /.row -->#}
+        {#        </div><!-- /.container -->#}
+    </section><!-- /.banner-one -->
+
+
+{% endblock %}
+{% block extra_js %}
+    <script>
+        $(document).ready(function () {
+            $('.account-form').on('submit', function () {
+                let form = $(this)
+                form.find('button').append('<i>...</i>').attr("disabled", "")
+                post_form(form)
+                return false;
+            })
+
+            function post_form(form) {
+                let btn = form.find('button')
+                var msg = $(".msg")
+                $.ajax({
+                    url: form.attr("action"),
+                    type: form.attr("method"),
+                    data: form.serialize(),
+                    success: function (response, text, xhr) {
+                        if (response.success) {
+                            msg.removeClass("text-danger")
+                            msg.addClass("text-success")
+                        } else {
+                            msg.removeClass("text-success")
+                            msg.addClass("text-danger")
+                        }
+                        msg.html(response.message)
+                        btn.find('i').remove()
+                        btn.removeAttr("disabled")
+                        if (response.data && response.data.redirect_url) {
+                            window.location.href = response.data.redirect_url
+                        }
+                    },
+                    error: function (error) {
+                        {#console.log(error)#}
+                        btn.find('i').remove()
+                        btn.removeAttr("disabled")
+                        msg.removeClass("text-success")
+                        msg.addClass("text-danger")
+                        msg.html("Something went wrong!")
+                    }
+                })
+            }
+        })
+
+    </script>
+    <script>
+        var url = new URL(window.location.href);
+        var success = url.searchParams.get("success");
+        var message = url.searchParams.get("message");
+        var next = url.searchParams.get("next");
+        if (success === true || success === "true") {
+            _class = "text-success"
+            remove_class = "text-danger"
+        } else {
+            _class = "text-danger"
+            remove_class = "text-success"
+        }
+        if (next) {
+            var form = $(".account-form")
+            form.attr("action", form.attr("action") + "?next=" + next)
+        }
+        $(".msg").html(message).addClass(_class).removeClass(remove_class)
+    </script>
+{% endblock %}

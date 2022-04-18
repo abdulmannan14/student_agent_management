@@ -1,0 +1,14 @@
+{% load widget_tweaks %}
+<div class="row">
+    {% for field in form %}
+        <div class="{% if field.field.widget.attrs.col_cls %} {{ field.field.widget.attrs.col_cls }} {% else %} col-md-5 {% endif %} pr-1">
+            <div class="form-group">
+                <label>{{ field.label }} {% if field.field.required %}<span style="color: red">*</span>{% endif %}
+                </label>
+                {#                <input type="text" class="form-control" placeholder="City" value="Mike">#}
+                {% render_field field class="form-control" placeholder=field.label %}
+                <small style="color: red">{{ field.errors }}</small>
+            </div>
+        </div>
+    {% endfor %}
+</div>

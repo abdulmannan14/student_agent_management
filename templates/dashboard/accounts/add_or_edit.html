@@ -1,0 +1,642 @@
+{% extends 'dashboard/base.html' %}
+{#{% load django_tables2 %}#}
+{% load widget_tweaks %}
+{% block nav %}
+    {{ nav_bar }}
+{% endblock %}
+{% block main %}
+
+
+
+
+    <div class="main-content" id="panel">
+        <!-- Topnav -->
+        {% include 'dashboard/company/partials/top-nav.html' %}
+        <!-- Header -->
+        <!-- Header -->
+        {% include 'dashboard/company/partials/header.html' %}
+        <!-- Page content -->
+        <div class="container-fluid mt--6">
+            <!-- Table -->
+            <div class="row">
+                <div class="col ">
+                    <div class="card mb-4">
+                        <!-- Card header -->
+                        <div class="card-header">
+                            <h2 class="mb-0">{{ page_title }}</h2>
+                            <h4 class="mb-0">{{ subtitle }}</h4>
+                        </div>
+
+                        {#                    {% if client_form %}#}
+                        {#                        <ul class=""#}
+                        {#                            role="tablist">#}
+                        {#                            <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active" role="tab"#}
+                        {#                                tabindex="0" aria-controls="tabs-1" aria-labelledby="ui-id-1" aria-selected="true">#}
+                        {#                                <a href="#tabs-1" class="ui-tabs-anchor" role="presentation" tabindex="-1"#}
+                        {#                                   id="ui-id-1">Individual Contacts</a></li>#}
+                        {#                            <li class="ui-state-default ui-corner-top" role="tab" tabindex="-1"#}
+                        {#                                aria-controls="tabs-2" aria-labelledby="ui-id-2" aria-selected="false"><a#}
+                        {#                                    href="#tabs-2" class="ui-tabs-anchor" role="presentation" tabindex="-1"#}
+                        {#                                    id="ui-id-2">Corporate Contacts</a></li>#}
+                        {#                        </ul>#}
+                        {##}
+                        {#                    {% endif %}#}
+                        <!-- Card body -->
+                        <div class="card-body">
+                            {% if messages %}
+                                <ul class="messages">
+                                    {% for message in messages %}
+                                        <div class="alert-box">
+                                            <li class="{{ message.tags }}">
+                                                {{ message|safe }}
+                                                <a href="#" class="alert-cancel-btn">&times;</a>
+                                            </li>
+                                        </div>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            <!-- Form groups used in grid -->
+
+                            <form method="post" class="mannan_form" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                {% if total_amount %}
+                                    <div class="col-md-12 col-md-3">
+                                        <h2>${{ total_amount }}</h2>
+                                    </div>
+
+                                {% endif %}
+
+                                {% if form1 %}
+                                    <div class="row">
+                                        <div class="col-md-12 mt-3">
+                                            {% if form1_tag %}
+                                                <div class="col-md-12 col-md-3">
+                                                    <h2>{{ form1_tag }}</h2>
+                                                </div>
+                                            {% endif %}
+                                            <h2>{{ form1_name }}</h2>
+                                        </div>
+
+                                        {% for field in form1 %}
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    {#                                                    {% if field.label =='vehicle_type' %}#}
+                                                    {#                                                    <label class="form-control-label">{{ field.label }}</label>#}
+                                                    {#                                                    {% endif %}#}
+                                                    <label class="form-control-label">{{ field.label }}</label>
+                                                    {% render_field field class="form-control" placeholder=field.label %}
+                                                    <small style="color: red">
+                                                        {{ field.errors }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                {% if form2 %}
+
+                                    <div class="row border-top mt-3">
+                                        <div class="col-md-12 mt-3">
+                                            {% if form2_tag %}
+                                                <div class="col-md-12 mt-2 md-3 ml-2">
+                                                    <h2>{{ form2_tag }}</h2>
+                                                </div>
+                                            {% endif %}
+                                            <h1>{{ form2_name }}</h1>
+                                        </div>
+                                        {% for field in form2 %}
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">{{ field.label }}</label>
+                                                    {% render_field field class="form-control" placeholder=field.label %}
+                                                    <small style="color: red">
+                                                        {{ field.errors }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                {% if form3 %}
+                                    <div class="row border-top mt-3">
+                                        <div class="col-md-12 mt-3">
+                                            {% if form3_tag %}
+                                                <div class="col-md-12 mt-3 ml-2">
+                                                    <h2>{{ form3_tag }}</h2>
+                                                </div>
+                                            {% endif %}
+                                            <h1>{{ form3_name }}</h1>
+                                        </div>
+                                        {% for field in form3 %}
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">{{ field.label }}</label>
+                                                    {% render_field field class="form-control" placeholder=field.label %}
+                                                    <small style="color: red">
+                                                        {{ field.errors }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                {% if form4 %}
+                                    <div class="row border-top mt-3">
+
+                                        <div class="col-md-12 mt-3">
+                                            {% if form4_tag %}
+                                                <div class="col-md-12 mt-3 ml-2">
+                                                    <h2>{{ form4_tag }}</h2>
+                                                </div>
+                                            {% endif %}
+                                            <h1>{{ form4_name }}</h1>
+                                        </div>
+
+                                        {% for field in form4 %}
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">{{ field.label }}</label>
+                                                    {% render_field field class="form-control" placeholder=field.label %}
+                                                    <small style="color: red">
+                                                        {{ field.errors }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+
+                                {% if form5 %}
+                                    <div class="row border-top mt-3">
+                                        <div class="col-md-12 mt-3">
+                                            {% if form5_tag %}
+                                                <div class="col-md-12">
+                                                    <h2>{{ form5_tag }}</h2>
+                                                </div>
+                                            {% endif %}
+                                            <h1>{{ form5_name }}</h1>
+                                        </div>
+                                        {% for field in form5 %}
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">{{ field.label }}</label>
+                                                    {% render_field field class="form-control" placeholder=field.label %}
+                                                    <small style="color: red">
+                                                        {{ field.errors }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                {% if form6 %}
+                                    <div class="row border-top mt-3">
+                                        <div class="col-md-12 mt-3">
+                                            {% if form6_tag %}
+                                                <div class="col-md-12">
+                                                    <h2>{{ form6_tag }}</h2>
+                                                </div>
+                                            {% endif %}
+                                            <h1>{{ form6_name }}</h1>
+                                        </div>
+                                        {% for field in form6 %}
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">{{ field.label }}</label>
+                                                    {% render_field field class="form-control" placeholder=field.label %}
+                                                    <small style="color: red">
+                                                        {{ field.errors }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col col-lg-5" id="ajax_div_chargetype"></div>
+                                    <div class="col col-lg-6" id="hours_rows"></div>
+                                {% endif %}
+                                {% if form7 %}
+                                    <div class="row border-top mt-3">
+                                        <div class="col-md-12 mt-3">
+                                            {% if form7_tag %}
+                                                <div class="col-md-12">
+                                                    <h2>{{ form7_tag }}</h2>
+                                                </div>
+                                            {% endif %}
+                                            <h1>{{ form7_name }}</h1>
+                                        </div>
+                                        {% for field in form7 %}
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">{{ field.label }}</label>
+                                                    {% render_field field class="form-control" placeholder=field.label %}
+                                                    <small style="color: red">
+                                                        {{ field.errors }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                <div class="row">
+                                    <div class="col-md-3 ml-3">
+                                        {% if button_back %}
+                                            {% for btn in button_back %}
+                                                {#                                                <div class="col">#}
+                                                <a href="{{ btn.href }}"
+                                                   class="btn btn-primary{{ btn.color_class }}"><span>
+                                                    <i class="{{ btn.icon }}">    {{ btn.title }}</i></span></a>
+                                                {#                                                </div>#}
+                                            {% endfor %}
+                                        {% endif %}
+                                        <button type="submit" class="btn btn-primary"><span>{{ button }}</span></button>
+
+
+                                    </div>
+                                    {% if skip_btn %}
+                                        {% for btn in skip_btn %}
+                                            <div class="col-md-6">
+                                                <a href="{{ btn.href }}" class="btn btn-primary{{ btn.color_class }}"><span>
+                                                    {{ btn.title }}<i class="   {{ btn.icon }}"></i></span></a>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+
+
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const cancel_btn = document.querySelector('.alert-cancel-btn');
+        if (cancel_btn) {
+            cancel_btn.addEventListener("click", () => {
+                const alert = document.querySelector(".alert-box");
+                alert.style.display = "none"
+            })
+        }
+    </script>
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        $(document).ready(function () {
+            $('select').select2();
+            {#          $("select").on("click", function () {#}
+            {#$(".js-example-disabled").prop("disabled", true);#}
+            {#$(".js-example-disabled-multi").prop("disabled", true);#}
+
+
+        })
+        ;
+
+
+    </script>
+    <script>
+        $('#id_vehicle_type').on("change", function () {
+            let select = $(this)
+            let vehicletype = select.val()
+            name = select.find("option:selected").html()
+            let url = "{% url 'get-vehicle-type' %}?type=" + name
+            $.get(url, function (response, success) {
+                let html = response.data
+                vehicles = response.data
+                let options = "";
+                for (let vehicle of vehicles) {
+                    options += `<option value="${vehicle.id}">${vehicle.name}</option>`
+                }
+                $('#id_vehicle').html(options)
+            })
+        })
+    </script>
+    <script>
+        function myfunc(input) {
+            input = $(input)
+            let name = input.attr("name")
+            let distance_in_miles = $("#id_distance_in_miles")
+            let rate_per_mile = $("#id_rate_per_mile")
+            distance_in_miles = distance_in_miles.val()
+            rate_per_mile = rate_per_mile.val()
+            console.log(distance_in_miles)
+            console.log(rate_per_mile)
+            let total = distance_in_miles * rate_per_mile
+            $('#id_fare_amount').val(total)
+
+        }
+    </script>
+    <script>
+        function durfunc(input) {
+            {#input = $(input)#}
+            let duration = $('#id_duration')
+            duration = duration.val()
+            duration = duration.replace("hrs", " ");
+            duration = parseInt(duration)
+            console.log("this is the duration decided",duration)
+            let fields = "";
+            for (let i = 0; i < duration; i++) {
+                fields += `<p><input type="text" placeholder="$0.00" value= "${10}" name="${i}hr" style="margin-left: auto">${i} hr</input></p>`
+            }
+            {#console.log(fields)#}
+            $('#hours_rows').html(fields)
+        }
+    </script>
+    <script>
+        function datefunc(input) {
+            let from_date = $('#id_from_date')
+            from_date = from_date.val()
+            let to_date = $('#id_to_date')
+            to_date = to_date.val()
+            from_date = Date.parse(from_date)
+            to_date = Date.parse(to_date)
+            let no_of_day = to_date - from_date
+            no_of_day = no_of_day / 86400000
+            $('#id_no_of_days').val(no_of_day)
+            let rate_per_day = $('#id_rate_per_day')
+            rate_per_day = rate_per_day.val()
+            let fare_of_total_days = rate_per_day * no_of_day
+            $('#id_base_fare').val(fare_of_total_days)
+        }
+    </script>
+    {#    <script>#}
+    {#        $('#id_charge_by').on('change', function () {#}
+    {#            let select = $(this)#}
+    {#            let chargetype = select.val()#}
+    {#            let url = "{% url 'get-charge-by-type' %}?type=" + chargetype#}
+    {#            $.get(url, function (response, success) {#}
+    {#                let html = response.data#}
+    {#                $("#ajax_div_chargetype").html(html)#}
+    {#            })#}
+    {#        })#}
+    {##}
+    {##}
+    {#    </script>#}
+    <script>
+        $('#id_charge_by').on('change', function () {
+            let form = $('.mannan_form')
+            let get_name = form.serializeArray()
+            dataobj = {}
+            $(get_name).each(function (i, field) {
+                dataobj[field.name] = field.value
+            })
+            let vehicle_type = dataobj.vehicle_type
+            let service_type = dataobj.service_type
+            let charge_by_type = dataobj.charge_by
+            if (vehicle_type && service_type && charge_by_type) {
+                console.log("hello i am in if")
+                let url = "{% url 'get-charge-by-type' %}?vehicle_type=" + vehicle_type + '&service_type=' + service_type + '&charge_by=' + charge_by_type
+                console.log("ok", vehicle_type, service_type, charge_by_type, url)
+                $.get(url, function (response, success) {
+                    let html = response.data
+                    $("#ajax_div_chargetype").html(html)
+                })
+            } else {
+                console.log("i am in else")
+                let select = $(this)
+                let chargetype = select.val()
+                {#console.log("this is charge by value", chargetype)#}
+                let url = "{% url 'get-charge-by-type' %}?charge_by=" + chargetype
+                console.log("this is url", url)
+                $.get(url, function (response, success) {
+                    let html = response.data
+                    $("#hours_rows").html(' ')
+                    $("#ajax_div_chargetype").html(html)
+                })
+            }
+
+
+        })
+    </script>
+    <script>
+        function get_places(input) {
+            let sample = {
+                "candidates":
+                    [
+                        {
+                            "formatted_address": "faisal town",
+                            "geometry":
+                                {
+                                    "location": {"lat": 313.8599358, "lng": 321.2090295},
+                                    "viewport":
+                                        {
+                                            "northeast":
+                                                {"lat": -33.85824377010728, "lng": 151.2104386798927},
+                                            "southwest":
+                                                {"lat": -33.86094342989272, "lng": 151.2077390201073},
+                                        },
+                                },
+                            "name": "Museum of Contemporary Art Australia",
+                            "rating": 4.4,
+                        },
+                        {
+                            "formatted_address": "mall road lahore",
+                            "geometry":
+                                {
+                                    "location": {"lat": 133.8599358, "lng": 351.2090295},
+                                    "viewport":
+                                        {
+                                            "northeast":
+                                                {"lat": 133.85824377010728, "lng": 351.2104386798927},
+                                            "southwest":
+                                                {"lat": -33.86094342989272, "lng": 151.2077390201073},
+                                        },
+                                },
+                            "name": "Museum of Contemporary Art Australia",
+                            "rating": 4.4,
+                        },
+                        {
+                            "formatted_address": "chungi amar sadhu",
+                            "geometry":
+                                {
+                                    "location": {"lat": 136.8599358, "lng": 231.2090295},
+                                    "viewport":
+                                        {
+                                            "northeast":
+                                                {"lat": -33.85824377010728, "lng": 151.2104386798927},
+                                            "southwest":
+                                                {"lat": -33.86094342989272, "lng": 151.2077390201073},
+                                        },
+                                },
+                            "name": "Museum of Contemporary Art Australia",
+                            "rating": 4.4,
+                        },
+                    ],
+                "status": "OK",
+            }
+            return sample
+        }
+
+        function autocomplete(inp) {
+            /*the autocomplete function takes two arguments,
+            the text field element and an array of possible autocompleted values:*/
+            var currentFocus;
+            /*execute a function when someone writes in the text field:*/
+            inp.addEventListener("input", function (e) {
+                var a, b, i, val = this.value;
+                console.log(val)
+                let arra = get_places(val)
+                console.log("thisi is array", arra)
+                console.log('type of array is', typeof arra)
+                let address = arra.candidates;
+                console.log("these are formatted address", address);
+                console.log("these are formatted address", address.length);
+                /*close any already open lists of autocompleted values*/
+                closeAllLists();
+                if (!val) {
+                    return false;
+                }
+                currentFocus = -1;
+                console.log("this is this", this)
+                /*create a DIV element that will contain the items (values):*/
+
+                a = document.createElement("DIV");
+                a.setAttribute("id", this.id + "autocomplete-list");
+                a.setAttribute("class", "autocomplete-items");
+
+                /*append the DIV element as a child of the autocomplete container:*/
+                console.log("appending", address.length)
+                this.parentNode.appendChild(a);
+                /*for each item in the array...*/
+                var arr = address
+                for (i = 0; i < arr.length; i++) {
+                    lat = arr[i].geometry.location.lat
+                    long = arr[i].geometry.location.lng
+                    console.log("these are the lat and longs", lat, long)
+                    console.log("hello arr.length", arr[i].formatted_address)
+                    /*check if the item starts with the same letters as the text field value:*/
+                    {#if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {#}
+                    /*create a DIV element for each matching element:*/
+                    b = document.createElement("DIV");
+                    /*make the matching letters bold:*/
+                    {#b.innerHTML = "<strong>" +i+ "</strong>";#}
+                    b.innerHTML += arr[i].formatted_address;
+                    /*insert a input field that will hold the current array item's value:*/
+                    b.innerHTML += `<input lat='${lat}' long='${long}' type='hidden' value='` + arr[i].formatted_address + "'>";
+                    b.setAttribute('lat', lat)
+                    b.setAttribute('long', long)
+                    console.log("now this is the B", b)
+                    /*execute a function when someone clicks on the item value (DIV element):*/
+                    b.addEventListener("click", function (e) {
+                        /*insert the value for the autocomplete text field:*/
+                        {#inp.value = this.getElementsByTagName("input")[0].value;#}
+                        let location_input = $(this.getElementsByTagName("input")[0])
+                        inp.value = location_input.val()
+                        let input = $(inp)
+                        console.log(location_input)
+                        lat = location_input.attr("lat")
+                        long = location_input.attr("long")
+                        let input_name = input.attr("name")
+                        let location_div = get_or_create_div(`${input_name}_location`)
+                        location_div.html(`<input hidden value="${lat}" name="${input_name}_lat" /><input hidden value="${long}" name="${input_name}_long" />`)
+                        console.log(location_div)
+                        input.parent("div").append(location_div)
+                        {#input.parent("div").append(`<input value="${lat}" name="${input_name}_lat" />`)#}
+                        {#input.parent("div").append(`<input value="${long}" name="${input_name}_long" />`)#}
+                        /*close the list of autocompleted values,
+                        (or any other open lists of autocompleted values:*/
+                        closeAllLists();
+                    });
+                    a.appendChild(b);
+
+
+                }
+            });
+
+            function get_or_create_div(id = "") {
+                let div = $(`#${id}`)
+                console.log(div.length)
+                if (div.length > 0) {
+                    return div
+                } else {
+                    return $(`<div id="${id}"></div>`)
+                }
+            }
+
+            /*execute a function presses a key on the keyboard:*/
+            inp.addEventListener("keydown", function (e) {
+                var x = document.getElementById(this.id + "autocomplete-list");
+                if (x) x = x.getElementsByTagName("div");
+                if (e.keyCode == 40) {
+                    /*If the arrow DOWN key is pressed,
+                    increase the currentFocus variable:*/
+                    currentFocus++;
+                    /*and and make the current item more visible:*/
+                    addActive(x);
+                } else if (e.keyCode == 38) { //up
+                    /*If the arrow UP key is pressed,
+                    decrease the currentFocus variable:*/
+                    currentFocus--;
+                    /*and and make the current item more visible:*/
+                    addActive(x);
+                } else if (e.keyCode == 13) {
+                    /*If the ENTER key is pressed, prevent the form from being submitted,*/
+                    e.preventDefault();
+                    if (currentFocus > -1) {
+                        /*and simulate a click on the "active" item:*/
+                        if (x) x[currentFocus].click();
+                    }
+                }
+            });
+
+            function addActive(x) {
+                /*a function to classify an item as "active":*/
+                if (!x) return false;
+                /*start by removing the "active" class on all items:*/
+                removeActive(x);
+                if (currentFocus >= x.length) currentFocus = 0;
+                if (currentFocus < 0) currentFocus = (x.length - 1);
+                /*add class "autocomplete-active":*/
+                x[currentFocus].classList.add("autocomplete-active");
+            }
+
+            function removeActive(x) {
+                /*a function to remove the "active" class from all autocomplete items:*/
+                for (var i = 0; i < x.length; i++) {
+                    x[i].classList.remove("autocomplete-active");
+                }
+            }
+
+            function closeAllLists(elmnt) {
+                /*close all autocomplete lists in the document,
+                except the one passed as an argument:*/
+                var x = document.getElementsByClassName("autocomplete-items");
+                for (var i = 0; i < x.length; i++) {
+                    if (elmnt != x[i] && elmnt != inp) {
+                        x[i].parentNode.removeChild(x[i]);
+                    }
+                }
+            }
+
+            /*execute a function when someone clicks in the document:*/
+            document.addEventListener("click", function (e) {
+                closeAllLists(e.target);
+            });
+        }
+
+        autocomplete(document.getElementById("id_pickup_address"));
+        autocomplete(document.getElementById("id_destination_address"));
+
+
+    </script>
+{% endblock %}

@@ -1,0 +1,404 @@
+{% extends "dashboard/accounts/base.html" %}
+{% load static %}
+{% block nav %}
+    {% include 'dashboard/accounts/partials/nav.html' %}
+{% endblock %}
+{% block main %}
+    <div class="main-content" id="panel">
+    {% if messages %}
+        <ul class="messages" style="display: flex;justify-content: center;align-content: center">
+            {% for message in messages %}
+                <div class="alert-box">
+                    <li class="{{ message.tags }}">
+                        {{ message|safe }}
+                        <a href="" class="alert-cancel-btn">&times;</a>
+                    </li>
+                </div>
+            {% endfor %}
+
+
+        </ul>
+    {% endif %}
+    <!-- Topnav -->
+    {% include 'dashboard/accounts/partials/top-nav.html' %}
+    <!-- Header -->
+    <!-- Header -->
+    {% include 'dashboard/accounts/partials/header.html' %}
+    <!-- Page content -->
+    <div class="container-fluid mt--6">
+        <div class="row">
+            <div class="col-xl-4">
+                <!-- 4 col for leftexpense breakdown graph-->
+                <div class="card" style="background-color: rgba(27, 25, 25, 0.904); ">
+                    <div class="card-header bg-transparent">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <!-- col for heading expense breakdown -->
+                                <!-- <h6 class="text-uppercase text-muted ls-1 mb-1">Performance</h6> -->
+                                <h5 class="text-uppercase h3 mb-0" style="color: white">Expense Breakdown</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Chart -->
+                        <!-- <div class="chart"> -->
+                        <!-- <canvas id="chart-bars" class="chart-canvas"></canvas> -->
+                        <!-- pi chart start here -->
+                        <!-- <div id="chartContainer" style="height: 370px; width: 100%;"></div> -->
+                        <!-- pi chart from chartjs start here -->
+                        <!-- <div style="width: 361px; height:361px"> -->
+                        <!-- <canvas id="chartjs_chart" width="400" height="400"></canvas> -->
+                        <canvas id="chartjs_chart" class="chart-canvas" aria-label="chart" role="img" width="600"
+                                height="200"></canvas>
+
+                        <!-- </div> -->
+                        <!-- </div> -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-8">
+                <!-- 8 col for right cash flow graph-->
+                <div class="card bg-default">
+                    <div class="card-header bg-transparent">
+                        <div class="row align-items-center">
+                            <!-- row just for cash flow col and year month week col -->
+                            <div class="col">
+                                <!-- column just for cash flow col mean auto adjust -->
+                                <!-- <h6 class="text-light text-uppercase ls-1 mb-1">Overview</h6> -->
+                                <h5 class="text-uppercase h3 text-white mb-0">Cash Flow</h5>
+                            </div>
+                            <div class="col">
+                                <!-- column just for year month week, col mean auto adjust -->
+                                <ul class="nav nav-pills justify-content-end">
+                                    <li class="nav-item mr-2 mr-md-0" data-toggle="chart"
+                                        data-target="#chart-sales-dark"
+                                        data-update='{"data":{"datasets":[{"data":[0, 30, 10, 40, 15, 60, 20, 60, 60]}]}}'
+                                        data-prefix="$"
+                                        data-suffix="k">
+                                        <a href="#" class="nav-link py-2 px-3 active" data-toggle="tab">
+                                            <span class="d-none d-md-block">Year</span>
+                                            <span class="d-md-none">Y</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item mr-2 mr-md-0" data-toggle="chart"
+                                        data-target="#chart-sales-dark"
+                                        data-update='{"data":{"datasets":[{"data":[0, 20, 10, 30, 15, 40, 20, 60, 60]}]}}'
+                                        data-prefix="$"
+                                        data-suffix="k">
+                                        <a href="#" class="nav-link py-2 px-3" data-toggle="tab">
+                                            <span class="d-none d-md-block">Month</span>
+                                            <span class="d-md-none">M</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item" data-toggle="chart" data-target="#chart-sales-dark"
+                                        data-update='{"data":{"datasets":[{"data":[0, 20, 5, 25, 10, 30, 15, 40, 40]}]}}'
+                                        data-prefix="$"
+                                        data-suffix="k">
+                                        <a href="#" class="nav-link py-2 px-3" data-toggle="tab">
+                                            <span class="d-none d-md-block">Week</span>
+                                            <span class="d-md-none">W</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Chart -->
+                        <!-- <div class="chart"> -->
+                        <!-- Chart wrapper -->
+                        <!-- <canvas id="chart-sales-dark" class="chart-canvas"></canvas> -->
+
+                        <canvas id="CashFlowChart" class="chart-canvas" aria-label="chart" role="img" width="800"
+                                height="350"></canvas>
+
+                        <!-- </div> -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-xl-4">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <!--COL for ACCOUNTS PAYABLE OVERVIEW-->
+                                <h3 class="mb-0">ACCOUNTS PAYABLE OVERVIEW</h3>
+                            </div>
+                            <!--COL for see all button-->
+                            <!-- <div class="col text-right">
+                              <a href="#!" class="btn btn-sm btn-primary">See all</a>
+                            </div> -->
+                        </div>
+                    </div>
+
+                    <div class="table-responsive" style="overflow-x: hidden">
+                        <!-- Projects table -->
+                        <table class="table align-items-center table-flush"><!-- Account paybale table -->
+
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col" style="color:white">Accounts Payable (By You)</th>
+                                <th scope="col"></th>
+                                <th scope="col" style="color:white">Accounts Recievable</th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th scope="row" style="color:red">
+                                    Coming
+                                </th>
+                                <td>
+                                    $0.00
+                                </td>
+                                <th style="color:red">
+                                    Coming
+                                </th>
+                                <td>
+                                    <!-- <i class="fas fa-arrow-up text-success mr-3"></i> -->$250.00
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    1-30 days overdue
+                                </th>
+                                <td>
+                                    $0.00
+                                </td>
+                                <th>
+                                    1-30 days overdue
+                                </th>
+                                <td>
+                                    <!-- <i class="fas fa-arrow-down text-warning mr-3"></i> -->$500.00
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    31-60 days overdue
+                                </th>
+                                <td>
+                                    $0.00
+                                </td>
+                                <th>
+                                    31-60 days overdue
+                                </th>
+                                <td>
+                                    <!-- <i class="fas fa-arrow-down text-warning mr-3"></i> -->$0.00
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    61-90 days overdue
+                                </th>
+                                <td>
+                                    $0.00
+                                </td>
+                                <th>
+                                    61-90 days overdue
+                                </th>
+                                <td>
+                                    <!-- <i class="fas fa-arrow-up text-success mr-3"></i> --> $0.00
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    90+ days overdue
+                                </th>
+                                <td>
+                                    $0.00
+                                </td>
+                                <th>
+                                    90+ days overdue
+                                </th>
+                                <td>
+                                    <!-- <i class="fas fa-arrow-up text-success mr-3"></i> --> $0.00
+                                </td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                        <!-- Net Income paybale table start here-->
+                        <table class="table align-items-center table-flush">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col" style="color:white">NET INCOME OVERVIEW</th>
+                                <!-- <th scope="col"></th> -->
+                                <th scope="col" style="color:white"></th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th scope="row" style="color:black">
+                                    Fiscal Year
+                                </th>
+                                <!-- <th style="color:black">
+
+                                </th> -->
+                                <th style="color:black">
+                                    2020
+                                </th>
+                                <th style="color:black">
+                                    <!-- <i class="fas fa-arrow-up text-success mr-3"></i> -->2021
+                                </th>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    Income
+                                </th>
+                                <td>
+                                    $3,239.78
+                                </td>
+                                <td>
+                                    <!-- <i class="fas fa-arrow-down text-warning mr-3"></i> -->$3,146.23
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    Expens
+                                </th>
+                                <td>
+                                    $3,362.68
+                                </td>
+                                <td>
+                                    <!-- <i class="fas fa-arrow-down text-warning mr-3"></i> -->$1,596.10
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    Net Income
+                                </th>
+                                <td>
+                                    -$122.90
+                                </td>
+                                <td>
+                                    <!-- <i class="fas fa-arrow-up text-success mr-3"></i> --> $1,550.13
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Second Profit and Loss chart start -->
+            <div class="col-xl-8">
+                <div class="card bg-default">
+                    <div class="card-header bg-transparent">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <!-- <h6 class="text-light text-uppercase ls-1 mb-1">Overview</h6> -->
+                                <h5 class="text-uppercase h3 text-white mb-0">Profit & Loss</h5>
+                            </div>
+                            <div class="col">
+                                <ul class="nav nav-pills justify-content-end">
+                                    <li class="nav-item mr-2 mr-md-0" data-toggle="chart"
+                                        data-target="#chart-sales-dark"
+                                        data-update='{"data":{"datasets":[{"data":[0, 30, 10, 40, 15, 60, 20, 60, 60]}]}}'
+                                        data-prefix="$"
+                                        data-suffix="k">
+                                        <a href="#" class="nav-link py-2 px-3 active" data-toggle="tab">
+                                            <span class="d-none d-md-block">Year</span>
+                                            <span class="d-md-none">Y</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item mr-2 mr-md-0" data-toggle="chart"
+                                        data-target="#chart-sales-dark"
+                                        data-update='{"data":{"datasets":[{"data":[0, 20, 10, 30, 15, 40, 20, 60, 60]}]}}'
+                                        data-prefix="$"
+                                        data-suffix="k">
+                                        <a href="#" class="nav-link py-2 px-3" data-toggle="tab">
+                                            <span class="d-none d-md-block">Month</span>
+                                            <span class="d-md-none">M</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item" data-toggle="chart" data-target="#chart-sales-dark"
+                                        data-update='{"data":{"datasets":[{"data":[0, 20, 5, 25, 10, 30, 15, 40, 40]}]}}'
+                                        data-prefix="$"
+                                        data-suffix="k">
+                                        <a href="#" class="nav-link py-2 px-3" data-toggle="tab">
+                                            <span class="d-none d-md-block">Week</span>
+                                            <span class="d-md-none">W</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Chart -->
+                        <!-- <div class="chart"> -->
+                        <!-- Chart wrapper -->
+                        <!-- <canvas id="chart-sales-dark" class="chart-canvas"></canvas> -->
+
+                        <canvas id="CashFlowChart2" class="chart-canvas" aria-label="chart" role="img" width="800"
+                                height="350"></canvas>
+
+                        <!-- </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Footer -->
+        <footer class="footer pt-0 col-12 bg-primary">
+            <div class="row align-items-center justify-content-lg-between">
+                <div class="col-lg-6">
+                    <div class="copyright text-center  text-lg-center  text-muted text-white">
+                        &copy; 2021 <a href="https://www.limou_cloud.com" class="font-weight-bold ml-1"
+                                       target="_blank">Limou Cloud</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 ">
+                    <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                        <li class="nav-item ">
+                            <a href="https://www.Limou_cloud.com" class="nav-link " id="uniqueid"
+                               target="_blank">Limou
+                                Cloud</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://www.Limou_cloud.com/presentation" class="nav-link"
+                               target="_blank">About
+                                Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="http://blog.Limou_cloud.com" class="nav-link"
+                               target="_blank">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://www.Limou_cloud.com/license" class="nav-link"
+                               target="_blank">License</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+
+
+
+
+
+    <link rel="stylesheet" href={% static 'dashboard/assets/css/messages.css' %}>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"
+            integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q=="
+            crossOrigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{% static 'dashboard/assets/js/components/charts/chart.js' %}"></script>
+    <script src="{% static 'dashboard/assets/js/components/charts/piChartChartJs.js' %}"></script>
+
+    <script>
+        const cancel_btn = document.querySelector(".alert-cancel-btn");
+        if (cancel_btn) {
+            cancel_btn.addEventListener("click", () => {
+                const alert = document.querySelector('.alert-box');
+                alert.style.display = "none"
+            })
+        }
+    </script>
+{% endblock %}
+

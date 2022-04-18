@@ -1,0 +1,147 @@
+{% extends 'accounting/base.html' %}
+
+{% block content %}
+
+    <div class="page-content">
+        <div class="page-title">
+            <div class="row justify-content-between align-items-center">
+                <div
+                        class="col-xl-4 col-lg-4 col-md-4 d-flex align-items-center justify-content-between justify-content-md-start mb-3 mb-md-0">
+                    <div class="d-inline-block">
+                        <h5 class="h4 d-inline-block font-weight-400 mb-0 "> Trial Balance
+                        </h5>
+                    </div>
+                </div>
+                <div
+                        class="col-xl-8 col-lg-8 col-md-8 d-flex align-items-center justify-content-between justify-content-md-end">
+                    <div class="row d-flex justify-content-end">
+                        <div class="col-auto">
+                            <form method="GET" action=""
+                                  accept-charset="UTF-8" id="report_trial_balance">
+                                <div class="all-select-box">
+                                    <div class="btn-box">
+                                        <label for="start_date" class="text-type">Start Date</label>
+                                        <input class="month-btn form-control" name="start_date" type="date"
+                                               value="{{ start_date }}" id="start_date">
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="all-select-box">
+                                <div class="btn-box">
+                                    <label for="end_date" class="text-type">End Date</label>
+                                    <input class="month-btn form-control" name="end_date" type="date" value="{{ end_date }}"
+                                           id="end_date">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-auto my-auto">
+                            <a href="#" class="apply-btn"
+                               onclick="document.getElementById('report_trial_balance').submit(); return false;"
+                               data-toggle="tooltip" data-original-title="apply">
+                                <span class="btn-inner--icon"><i class="fas fa-search"></i></span>
+                            </a>
+                            <a href="{% url 'trial-balance' %}" class="reset-btn" data-toggle="tooltip"
+                               data-original-title="Reset">
+                                <span class="btn-inner--icon"><i class="fas fa-trash-restore-alt"></i></span>
+                            </a>
+                            <a href="#" class="action-btn" onclick="saveAsPDF()" data-toggle="tooltip"
+                               data-original-title="Download">
+                                <span class="btn-inner--icon"><i class="fas fa-download"></i></span>
+                            </a>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div id="printableArea">
+            <div class="row mt-4">
+                <div class="col">
+                    <input type="hidden" value="Trial Balance Report of 2022-03-01 to 2022-03-31" id="filename">
+                    <div class="card p-4 mb-4">
+                        <h5 class="report-text gray-text mb-0">Report :</h5>
+                        <h5 class="report-text mb-0">Trial Balance Summary</h5>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card p-4 mb-4">
+                        <h5 class="report-text gray-text mb-0">Duration :</h5>
+                        <h5 class="report-text mb-0">{{ start_date }} - {{ end_date }}</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-12 mb-4">
+                    <table class="table table-flush">
+                        <thead>
+                        <tr>
+                            <th> Account Name</th>
+                            <th> Debit Total</th>
+                            <th> Credit Total</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for t_account in trial_accounts %}
+                            <tr>
+
+                                <td>{{ t_account.account }}</td>
+                                <td>
+                                    ${{ t_account.debit }}
+                                </td>
+                                <td>
+                                    ${{ t_account.credit }}
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                        <tfooter>
+                            <td class="text-dark">Total</td>
+                            <td class="text-dark">${{ debit_sum }}</td>
+                            <td class="text-dark">${{ credit_sum }}</td>
+                        </tfooter>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="commonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div>
+                    <h4 class="h4 font-weight-400 float-left modal-title" id="exampleModalLabel"></h4>
+                    <a href="#" class="more-text widget-text float-right close-icon" data-dismiss="modal"
+                       aria-label="Close">Close</a>
+                </div>
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        var filename = $('#filename').val();
+
+        function saveAsPDF() {
+            var element = document.getElementById('printableArea');
+            var opt = {
+                margin: 0.3,
+                filename: filename,
+                image: {type: 'jpeg', quality: 1},
+                html2canvas: {scale: 4, dpi: 72, letterRendering: true},
+                jsPDF: {unit: 'in', format: 'A2'}
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+    </script>
+
+{% endblock %}

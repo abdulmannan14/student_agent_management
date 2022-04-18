@@ -1,0 +1,220 @@
+{% extends 'dashboard/base.html' %}
+{#{% load django_tables2 %}#}
+{% load widget_tweaks %}
+{% block nav %}
+    {{ nav_bar }}
+{% endblock %}
+{% block main %}
+
+
+
+
+    <div class="main-content" id="panel">
+        <!-- Topnav -->
+        {% include 'dashboard/company/partials/top-nav.html' %}
+        <!-- Header -->
+        <!-- Header -->
+        {% include 'dashboard/company/partials/header.html' %}
+        <!-- Page content -->
+        <div class="container-fluid mt--6">
+            <!-- Table -->
+            <div class="card ">
+                <div class="card-body">
+                    <div class="col-lg-12 col-5 text-right" style="margin-bottom: 25px">
+                        {% for link in button_links %}
+                            {% if link.log == "log" %}
+                                <a {{ link.attrs }}
+                                        class="btn btn-sm text-white close_account {{ link.color_class }}"><span><i
+                                        class="{{ link.icon }}"></i> {{ link.title }}</span></a>
+                            {% endif %}
+                            {% if  not link.log == "log" and link.log == "log2" %}
+                                <a {{ link.attrs }} class="btn btn-sm text-white reservation_btn {{ link.color_class }}"
+                                ><span><i class="{{ link.icon }}"></i> {{ link.title }}</span></a>
+                            {% endif %}
+                            {% if  not link.log == "log" and not link.log == "log2" %}
+                                <a {{ link.attrs }} href="{{ link.href }}"
+                                                    class="btn btn-sm {{ link.color_class }}"><span><i
+                                        class="{{ link.icon }}"></i> {{ link.title }}</span></a>
+
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="row">
+                        {% for client in clients_list %}
+                            <div class="col-6">
+                                <a href="{% url 'client-overview' client.id %}">
+                                    <div class="card" style="box-shadow: 1px 3px 4px 0px #151616;">
+                                        <!-- Card header -->
+                                        <!-- Card body -->
+                                        <div class="card-body" style="margin-top: -17px;height: 175px;">
+                                            <div class="row">
+                                                <div class="col-10">
+                                                    <h2 class="mb-0">{{ client.userprofile.user.get_full_name }}</h2>
+                                                </div>
+
+                                            </div>
+                                            <div style="margin-top: 10px;margin-bottom: -22px; white-space: nowrap; width:450px; overflow:hidden; text-overflow:ellipsis">
+                                                Address:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ client.userprofile.address }} </div>
+                                            <br>
+                                            <div style="margin-bottom: -22px;">
+                                                Mobile: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ client.primary_phone }}       </div>
+                                            <br>
+                                            {% if client.is_corporate_client == True %}
+                                                <div class="row">
+                                                    <div class="col-8"> Account Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Corporate
+                                                        Client
+                                                    </div>
+                                                    {% if client.is_client_active == True %}
+                                                        <div class="col-4"> LC Account: Active</div>
+                                                    {% else %}
+                                                        <div class="col-4"> LC Account: Inactive</div>
+                                                    {% endif %}
+                                                </div>
+
+                                            {% else %}
+                                                <div class="row">
+
+                                                    <div class="col-8"> Account Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        Individual Client
+                                                    </div>
+                                                    {% if client.is_client_active == True %}
+                                                        <div class="col-4"> LC Account: Active</div>
+                                                    {% else %}
+                                                        <div class="col-4"> LC Account: Inactive</div>
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <a href="javascript:;" type="button" class="btn btn-danger confirm">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block extra_js %}
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                showNotification("", "{{message}}", "{{ message.tags }}", "fa fa-check")
+            </script>
+        {% endfor %}
+    {% endif %}
+
+    {% include 'dashboard/partials/datatables-scripts.html' %}
+    <script>
+        $(document).ready(function () {
+            $('#exampleModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) // Button that triggered the modal
+
+                var name = button.data('name') // Extract info from data-* attributes
+
+                var url = button.attr('href') // Extract info from data-* attributes
+
+                var modal = $(this)
+                modal.find('.modal-title').html('Delete <strong>' + name + '</strong> ?')
+                modal.find('.modal-body')
+                    .html(`<p>Make sure before you delete. This action will delete every data related to <code>${name}</code></p>`)
+                modal.find('a.confirm').attr('href', url)
+            })
+            $('#detailModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) // Button that triggered the modal
+                var name = button.data('name') // Extract info from data-* attributes
+                var url = button.data('url') // Extract info from data-* attributes
+                var modal = $(this)
+                modal.find('.modal-body')
+                    .html("<i class='fa fa-sync fa-spin'></i>")
+                modal.find('.modal-title').html('<strong>' + name + '</strong>')
+                $.get(url, function (response, success) {
+                    modal.find('.modal-body').html(response)
+                })
+
+            })
+
+        })
+
+    </script>
+    <script>
+        const cancel_btn = document.querySelector('.alert-cancel-btn');
+        if (cancel_btn) {
+            cancel_btn.addEventListener("click", () => {
+                const alert = document.querySelector(".alert-box");
+                alert.style.display = "none"
+            })
+        }
+    </script>
+    <script>
+        window.toggleFields = function toggleFields() {
+            $('#fields').toggle();
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            $(".close_account").on("click", function (e) {
+
+                swal({
+                    showConfirmButton: false,
+                    showCancelButton: true,
+                    cancelButtonColor: 'Crimson',
+                    html: `
+      <div class="" style="height: 24px;">
+      <p> Please select the type of Client</p>
+        <a class="btn btn-primary"  href="{% url 'company-add-client' 1%}"><span>Corporate Client</span></a>
+        <a class="btn btn-primary" href="{% url 'company-add-client' 2%}"><span>Individual Client</span>   </a>
+      </div>`
+
+                });
+            });
+        });
+
+    </script>
+
+
+    <script>
+        $(".dispatch_dropdown_class").on('change', function () {
+            let select = $(this)
+            name = select.find("option:selected").html()
+            data_url = select.attr('data-url')
+            data_url = data_url + '?name=' + name
+            console.log("this is the url", data_url)
+            $.get(data_url, function (response, success) {
+            })
+        })
+
+    </script>
+
+{% endblock %}
+{#data_url + "?name=" + name + '&reservation_id=' + reservation_id#}
+
+
+{#<div class="col-2 form-inline">#}
+{##}
+{#    <a href="{% url 'company-delete-client' client.id %}"#}
+{#       class="fa fa-times " data-toggle="modal" data-target="#exampleModal"#}
+{#       data-name="{{ client }}"></a>#}
+{#</div>#}

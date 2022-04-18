@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static %}
+{% block main %}
+    <!-- Contact section -->
+    <section id="contact">
+        <div class="container">
+            <div class="row section-title justify-content-center">
+                <h2 class="section-title-heading">get in touch</h2>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-md-8">
+                    <div class="contact-form">
+                        <form method="post" class="js-form clear-form" action="{% url 'create-comment' %}">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col">
+                                    <input required name="name" type="text" id="comment_name" class="form-control"
+                                           placeholder="Enter your name">
+
+                                </div>
+                                <div class="col">
+                                    <input required name="email" type="email" id="comment_email" class="form-control"
+                                           placeholder="Enter your email address">
+
+                                </div>
+                            </div>
+                            <div class="form-group mt-4">
+                                <textarea required name="comment" class="form-control" id="comment_text" rows="10"
+                                          placeholder="Enter your message"></textarea>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <button id="comment_btn" class="btn btn-contact mt-4">Send
+
+                                    </button>
+                                </div>
+                                <div class="col-md-8">
+                                    <small id="msg"></small>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="address">
+                        <h3>Contact</h3>
+                    </div>
+                    <div class="contact-details">
+                        <ul class="fa-ul">
+                            <li><span class="fa-li"><i class="fas fa-mobile-alt"></i></span>+1 914 426 4063</li>
+                            <li><span class="fa-li"><i class="fas fa-map-marker-alt"></i></span>75 Cooley St. Ste. 7
+                                Pleasantville, NY
+                            </li>
+                            <li><span class="fa-li"><i class="fas fa-paper-plane"></i></span>admin@limoucloud.com</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {#    <script>#}
+    {#        let contact_url = "{% url 'create-comment' %}"#}
+    {##}
+    {#    </script>#}
+    {#    <script src="{% static "assets/js/contact.js" %}"></script>#}
+{% endblock %}
+{% block extra_scripts %}
+
+{% endblock %}

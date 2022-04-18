@@ -1,0 +1,109 @@
+{% extends 'accounting/base.html' %}
+{% load django_tables2 %}
+{% block content %}
+
+    <div class="page-content">
+        <div class="page-title">
+            <div class="row justify-content-between align-items-center">
+                <div
+                        class="col-xl-4 col-lg-4 col-md-4 d-flex align-items-center justify-content-between justify-content-md-start mb-3 mb-md-0">
+                    <div class="d-inline-block">
+                        <h5 class="h4 d-inline-block font-weight-400 mb-0 "> Manage Journal Entry
+                        </h5>
+                    </div>
+                </div>
+                <div
+                        class="col-xl-8 col-lg-8 col-md-8 d-flex align-items-center justify-content-between justify-content-md-end">
+                    <div class="all-button-box row d-flex justify-content-end">
+                        <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
+                            <a href="{% url 'journal-entry-add' %}" data-title="Create New Journal"
+                               class="btn btn-xs btn-white btn-icon-only width-auto">
+                                <i class="fas fa-plus"></i> Create
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body py-0">
+                        <div class="table-responsive">
+                            {% render_table table %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </div>
+    </div>
+
+    <div class="modal fade" id="commonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div>
+                    <h4 class="h4 font-weight-400 float-left modal-title" id="exampleModalLabel"></h4>
+                    <a href="#" class="more-text widget-text float-right close-icon" data-dismiss="modal"
+                       aria-label="Close">Close</a>
+                </div>
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        var dataTabelLang = {
+            paginate: {previous: "Previous", next: "Next"},
+            lengthMenu: "Show _MENU_ entries",
+            zeroRecords: "No data available in table",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoEmpty: " ",
+            search: "Search:"
+        }
+    </script>
+
+    <script>
+        var date_picker_locale = {
+            format: 'YYYY-MM-DD',
+            daysOfWeek: [
+                "Sun",
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thu",
+                "Fri",
+                "Sat"
+            ],
+            monthNames: [
+                "January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+                "July",
+                "August",
+                "September",
+                "October",
+                "November",
+                "December"
+            ],
+        };
+        var calender_header = {
+            today: "today",
+            month: 'month',
+            week: 'week',
+            day: 'day',
+            list: 'list'
+        };
+    </script>
+
+
+{% endblock %}

@@ -1,0 +1,416 @@
+{% load static %}
+<nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light bg-white" id="sidenav-main">
+    <div class="scrollbar-inner">
+        <!-- Brand -->
+        <div class="sidenav-header  d-flex  align-items-center">
+            <a class="navbar-brand" href="">
+                <img src="{% static 'assets/img/logo.png' %}" class="navbar-brand-img" alt="...">
+            </a>
+            <div class=" ml-auto ">
+                <!-- Sidenav toggler -->
+                <div class="sidenav-toggler d-none d-xl-block" data-action="sidenav-unpin" data-target="#sidenav-main">
+                    <div class="sidenav-toggler-inner">
+                        <i class="sidenav-toggler-line"></i>
+                        <i class="sidenav-toggler-line"></i>
+                        <i class="sidenav-toggler-line"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="navbar-inner">
+            <!-- Collapse -->
+            <div class="collapse navbar-collapse" id="sidenav-collapse-main">
+                <!-- Nav items -->
+                <ul class="navbar-nav">
+                    <li class="nav-item  accounts">
+                        <a class="nav-link" href="{% url 'company-accounts-url' %}" role="button"
+                           aria-expanded="true" aria-controls="navbar-dashboards">
+                            <div class="icon icon-shape bg-gradient-gray text-white rounded-circle shadow">
+                                <i class="ni ni-shop"></i>
+                            </div>
+                            <span class="nav-link-text ml-2 text-dark">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item accountings" id="forward">
+                        <a class="nav-link  collapsed" id="ak3" href="#navbar-dashboards" data-toggle="collapse"
+                           role="button" aria-expanded="false" aria-controls="navbar-dashboards">
+                            <div class="icon icon-shape bg-gradient-gray-dark text-white rounded-circle shadow">
+                                <i class="fas fa-balance-scale text-white"></i>
+                            </div>
+                            <span class="nav-link-text ml-2 text-dark">Accounting</span>
+                        </a>
+                        <div class="collapse" id="navbar-dashboards" style="">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item accounts_accountings_chart_of_accounts">
+                                    <a href="{% url 'accounting-accountings-chart-of-accounts' %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fa fa-chart-area fa-fw">
+                                            Chart of Accounts
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_accountings_reconciliations">
+                                    <a href="{% url 'accounting-accountings-reconciliations' %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fa fa-history fa-fw">
+                                            Reconciliation
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_accountings_transactions">
+                                    <a href="{% url 'accounting-accountings-transactions' %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> D </span>
+                                        <i class="fas fa-exchange-alt fa-fw">
+                                            Transactions
+                                        </i>
+                                    </a>
+                                </li>
+
+                                {#                                <li class="nav-item">#}
+                                {#                                    <a href="{% url 'accounting-accountings-hire-a-bookkeeper' %}" class="nav-link">#}
+                                {##}
+                                {#                                        <span class="sidenav-mini-icon"> A </span>#}
+                                {#                                        <i class="fa fa-map-marker fa-fw">#}
+                                {#                                            Hire a Bookkeeper#}
+                                {#                                        </i>#}
+                                {#                                    </a>#}
+                                {#                                </li>#}
+
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item banking" id="forward">
+                        <a class="nav-link  collapsed" id="ak4" href="#navbar-banking" data-toggle="collapse"
+                           role="button" aria-expanded="false" aria-controls="navbar-banking">
+                            <div class="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
+                                <i class="fa fa-landmark text-white"></i>
+                            </div>
+                            <span class="nav-link-text ml-2 text-dark">Banking</span>
+                        </a>
+                        <div class="collapse" id="navbar-banking" style="">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item accounts_banking_connected_accounts">
+                                    <a href="{% url 'accounting-banking-connected-accounts' %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> D </span>
+                                        <i class="fa fa-link fa-fw">
+                                            Connected Accounts
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_banking_payouts">
+                                    <a href="{% url 'accounting-banking-payouts' %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fa fa-credit-card fa-fw">
+                                            Payouts
+                                        </i>
+                                    </a>
+                                </li>
+                                {#                                <li class="nav-item">#}
+                                {#                                    <a href="{% url 'accounting-payroll-run-payroll' %}" class="nav-link">#}
+                                {##}
+                                {#                                        <span class="sidenav-mini-icon"> A </span>#}
+                                {#                                        <i class="fa fa-plane fa-fw">#}
+                                {#                                            Insurance#}
+                                {#                                        </i>#}
+                                {#                                    </a>#}
+                                {#                                </li>#}
+
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item purchases" id="forward">
+                        <a class="nav-link  collapsed" id="ak2" href="#navbar-purchases" data-toggle="collapse"
+                           role="button" aria-expanded="false" aria-controls="navbar-purchases">
+                            <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
+                                <i class="fas fa-shopping-cart text-white"></i>
+                            </div>
+                            <span class="nav-link-text ml-2 text-dark">Purchases</span>
+                        </a>
+                        <div class="collapse" id="navbar-purchases" style="">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item accounts_purchases_bill">
+                                    <a href="{% url 'accounting-purchases-bills' %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> D </span>
+                                        <i class="fa fa-money-bill fa-fw">
+                                            Bills
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_purchases_product_and_services">
+                                    <a href="{% url 'accounting-purchases-product_and_services' %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fa fa-wrench fa-fw">
+                                            Product/Services
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_purchases_vendors">
+                                    <a href="{% url 'accounting-purchases-vendors' %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fa fa-industry fa-fw">
+                                            Vendors
+                                        </i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item reports" id="forward">
+                        <a class="nav-link  collapsed" id="ak2" href="#navbar-reports" data-toggle="collapse"
+                           role="button" aria-expanded="false" aria-controls="navbar-reports">
+                            <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
+                                <i class="ni ni-chart-bar-32"></i>
+                            </div>
+                            <span class="nav-link-text ml-2 text-dark">Reports</span>
+                        </a>
+                        <div class="collapse" id="navbar-reports" style="">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item accounts_reports_account_balance">
+                                    <a href="{% url "accounting-reports-account-balance" %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> D </span>
+                                        <i class="fa fa-balance-scale fa-fw">
+                                            Account Balances
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_reports_account_transaction">
+                                    <a href="{% url "accounting-reports-account-transaction" %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fa fa-donate fa-fw">
+                                            Account Transactions
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_reports_ages_payable">
+                                    <a href="{% url "accounting-reports-aged-payables" %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fa fa-money-bill fa-fw">
+                                            Aged Payables
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_reports_aged_receivable">
+                                    <a href="{% url "accounting-reports-aged-receivables" %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fa fa-money-check fa-fw">
+                                            Aged Receivables
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_reports_balance_sheet">
+                                    <a href="{% url "accounting-reports-balance-sheet" %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fa fa-chart-pie fa-fw">
+                                            Balance Sheet
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_reports_cash_flow">
+                                    <a href="{% url "accounting-reports-cash-flow" %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fa fa-money-check fa-fw">
+                                            Cash Flow
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_reports_income_by_customer">
+                                    <a href="{% url "accounting-reports-income-by-customer" %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fa fa-coins fa-fw">
+                                            Income by Customer
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_reports_income_statement">
+                                    <a href="{% url "accounting-reports-income-statement" %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fas fa-wallet fa-fw">
+                                            Income Statement
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_reports_purchases_by_vendor">
+                                    <a href="{% url "accounting-reports-purchases-by-vendor" %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fas fa-shopping-bag fa-fw">
+                                            Purchases by Vendor
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_reports_sales_tax">
+                                    <a href="{% url "accounting-reports-sales-tax" %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fas fa-money-bill-alt fa-fw">
+                                            Sales Tax
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_reports_trial_balance">
+                                    <a href="{% url "accounting-reports-trial-balance" %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fa fa-credit-card fa-fw">
+                                            Trial Balance
+                                        </i>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item sales" id="forward">
+                        <a class="nav-link  collapsed" id="ak" href="#navbar-sales" data-toggle="collapse"
+                           role="button" aria-expanded="false" aria-controls="navbar-sales">
+                            <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
+                                <i class="fas fa-wallet text-white"></i>
+                            </div>
+                            <span class="nav-link-text ml-2 text-dark">Sales</span>
+                        </a>
+                        <div class="collapse" id="navbar-sales" style="">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item customers">
+                                    <a href="{% url 'accounting-sales-customers' %}" class="nav-link">
+                                        <span class="sidenav-mini-icon"> C </span>
+                                        <i class="fa fa-user fa-fw">
+                                            Customers
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item customer_statement">
+                                    <a href="{% url 'accounting-sales-customer-statement' %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> CS </span>
+                                        <i class="fa fa-receipt fa-fw">
+                                            Customer Statements
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_estimate">
+                                    <a href="{% url 'accounting-sales-estimate' %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> E </span>
+                                        <i class="fa fa-calculator fa-fw">
+                                            Estimates
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_invoice">
+                                    <a href="{% url 'accounting-sales-invoice' %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> I </span>
+                                        <i class="fas fa-file-invoice fa-fw">
+                                            Invoices
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item payments">
+                                    <a href="{% url 'accounting-sales-payments' %}" class="nav-link">
+                                        <span class="sidenav-mini-icon"> P </span>
+                                        <i class="fa fa-credit-card fa-fw">
+                                            Payments
+                                        </i>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </li>
+                    {#                    <li class="nav-item Settings" id="forward">#}
+                    <li class="nav-item Settings" id="forward">
+                        <a class="nav-link  collapsed" id="ak5" href="#navbar-settings" data-toggle="collapse"
+                           role="button" aria-expanded="false" aria-controls="navbar-settings">
+                            <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                <i class="fa fa-credit-card text-white"></i>
+                            </div>
+                            <span class="nav-link-text ml-2 text-dark">Settings</span>
+                        </a>
+                        <div class="collapse" id="navbar-settings" style="">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item accounts_Settings_accounting_dates">
+                                    <a href="{% url 'accounting-Settings-run-Settings' %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> D </span>
+                                        <i class="fa fa-calendar fa-fw">
+                                            Accounting Dates
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_Settings_data_export">
+                                    <a href="{% url 'accounting-Settings-data-export' %}" class="nav-link">
+
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fa fa-file-export fa-fw">
+                                            Data Export
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_Settings_invoice_customizations">
+                                    <a href="{% url 'accounting-Settings-invoice_customizations' %}" class="nav-link">
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fa fa-file-invoice fa-fw">
+                                            Invoice Customizations
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_profile_notifications">
+                                    <a href="{% url 'accounting-Settings-profile-notifications' %}" class="nav-link">
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fa fa-bell fa-fw">
+                                            Profile Notifications
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_Settings_sales_payments">
+                                    <a href="{% url 'accounting-Settings-sales-payments' %}" class="nav-link">
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fab fa-cc-mastercard fa-fw">
+                                            Sales Payments
+                                        </i>
+                                    </a>
+                                </li>
+                                <li class="nav-item accounts_Settings_sales_tax">
+                                    <a href="{% url 'accounting-Settings-sales-tax' %}" class="nav-link">
+                                        <span class="sidenav-mini-icon"> A </span>
+                                        <i class="fa fa-money-bill-alt fa-fw">
+                                            Sales Tax
+                                        </i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item  index">
+                        <a class="nav-link" href="{% url 'company-index' %}" role="button"
+                           aria-expanded="true" aria-controls="navbar-dashboards">
+                            <div class="icon icon-shape bg-gradient-danger text-white rounded-circle shadow">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <span class="nav-link-text ml-2 text-dark">Company</span>
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+

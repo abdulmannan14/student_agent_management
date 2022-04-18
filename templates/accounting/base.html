@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="">
+<meta name="csrf-token" id="csrf-token" content="zIxi7Wsx91sq8GIUwXuOLFPwPNjEISe79cYDT4rM">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+    <title>LC Accounting {% if title %}- {{ title }}{% endif %}
+    </title>
+    <link rel="icon" href="/staticfiles/assets/img/favicons/favicon-96x96.png" type="image/png">
+    {% include 'accounting/statics/styles.html' %}
+
+
+</head>
+
+<body class="application application-offset">
+<div class="container-fluid container-application">
+    {% include 'accounting/partials/nav.html' %}
+
+    <div class="main-content position-relative">
+        {% include 'accounting/partials/upper-nav.html' %}
+        {% block content %}
+
+        {% endblock %}
+    </div>
+
+
+</div>
+
+{% include 'accounting/statics/scripts.html' %}
+<script>
+    $(".active").removeClass("active")
+    let current_nav_item = $(".{{ nav.parent_active }}")
+    $(".{{ nav.child_active }}").addClass("active")
+    current_nav_item.addClass("active")
+    if (current_nav_item.hasClass("collapsed")) {
+        current_nav_item.removeClass("collapsed")
+        current_nav_item.attr("aria-expanded", "true")
+        current_nav_item.parent().find(".collapse").addClass("show")
+    }
+</script>
+<script>
+    function showNotification(message, title, type = "info", icon = "") {
+        if (type === "error") {
+            type = "danger"
+            icon = "fa fa-exclamation-circle"
+        }
+        if (type === "success") {
+            icon = "fa fa-check-circle"
+        }
+        console.log(message, type, icon)
+        $.notify({
+            title: `<strong style="margin-left:10px">${title}</strong>`,
+            icon: icon,
+            message: message
+        }, {
+            type: type,
+            animate: {
+                enter: 'animated fadeInDown',
+                exit: 'animated fadeOutRight'
+            },
+            placement: {
+                from: "top",
+                align: "right"
+            },
+            offset: 10,
+            spacing: 10,
+            z_index: 1031,
+        });
+    }
+</script>
+{% if messages %}
+    {% for message in messages %}
+        <script>
+            showNotification("{{message}}", "", "{{ message.tags }}", "fa fa-check")
+        </script>
+    {% endfor %}
+{% endif %}
+{% block script %}
+
+{% endblock %}
+</body>
+</html>
