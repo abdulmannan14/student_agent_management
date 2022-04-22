@@ -221,7 +221,6 @@ def _get_details_table_checklist(checklist):
 
 
 def _delete_table_entry(row):
-    # row = get_object_or_404(model, pk=pk, restaurant=restaurant)
     row.delete()
     return True
 

@@ -41,7 +41,7 @@ else:
 DEBUG = True
 
 ALLOWED_HOSTS = ["limoucloud.com", "qa.limoucloud.com", "lc-qa-whq3ht5hlq-uc.a.run.app", "127.0.0.1",
-                 "pre-prod.limoucloud.com",'orderkaro.herokuapp.com']
+                 "pre-prod.limoucloud.com", 'orderkaro.herokuapp.com']
 
 # Application definition
 MY_APPS = [
@@ -60,6 +60,8 @@ MY_APPS = [
     'Table',
     'Order',
     'Menu',
+    'Agent',
+    'Student'
     # 'rolepermissions',
 ]
 

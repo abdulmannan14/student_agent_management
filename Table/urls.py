@@ -2,11 +2,11 @@ from django.urls import path, reverse
 from . import views as table_views
 
 urlpatterns = [
-    path('', table_views.all_tables, name='restaurant-all-table'),
-    path('add', table_views.add_table, name='restaurant-add-table'),
-    path('edit/<int:pk>', table_views.edit_table, name='restaurant-edit-table'),
-    path('delete/<int:pk>', table_views.delete_table, name='restaurant-delete-table'),
-    # path('overview/<int:pk>', table_views.overview_table, name='restaurant-overview-table'),
+    # path('', table_views.all_tables, name='restaurant-all-table'),
+    # path('add', table_views.add_table, name='restaurant-add-table'),
+    # path('edit/<int:pk>', table_views.edit_table, name='restaurant-edit-table'),
+    # path('delete/<int:pk>', table_views.delete_table, name='restaurant-delete-table'),
+    # # path('overview/<int:pk>', table_views.overview_table, name='restaurant-overview-table'),
 ]
 
 

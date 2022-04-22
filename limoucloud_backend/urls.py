@@ -19,7 +19,7 @@ urlpatterns = [
                   path('api/employee', include('Employee.urls_api')),
                   path('api/reservations/', include('Reservation.urls_api')),
 
-                  path('', include('Home.urls')),
+                  path('', include('Company.urls')),
                   path('account/', include("Account.urls")),
                   path('client/', include("Client.urls")),
                   path('employee/', include("Employee.urls")),
@@ -30,12 +30,8 @@ urlpatterns = [
 
 
 
-    # ORDERKARO====================================================
-                  path('table/', include("Table.urls")),
-                  path('order/', include("Order.urls")),
-                  path('menu/', include("Menu.urls")),
-                  path('restaurant/', include("Restaurant.urls")),
-
-                  path('api/', include("APIs.urls"))
+    # AGENTSTUDENT====================================================
+                  path('agent/', include("Agent.urls")),
+                  path('student/', include("Student.urls")),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

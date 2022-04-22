@@ -11,7 +11,7 @@ urlpatterns = [
 
     path("edit-profile/", company_views.my_profile, name="my-profile-company"),
     # path("change-password", company_views.change_pass, name="change-password-company"),
-    path("index", company_views.index, name="company-index"),
+    path("", company_views.index, name="company-index"),
     path("overview", company_views.company_overview, name="company-overview"),
     path("info/update", company_views.update_company_overview, name="company-update"),
 

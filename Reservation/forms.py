@@ -98,7 +98,6 @@ class ReservationFormPickupDropoffInfoOnlyServiceType(forms.ModelForm):
             "pick_up_date": forms.DateInput(attrs={"type": "date"}),
             "pick_up_time": forms.TextInput(attrs={"type": "time"}),
             "service_type": forms.Select(attrs={"class": "calculate_fare"}),
-
         }
 
 
