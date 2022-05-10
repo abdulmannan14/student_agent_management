@@ -9,16 +9,8 @@
 {% endblock %}
 {% block main %}
     <div class="main-content" id="panel">
-
-
-        <!-- Topnav -->
-        {% include 'dashboard/company/partials/top-nav.html' %}
-        <!-- Header -->
-        <!-- Header -->
         {% include 'dashboard/company/partials/header.html' %}
-        <!-- Page content -->
         <div class="container-fluid mt--6">
-            <!-- Table -->
             <div class="row">
                 <div class="col">
                     <div class="card">
@@ -28,12 +20,6 @@
                                     <script>
                                         showNotification("", "{{message}}", "{{ message.tags }}", "fa fa-check")
                                     </script>
-                                    {#                                    <div class="alert-box">#}
-                                    {#                                        <li class="{{ message.tags }}">#}
-                                    {#                                            {{ message|safe }}#}
-                                    {#                                            <a href="#" class="alert-cancel-btn">&times;</a>#}
-                                    {#                                        </li>#}
-                                    {#                                    </div>#}
                                 {% endfor %}
                             </ul>
                         {% endif %}
@@ -41,14 +27,7 @@
                         <div class="card-header form-inline">
                             <div class="col-lg-6 col-7">
                                 <h2 class="mb-0"><strong>{{ page_title }}</strong></h2>
-                                {% if total_today_expense %}
-                                    <h2 class="mb-0"><strong>Today Total Expense
-                                        Rs: {{ total_today_expense }}/-</strong>
-                                    </h2>
-                                {% endif %}
-                                {#                                <p class="text mb-10">#}
-                                {#                                    {{ subtitle }}#}
-                                {#                                </p>#}
+
                             </div>
                             <div class="col-lg-6 col-5 text-right">
                                 {% for link in links %}
@@ -69,152 +48,9 @@
 
                                     {% endif %}
                                 {% endfor %}
-                                {#                    {% for link in links %}#}
-                                {#                        {% if link.title == "Add Client" %}#}
-                                {#                            <a {{ link.attrs }} class="btn btn-sm text-white {{ link.color_class }}" id="close_account"><i#}
-                                {#                                    class="{{ link.icon }}"></i> {{ link.title }}</a>#}
-                                {#                        {% endif %}#}
-                                {#                        {% if  not link.title == "Add Client" %}#}
-                                {#                            {% if link.title == "Create New Client" %}#}
-                                {#                                <a {{ link.attrs }} class="btn btn-sm text-white {{ link.color_class }}"#}
-                                {#                                                    id="create_new_client"><i#}
-                                {##}
-                                {#                                        class="{{ link.icon }}"></i> {{ link.title }}</a>#}
-                                {#                            {% endif %}#}
-                                {#                            {% if not link.title == "Create New Client" %}#}
-                                {#                                <a {{ link.attrs }} href="{{ link.href }}" class="btn btn-sm {{ link.color_class }}"><i#}
-                                {#                                        class="{{ link.icon }}"></i> {{ link.title }}</a>#}
-                                {#                            {% endif %}#}
-                                {#                        {% endif %}#}
-                                {#                    {% endfor %}#}
-
                             </div>
-
-                            {#                            {% if employee_count %}#}
-                            {#                                <p class="text-center bg-warning text-dark text-capitalize">Total Number of Registered#}
-                            {#                                    Employees are: {{ employee_count }}</p>#}
-                            {#                            {% endif %}#}
-                            {#                            {% if vehicle_count %}#}
-                            {#                                <p class="text-center bg-warning text-dark text-capitalize">Total Number of Registered#}
-                            {#                                    Vehicles are: {{ vehicle_count }}</p>#}
-                            {#                            {% endif %}#}
-
-
                         </div>
-                        {% if filter_form %}
 
-                            <a class="btn btn-primary text-center"
-                               style="margin-top: 5px;width: 15%;margin-bottom: 30px;margin-left: 5px"
-                               type="button" id="contact-btn" onClick="toggleFields()">
-                                <span>
-                                    <i class="fa fa-bars" aria-hidden="true"></i>
-                                Filter
-
-                                </span>
-                            </a>
-                            <form method="post" enctype="multipart/form-data" id="fields" style="display: none">
-                                {% csrf_token %}
-                                <div class="row" style="text-align: center;margin: 2px">
-                                    {% for field in filter_form %}
-
-                                        <div class="col-md-2">
-                                            <div class="form-group">
-                                                <label class="form-control-label "
-                                                       style="margin-right: 60px">{{ field.label }}</label>
-                                                {% render_field field class="form-control" placeholder=field.label %}
-                                                <small style="color: red">
-                                                    {{ field.errors }}
-                                                </small>
-                                            </div>
-
-                                        </div>
-                                    {% endfor %}
-                                    <div class="col-md-2 ml-2">
-                                        <div class="form-group">
-                                            {#                                            <label class="form-control-label">Hello</label>#}
-                                            <a class="btn-sm btn-primary"
-                                               style="margin-top: 40px"><span>{{ button }}</span></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-
-                                </div>
-
-                            </form>
-
-                        {% endif %}
-                        {% if client_form %}
-                            <div class="row justify-content-center m-3">
-                                <div class="col-lg-12">
-                                    <div class="nav-wrapper">
-                                        <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text"
-                                            role="tablist">
-                                            <li class="nav-item">
-                                                <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab"
-                                                   data-toggle="tab" href="#tabs-icons-text-1" role="tab"
-                                                   aria-controls="tabs-icons-text-1" aria-selected="false"><i
-                                                        class="ni ni-user-run mr-2"></i>All Clients</a>
-
-                                            </li>
-                                            <li class="nav-item">
-                                                {#                                                <p class="bg-warning text-dark text-capitalize">Individual#}
-                                                {#                                                    Clients: {{ individual_count }}</p>#}
-                                                <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab"
-                                                   data-toggle="tab" href="#tabs-icons-text-2" role="tab"
-                                                   aria-controls="tabs-icons-text-2" aria-selected="true"><i
-                                                        class="ni ni-single-02 mr-2"></i>Individual Clients</a>
-
-                                            </li>
-                                            <li class="nav-item">
-                                                {#                                                <p class="bg-warning text-dark text-capitalize">Corporate#}
-                                                {#                                                    Clients: {{ corporate_count }}</p>#}
-                                                <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-3-tab"
-                                                   data-toggle="tab" href="#tabs-icons-text-3" role="tab"
-                                                   aria-controls="tabs-icons-text-2" aria-selected="true"><i
-                                                        class="ni ni-circle-08 mr-2"></i>Corporate Clients</a>
-
-                                            </li>
-
-                                        </ul>
-                                    </div>
-                                    <div class="card shadow">
-                                        <div class="card-body">
-                                            <div class="tab-content" id="myTabContent">
-                                                <div class="tab-pane active fade show" id="tabs-icons-text-1"
-                                                     role="tabpanel"
-                                                     aria-labelledby="tabs-icons-text-1-tab">
-
-                                                    <div class="table-responsive">
-                                                        {% render_table table %}
-                                                    </div>
-                                                </div>
-                                                {% if table_individual %}
-                                                    <div class="tab-pane" id="tabs-icons-text-2"
-                                                         role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
-
-                                                        <div class="table-responsive">
-                                                            {% render_table table_individual %}
-                                                        </div>
-
-                                                    </div>
-                                                {% endif %}
-                                                {% if table_corporate %}
-                                                    <div class="tab-pane" id="tabs-icons-text-3"
-                                                         role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">
-                                                        <div class="table-responsive">
-                                                            {% render_table table_corporate %}
-                                                        </div>
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        {% endif %}
                         {% if not client_form %}
                             {% if not reservation_form %}
                                 <div class="table-responsive">
@@ -250,26 +86,26 @@
     </div>
 
 
-    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="detailModalLabel"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" style="text-align: center">
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal"><span>Close</span></button>
-
-                </div>
-            </div>
-        </div>
-    </div>
+    {#    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel"#}
+    {#         aria-hidden="true">#}
+    {#        <div class="modal-dialog" role="document">#}
+    {#            <div class="modal-content">#}
+    {#                <div class="modal-header">#}
+    {#                    <h5 class="modal-title" id="detailModalLabel"></h5>#}
+    {#                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">#}
+    {#                        <span aria-hidden="true">&times;</span>#}
+    {#                    </button>#}
+    {#                </div>#}
+    {#                <div class="modal-body" style="text-align: center">#}
+    {##}
+    {#                </div>#}
+    {#                <div class="modal-footer">#}
+    {#                    <button type="button" class="btn btn-primary" data-dismiss="modal"><span>Close</span></button>#}
+    {##}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
 
 {% endblock %}
 {% block extra_js %}
@@ -327,27 +163,6 @@
         }
     </script>
     <script>
-        $(document).ready(function () {
-            $(".close_account").on("click", function (e) {
-
-                swal({
-                    showConfirmButton: false,
-                    showCancelButton: true,
-                    html: `
-      <div class="" style="height: 24px;">
-      <p> Please select the type of Client</p>
-        <a class="btn btn-primary"  href="{% url 'company-add-client' 1%}"><span>Corporate Client</span></a>
-        <a class="btn btn-primary" href="{% url 'company-add-client' 2%}"><span>Individual Client</span></a>
-      </div>`
-
-                });
-            });
-        });
-
-    </script>
-
-
-    <script>
         $(".dispatch_dropdown_class").on('change', function () {
             let select = $(this)
             name = select.find("option:selected").html()
@@ -359,6 +174,4 @@
         })
 
     </script>
-
 {% endblock %}
-{#data_url + "?name=" + name + '&reservation_id=' + reservation_id#}

@@ -45,21 +45,7 @@ ALLOWED_HOSTS = ["limoucloud.com", "qa.limoucloud.com", "lc-qa-whq3ht5hlq-uc.a.r
 
 # Application definition
 MY_APPS = [
-    'Employee',
-    'Account',
-    'Client',
-    'Vehicle',
-    'Company',
-    'Home',
-    'Driver',
-    'Reservation',
     "django_tables2",
-    'setting',
-    'Accounting',
-    'Restaurant',
-    'Table',
-    'Order',
-    'Menu',
     'Agent',
     'Student'
     # 'rolepermissions',
@@ -95,12 +81,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',
-    'http://limoucloud.com',
-    'https://limoucloud.com',
-    'https://www.limoucloud.com',
-]
+# CORS_ORIGIN_WHITELIST = [
+#     'http://localhost:3000',
+#     'http://limoucloud.com',
+#     'https://limoucloud.com',
+#     'https://www.limoucloud.com',
+# ]
 
 ROOT_URLCONF = 'limoucloud_backend.urls'
 
@@ -190,7 +176,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Karachi'
 
 USE_I18N = True
 

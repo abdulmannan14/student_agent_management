@@ -6,7 +6,7 @@
 {% endblock %}
 {% block main %}
     <div class="main-content" id="panel">
-        {#        {% include 'dashboard/company/partials/top-nav.html' %}#}
+{#        {% include 'dashboard/company/partials/top-nav.html' %}#}
         {% include 'dashboard/company/partials/header.html' %}
         <div class="container-fluid mt--6">
             <div class="row">
@@ -580,190 +580,163 @@
         </div>
     </div>
 
-
-    <script>
-        const cancel_btn = document.querySelector('.alert-cancel-btn');
-        if (cancel_btn) {
-            cancel_btn.addEventListener("click", () => {
-                const alert = document.querySelector(".alert-box");
-                alert.style.display = "none"
-            })
-        }
-    </script>
-    <script>
-        $('#id-cancel').click(function () {
-            $("#id-input").hide();
-            $("#id-btn").show();
-        });
-    </script>
-{% endblock %}
-
-{% block extra_js %}
-    {% if messages %}
-        {% for message in messages %}
-            <script>
-                showNotification("", "{{message}}", "{{ message.tags }}", "fa fa-check")
-            </script>
-        {% endfor %}
-    {% endif %}
-
-    <script>
-        $(document).ready(function () {
-            $('select').select2();
-        });
-    </script>
-
-    <script>
-        var searchInput_dest = 'id_pickup_address';
-        $(document).ready(function () {
-            var autocomplete = new google.maps.places.Autocomplete((document.getElementById(searchInput_dest)), {
-                types: ['geocode'],
-            });
-            google.maps.event.addListener(autocomplete, 'place_changed', function () {
-                var near_place = autocomplete.getPlace();
-                console.log("Near Place: ", near_place)
-
-                var destination_lat = near_place.geometry.location.lat();
-                var destination_long = near_place.geometry.location.lng();
-                var destination = $("#destination_latlong")
-                destination.val(destination_lat.toString() + ',' + destination_long.toString())
-            });
-        });
-    </script>
-    <script>
-        function datefunc(input) {
-            let from_date = $('#id_from_date')
-            from_date = from_date.val()
-            let to_date = $('#id_to_date')
-            to_date = to_date.val()
-            from_date = Date.parse(from_date)
-            to_date = Date.parse(to_date)
-            let no_of_day = to_date - from_date
-            no_of_day = no_of_day / 86400000
-            $('#id_no_of_days').val(no_of_day)
-            let rate_per_day = $('#id_rate_per_day')
-            rate_per_day = rate_per_day.val()
-            let fare_of_total_days = rate_per_day * no_of_day
-            $('#id_base_fare').val(fare_of_total_days)
-        }
-    </script>
-
-    <script>
-        $('#id-btn').on('click', function () {
-            $('#id-input').show()
-            $('#id-btn').hide()
-        })
-    </script>
-    <script>
-        $('#id_order_items').on('click', function () {
-            $("#ordermodal").modal('show');
-
-        })
-    </script>
-
-
-
-
-    <script>
-        $(".calculate_total_fee").on('keyup', function () {
+{##}
+{#    <script>#}
+{#        const cancel_btn = document.querySelector('.alert-cancel-btn');#}
+{#        if (cancel_btn) {#}
+{#            cancel_btn.addEventListener("click", () => {#}
+{#                const alert = document.querySelector(".alert-box");#}
+{#                alert.style.display = "none"#}
+{#            })#}
+{#        }#}
+{#    </script>#}
+{#    <script>#}
+{#        $('#id-cancel').click(function () {#}
+{#            $("#id-input").hide();#}
+{#            $("#id-btn").show();#}
+{#        });#}
+{#    </script>#}
+{#{% endblock %}#}
+{##}
+{#{% block extra_js %}#}
+{#    {% if messages %}#}
+{#        {% for message in messages %}#}
+{#            <script>#}
+{#                showNotification("", "{{message}}", "{{ message.tags }}", "fa fa-check")#}
+{#            </script>#}
+{#        {% endfor %}#}
+{#    {% endif %}#}
+{##}
+{#    <script>#}
+{#        $(document).ready(function () {#}
+{#            $('select').select2();#}
+{#        });#}
+{#    </script>#}
+{##}
+{#    <script>#}
+{#        var searchInput_dest = 'id_pickup_address';#}
+{#        $(document).ready(function () {#}
+{#            var autocomplete = new google.maps.places.Autocomplete((document.getElementById(searchInput_dest)), {#}
+{#                types: ['geocode'],#}
+{#            });#}
+{#            google.maps.event.addListener(autocomplete, 'place_changed', function () {#}
+{#                var near_place = autocomplete.getPlace();#}
+{#                console.log("Near Place: ", near_place)#}
+{##}
+{#                var destination_lat = near_place.geometry.location.lat();#}
+{#                var destination_long = near_place.geometry.location.lng();#}
+{#                var destination = $("#destination_latlong")#}
+{#                destination.val(destination_lat.toString() + ',' + destination_long.toString())#}
+{#            });#}
+{#        });#}
+{#    </script>#}
+{#    <script>#}
+{#        function datefunc(input) {#}
+{#            let from_date = $('#id_from_date')#}
+{#            from_date = from_date.val()#}
+{#            let to_date = $('#id_to_date')#}
+{#            to_date = to_date.val()#}
+{#            from_date = Date.parse(from_date)#}
+{#            to_date = Date.parse(to_date)#}
+{#            let no_of_day = to_date - from_date#}
+{#            no_of_day = no_of_day / 86400000#}
+{#            $('#id_no_of_days').val(no_of_day)#}
+{#            let rate_per_day = $('#id_rate_per_day')#}
+{#            rate_per_day = rate_per_day.val()#}
+{#            let fare_of_total_days = rate_per_day * no_of_day#}
+{#            $('#id_base_fare').val(fare_of_total_days)#}
+{#        }#}
+{#    </script>#}
+{##}
+{#    <script>#}
+{#        $('#id-btn').on('click', function () {#}
+{#            $('#id-input').show()#}
+{#            $('#id-btn').hide()#}
+{#        })#}
+{#    </script>#}
+{#    <script>#}
+{#        $('#id_order_items').on('click', function () {#}
+{#            $("#ordermodal").modal('show');#}
+{##}
+{#        })#}
+{#    </script>#}
+{##}
+{##}
+{##}
+{##}
+{#    <script>#}
+{#        $(".calculate_total_fee").on('keyup', function () {#}
             {#let non_refundable_fee = $("#id_non_refundable_fee").val()#}
-            let material_fee = $("#id_material_fee").val()
-            let tuition_fee = $("#id_tuition_fee").val()
-            let application_fee = $("#id_application_fee").val()
-            let discount = $("#id_discount").val()
-            if (material_fee && tuition_fee && application_fee) {
-                let fee = parseInt(material_fee) + parseInt(tuition_fee) + parseInt(application_fee)
-                if (discount) {
-                    fee = fee - parseInt(discount)
-                }
-                $("#id_total_fee").val(fee)
-                $("#id_total_required_fee").val(fee)
-                $("#id_quarterly_fee_amount").val(parseInt(tuition_fee / 4))
-            }
-        })
-    </script>
-    <script>
-        $("#id_tuition_fee").on('keyup', function () {
-            let agent_name = $("#id_agent_name")
-            let tuition_fee = $("#id_tuition_fee").val()
-            agent_name = agent_name.val()
-            let url = "{% url 'get-agent-commission' %}?agent_id=" + agent_name
-            $.get(url, function (response, success) {
-                let commission = response.data
-                console.log("this is commision variable===", commission)
-                let commission_amount = (commission / 100) * parseInt(tuition_fee)
-                console.log("this is commission amount==", commission_amount)
-                let agent_commission = $("#id_total_commission_amount").val(commission_amount)
-            })
-
-
-        })
-    </script>
-    <script>
-        $('#id_student').on("change", function () {
-            let select = $(this)
-            let student = select.val()
-            let url = "{% url 'get-student-fee-details' %}?student=" + student
-            $.get(url, function (response, success) {
-                let student_data = response.data
-                $("#id_total_fee").val(student_data.total_fee)
-                $("#id_total_required_fee").val(student_data.total_required_fee)
-                $("#id_outstanding_fee").val(student_data.outstanding_fee)
-                $("#id_paid_fee").val(student_data.already_paid_amount)
-            })
-        })
-    </script>
-    <script>
-        $('#id_student').on("change", function () {
-            let select = $(this)
-            let student = select.val()
-            let url = "{% url 'get-student-agent-details' %}?student=" + student
-            $.get(url, function (response, success) {
-                let student_data = response.data
-                console.log("this is data==", student_data)
-                $("#id_agent_name").val(student_data.agent)
-                $("#id_agent_commission_percentage").val(student_data.agent_commission_percentage)
-                $("#id_agent_commission_amount").val(student_data.agent_commission_amount)
-                $("#id_total_commission_paid").val(student_data.total_commission_paid_till_now)
-                $("#id_current_commission_amount").val(student_data.commission_to_pay)
-                calculate_fee()
-
-            })
-        })
-    </script>
-    {#    <script>#}
-{#            $('#id_student_paid_fee').on("keyup", function () {#}
-    {#            let select = $(this)#}
-    {#            let commission_percentage = $("#id_agent_commission_percentage").val()#}
-    {#            let student = select.val()#}
-    {#            $("#id_current_commission_amount").val((student / 100) * commission_percentage)#}
-    {#        })#}
-    {#    </script>#}
-    <script>
-        function calculate_fee() {
-            let select = $("#id_current_commission_amount")
-            let commission_percentage = $("#id_agent_commission_percentage").val()
-            let student = select.val()
-            if (commission_percentage) {
-                $("#id_student_paid_fee").val((student * 100) / commission_percentage)
-            } else {
-                $("#id_student_paid_fee").val(0)
-            }
-        }
-    </script>
-    <script>
-        $('#id_current_commission_amount').on("keyup", function () {
-            let select = $(this)
-            let commission_percentage = $("#id_agent_commission_percentage").val()
-            let student = select.val()
-            if (commission_percentage) {
-                $("#id_student_paid_fee").val((student * 100) / commission_percentage)
-            } else {
-                $("#id_student_paid_fee").val(0)
-            }
-        }
-        )
-    </script>
-
+{#            let material_fee = $("#id_material_fee").val()#}
+{#            let tuition_fee = $("#id_tuition_fee").val()#}
+{#            let application_fee = $("#id_application_fee").val()#}
+{#            let discount = $("#id_discount").val()#}
+{#            if (material_fee && tuition_fee && application_fee) {#}
+{#                let fee = parseInt(material_fee) + parseInt(tuition_fee) + parseInt(application_fee)#}
+{#                if (discount) {#}
+{#                    fee = fee - parseInt(discount)#}
+{#                }#}
+{#                $("#id_total_fee").val(fee)#}
+{#                $("#id_total_required_fee").val(fee)#}
+{#                $("#id_quarterly_fee_amount").val(parseInt(tuition_fee / 4))#}
+{#            }#}
+{#        })#}
+{#    </script>#}
+{#    <script>#}
+{#        $("#id_tuition_fee").on('keyup', function () {#}
+{#            let agent_name = $("#id_agent_name")#}
+{#            let tuition_fee = $("#id_tuition_fee").val()#}
+{#            agent_name = agent_name.val()#}
+{#            let url = "{% url 'get-agent-commission' %}?agent_id=" + agent_name#}
+{#            $.get(url, function (response, success) {#}
+{#                let commission = response.data#}
+{#                console.log("this is commision variable===", commission)#}
+{#                let commission_amount = (commission / 100) * parseInt(tuition_fee)#}
+{#                console.log("this is commission amount==", commission_amount)#}
+{#                let agent_commission = $("#id_total_commission_amount").val(commission_amount)#}
+{#            })#}
+{##}
+{##}
+{#        })#}
+{#    </script>#}
+{#    <script>#}
+{#        $('#id_student').on("change", function () {#}
+{#            let select = $(this)#}
+{#            let student = select.val()#}
+{#            let url = "{% url 'get-student-fee-details' %}?student=" + student#}
+{#            $.get(url, function (response, success) {#}
+{#                let student_data = response.data#}
+{#                $("#id_total_fee").val(student_data.total_fee)#}
+{#                $("#id_total_required_fee").val(student_data.total_required_fee)#}
+{#                $("#id_outstanding_fee").val(student_data.outstanding_fee)#}
+{#                $("#id_paid_fee").val(student_data.already_paid_amount)#}
+{#            })#}
+{#        })#}
+{#    </script>#}
+{#    <script>#}
+{#        $('#id_student').on("change", function () {#}
+{#            let select = $(this)#}
+{#            let student = select.val()#}
+{#            let url = "{% url 'get-student-agent-details' %}?student=" + student#}
+{#            $.get(url, function (response, success) {#}
+{#                let student_data = response.data#}
+{#                console.log("this is data==", student_data)#}
+{#                $("#id_agent_name").val(student_data.agent)#}
+{#                $("#id_agent_commission_percentage").val(student_data.agent_commission_percentage)#}
+{#                $("#id_agent_commission_amount").val(student_data.agent_commission_amount)#}
+{#                $("#id_total_commission_paid").val(student_data.total_commission_paid_till_now)#}
+{##}
+{#            })#}
+{#        })#}
+{#    </script>#}
+{#    <script>#}
+{#        $('#id_student_paid_fee').on("keyup", function () {#}
+{#            let select = $(this)#}
+{#            let commission_percentage = $("#id_agent_commission_percentage").val()#}
+{#            let student = select.val()#}
+{#            $("#id_current_commission_amount").val((student / 100) * commission_percentage)#}
+{#        })#}
+{#    </script>#}
+{##}
 
 {% endblock %}

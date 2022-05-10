@@ -12,14 +12,14 @@
 
 /*.graph-btn ul li a.active span{*/
 /*   background: linear-gradient(*/
-/*                87deg, #027975, #211860 100%) !important;*/
+/*                87deg, #610279 0, #601836 100%) !important;*/
 /*}*/
 /*.graph-btn-bg>span:hover {*/
 /*    color: white !important;*/
 /*}*/
 .graph-btn-bg:hover {
     background: linear-gradient(
-            87deg, #027975, #211860 100%) !important;
+            87deg, #610279 0, #601836 100%) !important;
     color: white !important;
 }
 
@@ -29,6 +29,6 @@
 
 .graph-btn-bg.active {
     background: linear-gradient(
-            87deg, #027975, #211860 100%) !important;
+            87deg, #610279 0, #601836 100%) !important;
     color: white !important;
 }

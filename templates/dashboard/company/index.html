@@ -7,23 +7,8 @@
 
 
     <div class="main-content" id="panel">
-        {#        {% if messages %}#}
-        {#            <ul class="messages" style="display: flex;justify-content: center;align-content: center">#}
-        {#                {% for message in messages %}#}
-        {#                    <div class="alert-box">#}
-        {#                        <li class="{{ message.tags }}">#}
-        {#                            {{ message|safe }}#}
-        {#                            <a href="" class="alert-cancel-btn">&times;</a>#}
-        {#                        </li>#}
-        {#                    </div>#}
-        {#                {% endfor %}#}
-        {##}
-        {##}
-        {##}
-        {#            </ul>#}
-        {#        {% endif %}#}
-        <!-- Topnav -->
-        {% include 'dashboard/company/partials/top-nav.html' %}
+
+{#        {% include 'dashboard/company/partials/top-nav.html' %}#}
         <!-- Header -->
         <!-- Header -->
         {% include 'dashboard/company/partials/header.html' %}
@@ -32,389 +17,50 @@
             <div class="bg-primary">
                 <div class="row justify-content-around">
                     {% for card in cards %}
-                        {% if forloop.counter < 6 %}
-                            <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12">
-                                <div class="card card-stats dashboard-card ">
-                                    <!-- Card body -->
-                                    <div class="card-body">
-                                        <div class="row ">
-
-
-                                            <div class="col-xl-3 col-sm-3 col-lg-3 col-md-3">
-                                                <!-- circular bar start for Pending Trip-->
-                                                <div class="box">
-                                                    <img class="dashbaord-card-icons" src="{{ card.icon_path }}">
-                                                    {#                                                   <i class="fa {{ card.icon }}"></i>#}
-                                                    {#                                                    <div class="chart2"#}
-                                                    {#                                                         data-percent="{{ total_client_increment }}">{{ total_client_increment }}%#}
-                                                    {#                                                    </div>#}
-                                                </div>
-                                                <!-- circular bar end for Pending Trip-->
-                                            </div>
-
-                                            <div class="col-9">
-                                                <h5 class="card-title text-uppercase text-white mb-0 dashboard-card-title">{{ card.title }}</h5>
-
-                                                <span class="h2 font-weight-bold mb-0 text-white">{{ card.value }}</span>
+                        {#                        <div class="col-2 col-2 col-12 col-12">#}
+                        <div class="col-xl-6 col-lg-6 col-md-12 col-md-12">
+                            <div class="card card-stats dashboard-card ">
+                                <div class="card-body">
+                                    <div class="row ">
+                                        <div class="col-3 col-3 col-3 col-3">
+                                            {#                                        <div class="col-xl-3 col-md-3 col-lg-3 col-md-3">#}
+                                            <div class="box">
+                                                <img class="dashbaord-card-icons fa {{ card.icon }}" src="{{ card.icon_path }}">
                                             </div>
                                         </div>
-                                        {#                            <p class="mt-3 mb-0 text-sm">#}
-                                        {#                                <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> {{ total_client_increment }}%</span>#}
-                                        {#                                <span class="text-nowrap">Today</span>#}
-                                        {#                            </p>#}
-                                    </div>
-
-                                </div>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-
-
-                <div class="row justify-content-around">
-                    {% for card in cards %}
-                        {% if forloop.counter > 5 %}
-                            <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12">
-                                <div class="card card-stats dashboard-card ">
-                                    <!-- Card body -->
-                                    <div class="card-body">
-                                        <div class="row ">
-
-
-                                            <div class="col-xl-3 col-sm-3 col-lg-3 col-md-3">
-                                                <!-- circular bar start for Pending Trip-->
-                                                <div class="box">
-                                                    <img class="dashbaord-card-icons" src="{{ card.icon_path }}">
-                                                    {#                                                                                    <div class="chart2" data-percent="{{ total_client_increment }}">{{ total_client_increment }}%</div>#}
-                                                </div>
-                                                <!-- circular bar end for Pending Trip-->
-                                            </div>
-
-                                            <div class="col-9">
-                                                <h5 class="card-title text-uppercase text-white mb-0 dashboard-card-title">{{ card.title }}</h5>
-
-                                                <span class="h2 font-weight-bold mb-0 text-white">{{ card.value }}</span>
-                                            </div>
+                                        <div class="col-9">
+                                            <h5 class="h2 font-weight-bold mb-0 text-white">{{ card.title }}</h5>
+                                            <span class="h2 font-weight-bold mb-0 text-white">{{ card.value }}</span>
                                         </div>
-                                        {#                            <p class="mt-3 mb-0 text-sm">#}
-                                        {#                                <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> {{ total_client_increment }}%</span>#}
-                                        {#                                <span class="text-nowrap">Today</span>#}
-                                        {#                            </p>#}
                                     </div>
-
                                 </div>
                             </div>
-                        {% endif %}
+                        </div>
                     {% endfor %}
                 </div>
             </div>
         </div>
-
-        <div class="container-fluid mt-2">
-            <div class="row" style="margin-bottom: 8%;margin-top: 20px">
-                <div class="col-lg-8">
-                    <div class="card bg-white">
-                        <div class="card-header bg-transparent">
-                            <div class="row align-items-center">
-                                <div class="col-xl-7 col-lg-6 col-md-6 col-sm-11">
-                                    <!-- <h6 class="text-light text-uppercase ls-1 mb-1">Overview</h6> -->
-                                    <h5 class="text-uppercase h3 text-dark mb-0">Total Revenue</h5>
-                                </div>
-                                {#                                <canvas id="revenue-chart" width="516" height="258"></canvas>#}
-                                {#                                <canvas width="100px" height="200px" id="revenue-chart"></canvas>#}
-                                <div class="col-xl-5 col-lg-6 col-md-6 col-sm-11 graph-btn pt-2">
-
-                                    <ul class="nav nav-pills justify-content-start revenue_chart_buttons">
-
-                                        <li class="nav-item mr-2 mr-md-0" data-toggle="chart"
-
-                                            data-target="#chart-sales-dark"
-                                            data-update='{"data":{"datasets":[{"data":{{ graph_year_data }}}]}}'
-                                                {#                                            data-update='{"data":{"datasets":[{"data":[500, 30, 10, 40, 15, 60, 20, 60,60]}]}}'#}
-                                            data-prefix="$" data-suffix="k">
-                                            <a href="#" class="nav-link py-2 px-3 graph-btn-bg active graph-button"
-                                               data-toggle="tab">
-                                                Year
-                                                {#                                                <span class="d-none text-white d-md-block">Year</span>#}
-                                                {#                                                <span class="d-md-none">Y</span>#}
-                                            </a>
-                                        </li>
-                                        <li class="nav-item mr-2 mr-md-0" data-toggle="chart"
-                                            data-target="#chart-sales-dark"
-                                            data-update='{"data":{"datasets":[{"data":[550, 500, 500, 510, 570, 540, 520, 500, 590]}]}}'
-                                            data-prefix="$" data-suffix="k">
-                                            <a href="#" class="nav-link py-2 px-3 graph-btn-bg" data-toggle="tab">
-                                                Month
-                                                {#                                                <span class="d-none text-dark d-md-block">Month</span>#}
-                                                {#                                                <span class="d-md-none">M</span>#}
-                                            </a>
-                                        </li>
-                                        <li class="nav-item" data-toggle="chart" data-target="#chart-sales-dark"
-                                            data-update='{"data":{"datasets":[{"data":[0, 20, 5, 25, 10, 30, 15, 40, 40]}]}}'
-                                            data-prefix="$" data-suffix="k">
-                                            <a href="#" class="nav-link py-2 px-3 graph-btn-bg" data-toggle="tab">
-                                                Week
-                                                {#                                                <span class="d-none text-dark d-md-block">Week</span>#}
-                                                {#                                                <span class="d-md-none">W</span>#}
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                            </div>
-                            {#                                <canvas id="revenue-chart" width="516" height="258"></canvas>#}
-                            {#                                <canvas width="100px" height="200px" id="revenue-chart"></canvas>#}
-                            {#                            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-11 graph-btn pt-2">#}
-                            {##}
-                            {#                                <ul class="nav nav-pills justify-content-start">#}
-                            {##}
-                            {##}
-                            {#                                    <li class="nav-item mr-2 mr-md-0" data-toggle="chart"#}
-                            {##}
-                            {#                                        data-target="#chart-sales-dark"#}
-                            {#                                        data-update='{"data":{"datasets":[{"data":{{ graph_year_data }}}]}}'#}
-                            {#                                            data-update='{"data":{"datasets":[{"data":[500, 30, 10, 40, 15, 60, 20, 60,60]}]}}'#}
-                            {#                                        data-prefix="$" data-suffix="k">#}
-                            {#                                        <a href="#" class="nav-link py-2 px-3 graph-btn-bg active graph-button"#}
-                            {#                                           data-toggle="tab">#}
-                            {#                                            Year#}
-                            {#                                                <span class="d-none text-white d-md-block">Year</span>#}
-                            {#                                                <span class="d-md-none">Y</span>#}
-                            {#                                        </a>#}
-                            {#                                    </li>#}
-                            {#                                    <li class="nav-item mr-2 mr-md-0" data-toggle="chart"#}
-                            {#                                        data-target="#chart-sales-dark"#}
-                            {#                                        data-update='{"data":{"datasets":[{"data":[550, 500, 500, 510, 570, 540, 520, 500, 590]}]}}'#}
-                            {#                                        data-prefix="$" data-suffix="k">#}
-                            {#                                        <a href="#" class="nav-link py-2 px-3 graph-btn-bg" data-toggle="tab">#}
-                            {#                                            Month#}
-                            {#                                                <span class="d-none text-dark d-md-block">Month</span>#}
-                            {#                                                <span class="d-md-none">M</span>#}
-                            {#                                        </a>#}
-                            {#                                    </li>#}
-                            {#                                    <li class="nav-item" data-toggle="chart" data-target="#chart-sales-dark"#}
-                            {#                                        data-update='{"data":{"datasets":[{"data":[0, 20, 5, 25, 10, 30, 15, 40, 40]}]}}'#}
-                            {#                                        data-prefix="$" data-suffix="k">#}
-                            {#                                        <a href="#" class="nav-link py-2 px-3 graph-btn-bg" data-toggle="tab">#}
-                            {#                                            Week#}
-                            {#                                                <span class="d-none text-dark d-md-block">Week</span>#}
-                            {#                                                <span class="d-md-none">W</span>#}
-                            {#                                        </a>#}
-                            {#                                    </li>#}
-                            {#                                </ul>#}
-                            {#                            </div>#}
-                        </div>
-                        <div class="card-body">
-                            <!-- Chart -->
-                            <div class="chart">
-                                <!-- Chart wrapper -->
-                                <canvas id="chart-sales-dark" class="chart-canvas"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="col-lg-4">
-                    <div class="card" style="padding: 13px; height: 93.5%">
-                        <div class="card-header border-0">
-                            <div class="row align-items-center">
-                                <div class="col">
-                                    <h3 class="mb-0">TRIPS BY VEHICLE</h3>
-                                </div>
-                                <div class=" nav nav-pills justify-content-end">
-                                    <a href="#" class="btn btn-sm active">Week</a>
-                                    <a href="#" class="btn btn-sm ">Month</a>
-                                    <a href="#" class="btn btn-sm ">Year</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="overflow-auto">
-
-                            <!-- <div class="table-responsive"> -->
-                            {% for vehicle_trip in vehicles_trips_info %}
-                                <h5>2020 {{ vehicle_trip.vehicle_name }}
-                                    (W100001c) {{ vehicle_trip.vehicle_trips_quantity }}|${{ vehicle_trip.vehicle_total_fare_amount }}</h5>
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated"
-                                         role="progressbar"
-                                         style="width: {{ vehicle_trip.vehicle_trips_per_week_percentage }}%"
-                                         aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-
-                            {% endfor %}
-
-                        </div>
-
-
-                        {#                        <h5>2019 Chovinoate suberbon (W100001c) 109|$2250</h5>#}
-                        {#                        <div class="progress">#}
-                        {#                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"#}
-                        {#                                 style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>#}
-                        {#                        </div>#}
-                        {#                        <h5>2018 Chovinoate suberbon (W100001c) 88|$3310</h5>#}
-                        {#                        <div class="progress">#}
-                        {#                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"#}
-                        {#                                 style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>#}
-                        {#                        </div>#}
-                        {#                        <h5>2019 Chovinoate suberbon (W100001c) 41|$8520</h5>#}
-                        {#                        <div class="progress">#}
-                        {#                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"#}
-                        {#                                 style="width: 90%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>#}
-                        {#                        </div>#}
-                        {#                        <h5>2017 Chovinoate suberbon (W100001c) 12|$520</h5>#}
-                        {#                        <div class="progress">#}
-                        {#                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"#}
-                        {#                                 style="width: 100%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>#}
-                        {#                        </div>#}
-
-
-                    </div>
-
-
-                </div>
-            </div>
-            <div class="row Latest_trips_margin_top">
-                <div class="col-xl-8">
-                    <div class="card latest_trip_scroller">
-                        <div class="card-header border-0">
-                            <div class="row align-items-center">
-                                <div class="col">
-                                    <h3 class="mb-0">Latest Trips</h3>
-                                </div>
-                                {#                                <div class="col text-right">#}
-                                {#                                    <a href="#!" class="btn btn-sm btn-primary">See all</a>#}
-                                {#                                </div>#}
-                            </div>
-                        </div>
-                        <div class="table-responsive" style="overflow-x:hidden">
-                        <!-- Projects table -->
-                        <table class="table align-items-center table-flush">
-                            <thead class="thead-light">
-                            <tr>
-                                <th scope="col">RESERVATION#</th>
-                                <th scope="col">CUSTOMER</th>
-                                <th scope="col">TRIP DATE</th>
-                                <th scope="col">TRIP TIME</th>
-                                <th scope="col">STATUS</th>
-                                <th scope="col">AMOUNT</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for driver in driver_trips_info %}
-                                <tr>
-                                    <th scope="row">
-                                        {{ driver.driver_name }}
-                                    </th>
-                                    <td>
-                                        {{ driver.driver_trip_weekly }}
-                                    </td>
-                                    <td>
-                                        {{ driver.driver_trip_monthly }}
-                                    </td>
-                                    <td>
-                                        {{ driver.driver_trip_yearly }}%
-                                    </td>
-                                    <td>
-                                        {{ driver.driver_trip_yearly }}%
-                                    </td>
-                                    <td>
-                                        {{ driver.driver_trip_yearly }}%
-                                    </td>
-                                </tr>
-                            {% endfor %}
-
-                            </tbody>
-                        </table>
-                    </div>
-                    </div>
-
-                </div>
-                <div class="col-xl-4">
-                    <div class="card" style="padding: 13px; height: 82%;">
-                        <div class="card-header border-0">
-                            <div class="row align-items-center">
-                                <div class="col">
-                                    <h3 class="mb-0">TRIPS BY DRIVER</h3>
-                                </div>
-                                <div class="nav nav-pills justify-content-end">
-                                    <a href="#" class="btn btn-sm active">Week</a>
-                                    <a href="#" class="btn btn-sm ">Month</a>
-                                    <a href="#" class="btn btn-sm ">Year</a>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- <div class="table-responsive"> -->
-                        <div class="overflow-scroll">
-                            {% for driver in driver_trips_info %}
-                                <h5>2020 {{ driver.driver_name }}
-                                    (W100001c) {{ driver.driver_trip_weekly }}|${{ driver.driver_trip_yearly }}</h5>
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated"
-                                         role="progressbar"
-                                         style="width: {{ vehicle_trip.vehicle_trips_per_week_percentage }}"
-                                         aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-
-                            {% endfor %}
-                        </div>
-                        {#                        <h5>2019 Chovinoate suberbon (W100001c) 109|$2250</h5>#}
-                        {#                        <div class="progress">#}
-                        {#                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"#}
-                        {#                                 style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>#}
-                        {#                        </div>#}
-                        {#                        <h5>2018 Chovinoate suberbon (W100001c) 88|$3310</h5>#}
-                        {#                        <div class="progress">#}
-                        {#                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"#}
-                        {#                                 style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>#}
-                        {#                        </div>#}
-                        {#                        <h5>2019 Chovinoate suberbon (W100001c) 41|$8520</h5>#}
-                        {#                        <div class="progress">#}
-                        {#                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"#}
-                        {#                                 style="width: 90%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>#}
-                        {#                        </div>#}
-                        {#                        <h5>2017 Chovinoate suberbon (W100001c) 12|$520</h5>#}
-                        {#                        <div class="progress">#}
-                        {#                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"#}
-                        {#                                 style="width: 100%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>#}
-                        {#                        </div>#}
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
 
         <!-- Footer -->
         <footer class="footer pt-3 bg-primary" style="height: 58px">
             <div class="row align-items-center justify-content-between pr-4 pl-4">
                 <div class="col-lg-6">
                     <div class="copyright text-center  text-lg-left  text-white">
-                        <a style="color: white" href="/" class="font-weight-bold ml-1" target="_blank">LimouCloud</a>
+                        <a style="color: white" href="/" class="font-weight-bold ml-1" target="_blank">ACMi Fee
+                            Management System</a>
                         &copy;<span
                             id="copy-year"></span> All Right Reserved!
 
                     </div>
-                </div>
-                <div class="col-lg-6">
-                    <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                        <li class="nav-item">
-                            <a href="https://www.limou_cloud.com" class="nav-link" target="_blank">Terms &
-                                Conditions</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.limou_cloud.com" class="nav-link" target="_blank">Privacy Policy</a>
-                        </li>
-                    </ul>
                 </div>
             </div>
         </footer>
     </div>
 
     <link rel="stylesheet" href={% static 'dashboard/assets/css/messages.css' %}>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"
-            integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q=="
-            crossOrigin="anonymous" referrerpolicy="no-referrer"></script>
+{#    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"#}
+{#            integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q=="#}
+{#            crossOrigin="anonymous" referrerpolicy="no-referrer"></script>#}
     {% if messages %}
         {% for message in messages %}
             <script>
@@ -512,64 +158,6 @@
     <script>
         let date = new Date()
         $("#copy-year").html(date.getFullYear())
-    </script>
-    <script>
-        $(".graph-button").on('click', function () {
-            let btn_value = $(".graph-button").html()
-            let url = "{% url 'get-data-acc-to-pressed-btn' %}?value=" + btn_value
-            $.get(url, function (response, success) {
-                console.log("this is valuie==========================", btn_value)
-                let myChart = document.getElementById('revenue-chart').getContext('2d');
-                // Global Options
-                Chart.defaults.global.defaultFontFamily = 'Lato';
-                Chart.defaults.global.defaultFontSize = 8;
-                Chart.defaults.global.defaultFontColor = 'white';
-                let data2 = {{ graph_year_data }}
-                    {#let data1 = '{{ xaxisasd }}'#}
-                    {#    console.log("hi======================",data1)#}
-                    let
-                massPopChart = new Chart(myChart, {
-                    type: 'line', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
-                    data: {
-                        labels: ['1-10 days', '10-20 days', '20-30 days', '30-40 days', '40-50 days', '50-60 days', '60-70 days', '70-80 days', '80-90 days'],
-                        datasets: [{
-                            label: '',
-                            data: data2,
-                            {#data: [617594, 181045, 153060, 106519, 105162, 95072, 23456, 43666, 34634, 617594, 181045, 153060, 106519, 105162,],#}
-                            //backgroundColor:'green',
-                            backgroundColor: 'red',
-                            borderWidth: 0,
-                            borderColor: 'black',
-                            hoverBorderWidth: 1,
-                            hoverBorderColor: '#000'
-                        }]
-                    },
-                    options: {
-
-
-                        title: {},
-
-                        legend: {
-                            display: true,
-                            position: 'right',
-                            labels: {
-                                fontColor: 'white'
-                            }
-                        },
-                        layout: {
-                            padding: {
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                top: 0
-                            }
-                        },
-                        tooltips: {
-                            enabled: true
-                        }
-                    }
-                });
-            })
     </script>
 {% endblock %}
 
