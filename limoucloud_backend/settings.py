@@ -14,6 +14,8 @@ from pathlib import Path
 import os
 import dj_database_url
 import dotenv
+import django_heroku
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR = Path(__file__).resolve().parent.parent
@@ -218,3 +220,4 @@ MEDIA_URL = '/media/'
 from .env_config import *
 
 google_api_key = 'AIzaSyAPFHIiScwARNq20c7nNYzKPY6sPFL6grE'
+django_heroku.settings(locals())

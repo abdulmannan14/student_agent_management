@@ -21,6 +21,7 @@ django-cors-headers==3.7.0
 django-cryptography==1.1
 django-csv-export-view==1.1.0
 django-filter==21.1
+django-heroku==0.3.1
 django-import-export==2.5.0
 django-model-utils==4.1.1
 django-multiselectfield==0.1.12
@@ -31,6 +32,7 @@ djangorestframework==3.12.4
 djangorestframework-jwt==1.11.0
 djangorestframework-simplejwt==5.1.0
 et-xmlfile==1.1.0
+gunicorn==20.1.0
 heroku==0.1.1
 hyperlink==21.0.0
 idna==2.10
@@ -42,10 +44,12 @@ numpy==1.21.1
 odfpy==1.4.1
 openpyxl==3.0.7
 Pillow==8.3.1
+psycopg2==2.9.3
 pycparser==2.20
 PyJWT==1.7.1
 pyparsing==2.4.7
 python-dateutil==2.8.2
+python-decouple==3.6
 python-dotenv==0.20.0
 pytz==2021.1
 PyYAML==5.4.1
