@@ -8,7 +8,7 @@ from rest_framework.generics import get_object_or_404
 from datetime import datetime
 from limoucloud_backend import utils as backend_utils
 # from Restaurant import models as restaurant_models
-from . import tables as agent_table, forms as agent_form, models as agent_models
+from . import tables as agent_table, forms as agent_form, models as agent_models, utils as agent_utils
 from Student import models as student_models, forms as student_form
 from limoucloud_backend.utils import success_response
 
@@ -125,9 +125,54 @@ def add_commission(request):
             messages.success(request, f"Commission Added Successfully!")
             return redirect("all-students")
         else:
-            print("not calud================")
+            pass
     else:
         form = agent_form.AgentCommissionForm(initial={'student_paid_fee': 0, 'current_commission_amount': 0})
+        context = {
+            "page_title": "Add Commission",
+            "form3": form,
+            "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
+            'button': 'Submit',
+            'cancel_button': 'Cancel',
+            'cancel_button_url': reverse('all-agent'),
+            'nav_conf': {
+                'active_classes': ['agent'],
+            },
+            'agent_view': 1,
+        }
+        return render(request, "dashboard/add_or_edit.html", context)
+
+
+def edit_commission(request, pk):
+    commission_obj = agent_models.CommissionModelAgent.objects.get(pk=pk)
+    previous_commission_amount = commission_obj.current_commission_amount
+    today = datetime.today().date()
+    if request.method == 'POST':
+        form = agent_form.AgentCommissionForm(request.POST, instance=commission_obj)
+        student = request.POST.get('student', 0)
+        # commission_paid = request.POST.get('current_commission_amount', 0)
+        if form.is_valid():
+            current_commission_amount = request.POST.get('current_commission_amount')
+            # calculate_commission_to_add = agent_utils.check_grater_or_lesser(current_commission_amount,
+            #                                                                  previous_commission_amount)
+            student_obj = student_models.StudentModel.objects.get(pk=student)
+            commission = form.save(commit=False)
+            student_obj.total_commission_paid = student_obj.total_commission_paid - float(previous_commission_amount)
+            student_obj.commission_to_pay = student_obj.commission_to_pay + float(previous_commission_amount)
+            student_obj.total_commission_paid = float(student_obj.total_commission_paid) + float(
+                current_commission_amount) if float(
+                student_obj.total_commission_paid) else 0 + float(current_commission_amount)
+            student_obj.previous_commission_history = today
+            commission.agent_commission_amount = current_commission_amount
+            student_obj.commission_to_pay = student_obj.commission_to_pay - float(current_commission_amount)
+            student_obj.save()
+            commission.save()
+            messages.success(request, f"Commission Added Successfully!")
+            return redirect("all-students")
+        else:
+            pass
+    else:
+        form = agent_form.AgentCommissionForm(instance=commission_obj)
         context = {
             "page_title": "Add Commission",
             "form3": form,
@@ -146,7 +191,6 @@ def add_commission(request):
 def agent_students(request, pk):
     agent = get_object_or_404(agent_models.AgentModel, pk=pk)
     agent_students = student_models.StudentModel.objects.filter(agent_name=agent)
-    print(f"these are all the students of this agent===============", agent_students)
     sort = request.GET.get('sort', None)
     if sort:
         agent_students = agent_students.order_by(sort)
@@ -171,12 +215,10 @@ def agent_students(request, pk):
 
 
 def commission_history(request, pk):
-    print("this is pk==============================", pk)
     student_obj = get_object_or_404(student_models.StudentModel, pk=pk)
     agent_obj = get_object_or_404(agent_models.AgentModel, pk=student_obj.agent_name.pk)
     commission_data_history = agent_models.CommissionModelAgent.objects.filter(student=student_obj,
                                                                                agent_name=agent_obj)
-    print(f"these are all the students of this agent===============", commission_data_history)
     sort = request.GET.get('sort', None)
     if sort:
         commission_data_history = commission_data_history.order_by(sort)
@@ -213,5 +255,4 @@ def get_student_agent_details(request):
         'total_commission_paid_till_now': student_obj.total_commission_paid if student_obj.total_commission_paid else 0,
         'commission_to_pay': student_obj.commission_to_pay if student_obj.commission_to_pay else 0,
     }
-    print("this is ----------------", context)
     return JsonResponse(success_response(data=context), safe=False)

@@ -87,6 +87,23 @@ class AddFeeForm(forms.ModelForm):
         fields = ['student', 'fee_pay', 'paid_on', 'is_material_fee']
 
 
+class EditFeeForm(forms.ModelForm):
+    paid_on = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'type': 'date'}))
+
+    def __init__(self, *args, **kwargs):
+        super(EditFeeForm, self).__init__(*args, **kwargs)
+        self.fields['fee_pay'].label = "Fee Amount"
+        self.fields['paid_on'].label = "Date"
+        self.fields['student'].required = True
+        self.fields['fee_pay'].required = True
+        # self.fields['total_required_fee'].label = "Total Required Fee($)"
+        # self.fields['outstanding_fee'].label = "Outstanding Fee($)"
+
+    class Meta:
+        model = student_models.PayModelStudent
+        fields = ['student', 'fee_pay', 'paid_on', ]
+
+
 class StudentFormAddFee(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(StudentFormAddFee, self).__init__(*args, **kwargs)

@@ -78,7 +78,7 @@ class AgentStudentTable(tables.Table):
 
 class AgentCommissionTable(tables.Table):
     # total_commission_paid = tables.Column(empty_values=(), verbose_name='total_commission_paid')
-
+    actions = tables.Column(empty_values=())
     class Meta:
         attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
         model = agent_models.CommissionModelAgent
@@ -87,6 +87,10 @@ class AgentCommissionTable(tables.Table):
 
     def render_total_commission_paid(self, record):
         return "${}".format(record.student.total_commission_paid)
-    #
+
+    def render_actions(self, record):
+        return format_html("<a class='btn btn-sm text-primary' href='{update}'><i class='fa fa-pen'></i></a>"
+                           .format(update=agent_urls.edit_agent_commission(record.pk))
+                           )
     # def render_course(self, record):
     #     return "{}".format(record.course)

@@ -7,6 +7,7 @@ from limoucloud_backend import utils as backend_utils
 
 
 class PayModelStudentTable(tables.Table):
+    actions = tables.Column(empty_values=())
     status = tables.Column(empty_values=())
     acmi_number = tables.Column(empty_values=(), verbose_name='ACMI Number#')
     course = tables.Column(empty_values=(), verbose_name='Course')
@@ -14,7 +15,7 @@ class PayModelStudentTable(tables.Table):
     class Meta:
         attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
         model = student_models.PayModelStudent
-        fields = ['acmi_number', 'student', 'course', 'fee_pay', 'paid_on']
+        fields = ['acmi_number', 'student', 'course', 'fee_pay', 'paid_on', 'status']
 
     def render_acmi_number(self, record):
         return "#{}".format(record.student.acmi_number)
@@ -33,6 +34,11 @@ class PayModelStudentTable(tables.Table):
             style = 'border-radius: 5px;'
         return format_html(
             '<h5 class={bgclass} style={style}>{}</h5>'.format(status, bgclass=bgclass, style=style))
+
+    def render_actions(self, record):
+        return format_html("<a class='btn btn-sm text-primary' href='{update}'><i class='fa fa-pen'></i></a>"
+                           .format(update=student_urls.edit_student_fee(record.pk))
+                           )
 
 
 class StudentTable(tables.Table):

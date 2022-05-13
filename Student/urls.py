@@ -14,6 +14,7 @@ urlpatterns = [
     path('get_student_fee_details', student_views.get_student_fee_details, name='get-student-fee-details'),
     # FEE Related
     path('add/fee', student_views.add_fee, name='add-fee'),
+    path('edit/fee/<int:pk>', student_views.edit_fee, name='edit-student-fee'),
     #     =====================STUDENT REPORT=============================================
     path('student/report', student_views.student_report, name='student-report'),
 ]
@@ -29,6 +30,10 @@ def add_student():
 
 def edit_student(pk: int):
     return reverse("edit-student", kwargs={"pk": pk})
+
+
+def edit_student_fee(pk: int):
+    return reverse("edit-student-fee", kwargs={"pk": pk})
 
 
 def history_student(pk: int):

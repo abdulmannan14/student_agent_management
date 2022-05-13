@@ -14,8 +14,7 @@ from pathlib import Path
 import os
 import dj_database_url
 import dotenv
-import django_heroku
-from decouple import config
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR = Path(__file__).resolve().parent.parent
@@ -190,15 +189,29 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-# STATIC_URL = '/staticfiles/'
+
+
+# FOR HEROKU
+import django_heroku
+from decouple import config
 STATIC_URL = "/static/"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# STATIC_ROOT = "static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
-    # os.path.join(BASE_DIR, "staticfiles"),
 ]
+
+
+# FOR LOCAL
+# STATIC_URL = '/staticfiles/'
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# STATIC_ROOT = "static/"
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "staticfiles"),
+# ]
+
+
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -206,21 +219,11 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
 
-# STATIC_ROOT = ''
-
-
-# APPEND_SLASH = False
-
-# production_env = False
-# if production_env:
-#     STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
-#     STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
-# else:
-#     STRIPE_PUBLIC_KEY = "pk_test_51HfX6DErQrTjWD5cP78v01nYfrFGVXAQKTfQlDLetBsLuRcDjHLFanz5JaIhcNAssh0Nogf5FPmzPg1c1a83fAti003ZZkZfJP"
-#     STRIPE_SECRET_KEY = "sk_test_51HfX6DErQrTjWD5cVN38h75CSbdLJSw36QNy6NCKJ8bIOEgPu66K9AWsGvHugJdHr2DFmOfqDKrl95Fa4LJgye5a00Ev3ubTJ1"
 
 from .env_config import *
-
 google_api_key = 'AIzaSyAPFHIiScwARNq20c7nNYzKPY6sPFL6grE'
+
+
+# FOR HEROKU
 django_heroku.settings(locals())
 del DATABASES['default']['OPTIONS']['sslmode']

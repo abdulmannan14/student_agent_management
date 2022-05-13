@@ -9,7 +9,7 @@ from rest_framework.generics import get_object_or_404
 from datetime import datetime, timedelta
 from limoucloud_backend import utils as backend_utils
 from limoucloud_backend.utils import success_response
-from . import models as student_models, tables as student_table, forms as student_form
+from . import models as student_models, tables as student_table, forms as student_form, utils as student_utils
 from Agent import models as agent_models
 from django.templatetags.static import static
 from datetime import datetime, timedelta, date
@@ -106,7 +106,7 @@ def all_students(request):
 
 def history_student(request, pk):
     student = get_object_or_404(student_models.StudentModel, pk=pk)
-    students = student_models.PayModelStudent.objects.filter(student=student)
+    students = student_models.PayModelStudent.objects.filter(student=student, fee_pay__gt=0)
     sort = request.GET.get('sort', None)
     if sort:
         students = students.order_by(sort)
@@ -240,6 +240,59 @@ def add_fee(request):
     else:
         form = student_form.AddFeeForm()
         form1 = student_form.StudentFormAddFee()
+        context = {
+            "page_title": "Add Fee",
+            "form1": form,
+            'form2': form1,
+            "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
+            'button': 'Submit',
+            'cancel_button': 'Cancel',
+            'cancel_button_url': reverse('all-students'),
+            'nav_conf': {
+                'active_classes': ['student'],
+            },
+        }
+        return render(request, "dashboard/add_or_edit.html", context)
+
+
+def edit_fee(request, pk):
+    fee_obj = student_models.PayModelStudent.objects.get(pk=pk)
+    previous_fee_amount = fee_obj.fee_pay
+    if request.method == 'POST':
+        form = student_form.EditFeeForm(request.POST, instance=fee_obj)
+        if form.is_valid():
+            student = form.cleaned_data['student']
+            student_obj = student_models.StudentModel.objects.get(pk=student.pk)
+            is_material_fee = None
+            fee_amount = form.cleaned_data['fee_pay']
+            paid_on = form.cleaned_data['paid_on']
+            if is_material_fee:
+                fee = form.save(commit=False)
+                student_obj.paid_fee = student_obj.paid_fee + fee_amount if student_obj.paid_fee else 0 + fee_amount
+            else:
+                calculate_fee_to_add = student_utils.check_grater_or_lesser(fee_amount, previous_fee_amount)
+                fee = form.save(commit=False)
+                student_obj.paid_fee = student_obj.paid_fee + calculate_fee_to_add
+                student_obj.outstanding_fee = student_obj.outstanding_fee - calculate_fee_to_add
+                if student_obj.paid_fee >= student_obj.total_fee:
+                    student_obj.outstanding_fee = 0
+                elif student_obj.outstanding_fee == fee_amount:
+                    student_obj.outstanding_fee = 0
+                elif student_obj.outstanding_fee > fee_amount:
+                    # student_obj.outstanding_fee = student_obj.outstanding_fee - calculate_fee_to_add
+                    pass
+                calculate_commission_to_pay = (student_obj.agent_name.commission * (calculate_fee_to_add / 100))
+                student_obj.commission_to_pay = student_obj.commission_to_pay + calculate_commission_to_pay
+            student_obj.total_required_fee = student_obj.total_required_fee - calculate_fee_to_add
+            student_obj.last_paid_on = paid_on
+            student_obj.amount_already_inserted = True
+            student_obj.save()
+            fee.save()
+            messages.success(request, f"Fee Added Successfully!")
+            return redirect("all-students")
+    else:
+        form = student_form.EditFeeForm(instance=fee_obj)
+        form1 = student_form.StudentFormAddFee(instance=fee_obj.student)
         context = {
             "page_title": "Add Fee",
             "form1": form,
