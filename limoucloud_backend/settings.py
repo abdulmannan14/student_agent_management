@@ -15,7 +15,6 @@ import os
 import dj_database_url
 import dotenv
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -190,26 +189,24 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 
-
 # FOR HEROKU
-# import django_heroku
-# from decouple import config
-# STATIC_URL = "/static/"
-# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, "static"),
-# ]
+import django_heroku
+from decouple import config
 
-
-# FOR LOCAL
-STATIC_URL = '/staticfiles/'
+STATIC_URL = "/static/"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-STATIC_ROOT = "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "staticfiles"),
+    os.path.join(BASE_DIR, "static"),
 ]
 
+# FOR LOCAL
+# STATIC_URL = '/staticfiles/'
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# STATIC_ROOT = "static/"
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "staticfiles"),
+# ]
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -219,11 +216,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
 
-
 from .env_config import *
+
 google_api_key = 'AIzaSyAPFHIiScwARNq20c7nNYzKPY6sPFL6grE'
 
-
 # FOR HEROKU
-# django_heroku.settings(locals())
-# del DATABASES['default']['OPTIONS']['sslmode']
+django_heroku.settings(locals())
+del DATABASES['default']['OPTIONS']['sslmode']
