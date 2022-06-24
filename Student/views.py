@@ -241,7 +241,7 @@ def add_fee(request):
                     return redirect("add-fee")
             fee = form.save(commit=False)
             if fee_amount > 0 and is_material_fee:
-                if fee_amount > student_obj.material_fee:
+                if form.cleaned_data['fee_pay'] > student_obj.material_fee:
                     fee.is_tuition_and_material_fee = True
             calculate_commission_to_pay = (student_obj.agent_name.commission * (fee_amount / 100))
             student_obj.commission_to_pay = student_obj.commission_to_pay + calculate_commission_to_pay
