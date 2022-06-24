@@ -38,7 +38,7 @@ class StudentForm(forms.ModelForm):
         fields = "__all__"
         exclude = ['paid_fee', 'previous_student_fee_history', 'warning_sent', 'previous_commission_history',
                    'outstanding_fee', 'last_paid_on', 'total_commission_paid', 'amount_already_inserted',
-                   'amount_inserting_date', 'commission_to_pay']
+                   'amount_inserting_date', 'commission_to_pay', 'application_fee_paid', 'material_fee_paid']
 
 
 class StudentFormEdit(forms.ModelForm):
@@ -84,7 +84,7 @@ class AddFeeForm(forms.ModelForm):
 
     class Meta:
         model = student_models.PayModelStudent
-        fields = ['student', 'fee_pay', 'paid_on', 'is_material_fee']
+        fields = ['student', 'fee_pay', 'paid_on', 'is_material_fee', 'is_application_fee', ]
 
 
 class EditFeeForm(forms.ModelForm):

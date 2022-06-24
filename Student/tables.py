@@ -24,9 +24,21 @@ class PayModelStudentTable(tables.Table):
         return "{}".format(record.student.course)
 
     def render_status(self, record):
-        if record.is_material_fee:
+        if record.is_tuition_and_material_fee and record.is_application_fee:
+            status = "Tuition , Material & Application Fee"
+            bgclass = "bg-white"
+            style = 'border-radius: 5px;'
+        elif record.is_tuition_and_material_fee:
+            status = "Tuition & Material Fee"
+            bgclass = "bg-white"
+            style = 'border-radius: 5px;'
+        elif record.is_material_fee:
             status = "Material Fee"
-            bgclass = "bg-blue"
+            bgclass = "bg-white"
+            style = 'border-radius: 5px;'
+        elif record.is_application_fee:
+            status = "Tuition & Application Fee"
+            bgclass = "bg-white"
             style = 'border-radius: 5px;'
         else:
             status = "Tuition Fee"
@@ -117,8 +129,11 @@ class StudentTableForReport(tables.Table):
     acmi_number = tables.Column(verbose_name='ACMI Number#')
     total_required_fee = tables.Column(verbose_name='total required fee($)')
     previous_student_fee_history = tables.Column(empty_values=(), verbose_name='Last Fee Paid History (Y-M-D)')
+    material_fee = tables.Column(empty_values=(), verbose_name='material fee')
     # Student Fee History
     outstanding_fee = tables.Column(verbose_name='outstanding fee($)')
+    application_fee_paid = tables.Column(empty_values=(), verbose_name='application fee paid')
+    material_fee_paid = tables.Column(empty_values=(), verbose_name='material fee paid')
     agent_bonus = tables.Column(empty_values=(), verbose_name='agent bonus($)')
     total_commission_amount = tables.Column(verbose_name='Agent Total commission ($)')
     agent_previous_commission_history = tables.Column(empty_values=(), verbose_name='Agent Last Paid on (Y-M-D)')
@@ -129,7 +144,8 @@ class StudentTableForReport(tables.Table):
         model = student_models.StudentModel
         fields = ['status', 'outstanding_fee', 'acmi_number', 'full_name', 'email', 'course', 'total_fee', 'paid_fee',
                   'total_required_fee',
-                  'quarterly_fee_amount', 'previous_student_fee_history', 'agent_name',
+                  'quarterly_fee_amount', 'application_fee', 'application_fee_paid', 'material_fee',
+                  'material_fee_paid', 'previous_student_fee_history', 'agent_name',
                   'total_commission_amount', 'total_commission_paid', 'agent_previous_commission_history',
                   'agent_bonus', 'warning_sent', ]
 
@@ -190,6 +206,39 @@ class StudentTableForReport(tables.Table):
 
     def render_total_commission_amount(self, record):
         return "${}".format(record.total_commission_amount)
+
+    def render_material_fee(self, record):
+        return record.material_fee
+
+    def render_application_fee_paid(self, record):
+        print("this is %%%%%%%%%%%%%%%%%%%%%%%%%", record.application_fee)
+        if record.application_fee_paid:
+            status = 'YES'
+            bgclass = "bg-green"
+            style = 'border-radius: 15px;'
+            return format_html(
+                '<h4 class={bgclass} style={style}>{}</h4>'.format(status, bgclass=bgclass, style=style))
+        else:
+            status = "NO"
+            bgclass = "bg-red"
+            style = 'border-radius: 15px;'
+            return format_html(
+                '<h4 class={bgclass} style={style}>{}</h4>'.format(status, bgclass=bgclass, style=style))
+
+    def render_material_fee_paid(self, record):
+        print("this is %%%%%%%%%%%%%%%%%%%%%%%%%", record.application_fee)
+        if record.application_fee_paid:
+            status = 'YES'
+            bgclass = "bg-green"
+            style = 'border-radius: 15px;'
+            return format_html(
+                '<h4 class={bgclass} style={style}>{}</h4>'.format(status, bgclass=bgclass, style=style))
+        else:
+            status = "NO"
+            bgclass = "bg-red"
+            style = 'border-radius: 15px;'
+            return format_html(
+                '<h4 class={bgclass} style={style}>{}</h4>'.format(status, bgclass=bgclass, style=style))
 
     # def render_actions(self, record):
     #     return format_html("<a class='btn btn-sm text-primary' href='{update}'><i class='fa fa-pen'></i></a>"

@@ -145,8 +145,8 @@ def add_student(request):
             student.quarterly_fee_amount = quarterly_fee
             student.outstanding_fee = quarterly_fee
             # paid_fee = student.total_fee - student.tuition_fee
-            student.paid_fee = application_fee
-            student.total_required_fee = student.total_fee - application_fee
+            # student.paid_fee = application_fee
+            student.total_required_fee = student.total_fee
             student.amount_inserting_date = today.date()
             student.last_paid_on = today.date()
 
@@ -214,29 +214,58 @@ def add_fee(request):
         if form.is_valid():
             student = form.cleaned_data['student']
             student_obj = student_models.StudentModel.objects.get(pk=student.pk)
+
             is_material_fee = form.cleaned_data['is_material_fee']
+            is_application_fee = form.cleaned_data['is_application_fee']
             fee_amount = form.cleaned_data['fee_pay']
             paid_on = form.cleaned_data['paid_on']
+            if is_application_fee:
+                if not student_obj.application_fee_paid:
+                    application_fee_to_subtract = student_obj.application_fee
+                    if student_obj.application_fee <= fee_amount:
+                        fee_amount = fee_amount - application_fee_to_subtract
+                        student_obj.application_fee_paid = True
+                else:
+                    messages.error(request,
+                                   "Process not completed because application fee of this student is already paid")
+                    return redirect("add-fee")
             if is_material_fee:
-                fee = form.save(commit=False)
-            else:
-                fee = form.save(commit=False)
-                calculate_commission_to_pay = (student_obj.agent_name.commission * (fee_amount / 100))
-                student_obj.commission_to_pay = student_obj.commission_to_pay + calculate_commission_to_pay
-                if student_obj.paid_fee >= student_obj.total_fee:
-                    student_obj.outstanding_fee = 0
-                elif student_obj.outstanding_fee == fee_amount:
-                    student_obj.outstanding_fee = 0
-                elif student_obj.outstanding_fee > fee_amount:
-                    student_obj.outstanding_fee = student_obj.outstanding_fee - fee_amount
-            student_obj.total_required_fee = student_obj.total_required_fee - fee_amount
-            student_obj.paid_fee = student_obj.paid_fee + fee_amount if student_obj.paid_fee else 0 + fee_amount
+                if not student_obj.material_fee_paid:
+                    material_fee_to_subtract = student_obj.material_fee
+                    if student_obj.material_fee <= fee_amount:
+                        fee_amount = fee_amount - material_fee_to_subtract
+                        student_obj.material_fee_paid = True
+                else:
+                    messages.error(request,
+                                   "Process not completed because material fee of this student is already paid")
+                    return redirect("add-fee")
+            fee = form.save(commit=False)
+            if fee_amount > 0 and is_material_fee:
+                if fee_amount > student_obj.material_fee:
+                    fee.is_tuition_and_material_fee = True
+            calculate_commission_to_pay = (student_obj.agent_name.commission * (fee_amount / 100))
+            student_obj.commission_to_pay = student_obj.commission_to_pay + calculate_commission_to_pay
+            if student_obj.paid_fee >= student_obj.total_fee:
+                student_obj.outstanding_fee = 0
+            elif student_obj.outstanding_fee == fee_amount:
+                student_obj.outstanding_fee = 0
+            elif student_obj.outstanding_fee > fee_amount:
+                student_obj.outstanding_fee = student_obj.outstanding_fee - fee_amount
+            elif fee_amount > student_obj.outstanding_fee:
+                student_obj.outstanding_fee = 0
+            total_fee_amount = form.cleaned_data['fee_pay']
+            fee.fee_pay = total_fee_amount
+            student_obj.total_required_fee = student_obj.total_required_fee - total_fee_amount
+            student_obj.paid_fee = student_obj.paid_fee + total_fee_amount if student_obj.paid_fee else 0 + total_fee_amount
+            # student_obj.material_fee = student_obj.material_fee + fee_amount
             student_obj.last_paid_on = paid_on
             student_obj.amount_already_inserted = True
             student_obj.save()
             fee.save()
             messages.success(request, f"Fee Added Successfully!")
             return redirect("all-students")
+        else:
+            print("form is not valid$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     else:
         form = student_form.AddFeeForm()
         form1 = student_form.StudentFormAddFee()

@@ -18,7 +18,7 @@ class AgentTable(tables.Table):
     class Meta:
         attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
         model = agent_models.AgentModel
-        fields = ['name', 'email', 'country', 'phone', 'commission', 'bonus', 'commission_to_pay']
+        fields = ['company', 'name', 'email', 'country', 'phone', 'commission', 'bonus', 'commission_to_pay']
 
     def render_bonus(self, record):
         return "${}".format(record.bonus)
@@ -79,6 +79,7 @@ class AgentStudentTable(tables.Table):
 class AgentCommissionTable(tables.Table):
     # total_commission_paid = tables.Column(empty_values=(), verbose_name='total_commission_paid')
     actions = tables.Column(empty_values=())
+
     class Meta:
         attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
         model = agent_models.CommissionModelAgent

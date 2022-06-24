@@ -10,13 +10,13 @@ class BaseModel(models.Model):
 
 # Create your models here.
 class AgentModel(BaseModel):
+    company = models.CharField(max_length=500, null=True, blank=True)
     name = models.CharField(max_length=500, null=True, blank=True)
     country = models.CharField(max_length=500, null=True, blank=True)
     bonus = models.IntegerField(null=True, blank=True, default=0)
     commission = models.IntegerField(null=True, blank=True, default=30)
     # commission_get= models.IntegerField(null=True, blank=True)
     phone = models.CharField(max_length=500, null=True, blank=True)
-    company = models.CharField(max_length=500, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
 
     def __str__(self):
