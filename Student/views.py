@@ -140,7 +140,7 @@ def add_student(request):
             quarterly_fee = int(tuition_fee / 4)
             student = form.save(commit=False)
             agent_name = form.cleaned_data['agent_name']
-            agent = agent_models.AgentModel.objects.get(name=agent_name)
+            agent = agent_models.AgentModel.objects.get(company=agent_name)
             student.commission = agent.commission
             student.quarterly_fee_amount = quarterly_fee
             student.outstanding_fee = quarterly_fee
@@ -177,7 +177,7 @@ def edit_student(request, pk):
         if form.is_valid():
             student = form.save(commit=False)
             agent_name = form.cleaned_data['agent_name']
-            agent = agent_models.AgentModel.objects.get(name=agent_name)
+            agent = agent_models.AgentModel.objects.get(company=agent_name)
             student.commission = agent.commission
             student.save()
 
@@ -243,7 +243,7 @@ def add_fee(request):
             if fee_amount > 0 and is_material_fee:
                 if form.cleaned_data['fee_pay'] > student_obj.material_fee:
                     fee.is_tuition_and_material_fee = True
-            calculate_commission_to_pay = (student_obj.agent_name.commission * (fee_amount / 100))
+            calculate_commission_to_pay = student_utils.calculate_commission_including_gst_and_commission(student_obj, fee_amount)
             student_obj.commission_to_pay = student_obj.commission_to_pay + calculate_commission_to_pay
             if student_obj.paid_fee >= student_obj.total_fee:
                 student_obj.outstanding_fee = 0

@@ -18,7 +18,8 @@ class AgentTable(tables.Table):
     class Meta:
         attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
         model = agent_models.AgentModel
-        fields = ['company', 'name', 'email', 'country', 'phone', 'commission', 'bonus', 'commission_to_pay']
+        fields = ['company', 'name', 'email', 'country', 'phone', 'commission', 'gst_status', 'bonus',
+                  'commission_to_pay']
 
     def render_bonus(self, record):
         return "${}".format(record.bonus)
@@ -70,7 +71,7 @@ class AgentStudentTable(tables.Table):
 
     def render_actions(self, record):
         return format_html("<a class='btn btn-sm text-warning' href='{history}'><i class='fa fa-book'></i></a>"
-            .format(
+        .format(
             history=agent_urls.commission_history(record.pk),
         )
         )

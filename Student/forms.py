@@ -6,7 +6,8 @@ from django.core import validators
 
 
 class StudentForm(forms.ModelForm):
-    start_date = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'type': 'date'}))
+    start_date = forms.CharField(max_length=50, required=True,
+                                 widget=forms.DateInput(attrs={'type': 'date'}))
     end_date = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'type': 'date'}))
 
     def __init__(self, *args, **kwargs):
@@ -29,6 +30,7 @@ class StudentForm(forms.ModelForm):
         self.fields['total_required_fee'].label = "Total Required Fee($)"
         self.fields['total_fee'].label = "Total Fee($)"
         self.fields['application_fee'].label = "Application Fee($)"
+        self.fields['agent_name'].label = " Agent Company"
         self.fields['discount'].label = "Discount($)"
         self.fields['total_commission_amount'].label = "Total Commission Amount($)"
         self.fields['total_commission_amount'].widget.attrs['readonly'] = True
@@ -62,12 +64,14 @@ class StudentFormEdit(forms.ModelForm):
         # self.fields['agent_bonus'].label = "Agent Bonus($)"
         self.fields['discount'].label = "Discount($)"
         self.fields['total_commission_amount'].label = "Total Commission Amount($)"
+        self.fields['agent_name'].label = "Agent Company"
 
     class Meta:
         model = student_models.StudentModel
         fields = "__all__"
         exclude = ['total_commission_paid', 'paid_fee', 'previous_student_fee_history', 'previous_commission_history',
-                   'amount_inserting_date', 'amount_already_inserted', 'last_paid_on']
+                   'amount_inserting_date', 'amount_already_inserted', 'last_paid_on', 'application_fee_paid',
+                   'material_fee_paid']
 
 
 class AddFeeForm(forms.ModelForm):

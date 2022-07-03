@@ -13,6 +13,7 @@ class AgentForm(forms.ModelForm):
         self.fields['phone'].required = True
         self.fields['commission'].required = True
         self.fields['company'].required = True
+        self.fields['gst'].label = 'GST (10%)'
 
     class Meta:
         model = agent_models.AgentModel
