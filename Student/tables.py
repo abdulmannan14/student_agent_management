@@ -15,7 +15,7 @@ class PayModelStudentTable(tables.Table):
     class Meta:
         attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
         model = student_models.PayModelStudent
-        fields = ['acmi_number', 'student', 'course', 'fee_pay', 'paid_on', 'status']
+        fields = ['acmi_number', 'student', 'course', 'fee_pay', 'agent_commision_amount', 'paid_on', 'status']
 
     def render_acmi_number(self, record):
         return "#{}".format(record.student.acmi_number)

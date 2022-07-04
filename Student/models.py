@@ -53,5 +53,6 @@ class PayModelStudent(BaseModel):
     is_material_fee = models.BooleanField(blank=True, default=False)
     is_application_fee = models.BooleanField(blank=True, default=False)
     is_tuition_and_material_fee = models.BooleanField(blank=True, default=False)
+    agent_commision_amount = models.FloatField(null=True, blank=True, default=0)
     # outstanding_fee = models.IntegerField(null=True, blank=True)
     # total_required_fee = models.IntegerField(null=True, blank=True)

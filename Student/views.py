@@ -243,8 +243,11 @@ def add_fee(request):
             if fee_amount > 0 and is_material_fee:
                 if form.cleaned_data['fee_pay'] > student_obj.material_fee:
                     fee.is_tuition_and_material_fee = True
-            calculate_commission_to_pay = student_utils.calculate_commission_including_gst_and_commission(student_obj, fee_amount)
+            calculate_commission_to_pay = student_utils.calculate_commission_including_gst_and_commission(student_obj,
+                                                                                                          fee_amount)
             student_obj.commission_to_pay = student_obj.commission_to_pay + calculate_commission_to_pay
+            fee: student_models.PayModelStudent
+            fee.agent_commision_amount = calculate_commission_to_pay
             if student_obj.paid_fee >= student_obj.total_fee:
                 student_obj.outstanding_fee = 0
             elif student_obj.outstanding_fee == fee_amount:
