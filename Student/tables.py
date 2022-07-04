@@ -4,18 +4,30 @@ from django.utils.html import format_html
 from . import models as student_models, urls as student_urls
 from limoucloud_backend.utils import delete_action
 from limoucloud_backend import utils as backend_utils
+from Agent import models as agent_models
 
 
 class PayModelStudentTable(tables.Table):
     actions = tables.Column(empty_values=())
     status = tables.Column(empty_values=())
+    agent_commission_gst = tables.Column(empty_values=(), verbose_name='Agent Gst Status')
     acmi_number = tables.Column(empty_values=(), verbose_name='ACMI Number#')
     course = tables.Column(empty_values=(), verbose_name='Course')
 
     class Meta:
         attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
         model = student_models.PayModelStudent
-        fields = ['acmi_number', 'student', 'course', 'fee_pay', 'agent_commision_amount', 'paid_on', 'status']
+        fields = ['acmi_number', 'student', 'course', 'fee_pay', 'agent_commision_amount', 'agent_commission_gst',
+                  'paid_on', 'status']
+
+    def render_agent_commission_gst(self, record):
+        record: student_models.PayModelStudent
+        if record.student.agent_name.gst_status == agent_models.AgentModel.EXCLUSIVE:
+            return 'Exclusive'
+        elif record.student.agent_name.gst_status == agent_models.AgentModel.INCLUSIVE:
+            return 'Inclusive'
+        else:
+            return "NOT DEFINED"
 
     def render_acmi_number(self, record):
         return "#{}".format(record.student.acmi_number)
