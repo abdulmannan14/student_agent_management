@@ -218,7 +218,7 @@ def commission_history(request, pk):
     student_obj = get_object_or_404(student_models.StudentModel, pk=pk)
     agent_obj = get_object_or_404(agent_models.AgentModel, pk=student_obj.agent_name.pk)
     commission_data_history = agent_models.CommissionModelAgent.objects.filter(student=student_obj,
-                                                                               agent_name=agent_obj,
+                                                                               agent_name=agent_obj.name,
                                                                                agent_commission_amount__gt=0)
     sort = request.GET.get('sort', None)
     if sort:
