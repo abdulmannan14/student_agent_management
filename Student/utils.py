@@ -15,7 +15,7 @@ def check_grater_or_lesser(fee_amount, previous_fee_amount):
 
 def calculate_gst_if_applicable(commission, student_obj):
     agent = student_obj.agent_name
-    if agent.gst_status == AgentModel.EXCLUSIVE:
+    if agent.gst_status == AgentModel.INCLUSIVE:
         gst_amount = (commission / 100) * agent.gst
     else:
         return 0
