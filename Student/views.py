@@ -290,43 +290,314 @@ def add_fee(request):
 def edit_fee(request, pk):
     fee_obj = student_models.PayModelStudent.objects.get(pk=pk)
     previous_fee_amount = fee_obj.fee_pay
+    previous_commission_amount = fee_obj.agent_commision_amount
+    previous_is_application_fee = fee_obj.is_application_fee
+    previous_is_material_fee = fee_obj.is_material_fee
     if request.method == 'POST':
         form = student_form.EditFeeForm(request.POST, instance=fee_obj)
         if form.is_valid():
             student = form.cleaned_data['student']
-            student_obj = student_models.StudentModel.objects.get(pk=student.pk)
-            is_material_fee = None
-            fee_amount = form.cleaned_data['fee_pay']
             paid_on = form.cleaned_data['paid_on']
-            if is_material_fee:
-                fee = form.save(commit=False)
-                student_obj.paid_fee = student_obj.paid_fee + fee_amount if student_obj.paid_fee else 0 + fee_amount
-            else:
-                calculate_fee_to_add = student_utils.check_grater_or_lesser(fee_amount, previous_fee_amount)
-                fee = form.save(commit=False)
-                student_obj.paid_fee = student_obj.paid_fee + calculate_fee_to_add
-                student_obj.outstanding_fee = student_obj.outstanding_fee - calculate_fee_to_add
-                if student_obj.paid_fee >= student_obj.total_fee:
-                    student_obj.outstanding_fee = 0
-                elif student_obj.outstanding_fee == fee_amount:
-                    student_obj.outstanding_fee = 0
-                elif student_obj.outstanding_fee > fee_amount:
-                    # student_obj.outstanding_fee = student_obj.outstanding_fee - calculate_fee_to_add
-                    pass
-                calculate_commission_to_pay = (student_obj.agent_name.commission * (calculate_fee_to_add / 100))
-                student_obj.commission_to_pay = student_obj.commission_to_pay + calculate_commission_to_pay
-            student_obj.total_required_fee = student_obj.total_required_fee - calculate_fee_to_add
-            student_obj.last_paid_on = paid_on
-            student_obj.amount_already_inserted = True
-            student_obj.save()
-            fee.save()
-            messages.success(request, f"Fee Added Successfully!")
+            fee_amount = form.cleaned_data['fee_pay']
+            student_obj = student_models.StudentModel.objects.get(pk=student.pk)
+            student_obj: student_models.StudentModel
+
+            fee = form.save(commit=False)
+            fee: student_models.PayModelStudent
+
+            # application_fee_of_student = 0
+            # fee_amount_to_calculate_commisssion_on = fee_amount
+            #
+            #   TODO: Just for Information: Checking Previous Is_Application_Fee and Is_Material_Fee.
+            if fee.is_application_fee != previous_is_application_fee or fee.is_material_fee != previous_is_material_fee:
+                if previous_is_application_fee is False and fee.is_application_fee is True and previous_is_material_fee is False and fee.is_material_fee is True:
+
+                    student_obj.paid_fee = student_obj.paid_fee - previous_fee_amount + fee_amount
+                    student_obj.outstanding_fee = student_obj.outstanding_fee + previous_fee_amount
+
+                    student_obj.application_fee_paid = True
+                    student_obj.material_fee_paid = True
+
+                    deducted_fee_amount = fee_amount
+                    deducted_fee_amount = deducted_fee_amount - student_obj.application_fee - student_obj.material_fee
+                    student_obj.outstanding_fee = student_obj.outstanding_fee - deducted_fee_amount
+
+                    if student_obj.paid_fee > student_obj.total_fee:
+                        messages.error(request,
+                                       f"PROCESS NOT COMPLETED! Student Paid fee is exceeding his Total Fee amount")
+                        return redirect("all-students")
+                    if student_obj.paid_fee == student_obj.total_fee or deducted_fee_amount == student_obj.outstanding_fee:
+                        student_obj.outstanding_fee = 0
+
+                    calculate_commission_to_pay = student_utils.calculate_commission_including_gst_and_commission(
+                        student_obj, deducted_fee_amount)
+
+                    fee.agent_commision_amount = calculate_commission_to_pay
+                    student_obj.commission_to_pay = (student_obj.commission_to_pay - previous_commission_amount) + (
+                        calculate_commission_to_pay)
+                    student_obj.total_required_fee = student_obj.total_required_fee + previous_fee_amount - fee_amount
+                    student_obj.last_paid_on = paid_on
+                    student_obj.amount_already_inserted = True
+                    student_obj.save()
+                    fee.save()
+                    student_obj.save()
+
+                    messages.success(request, f"Fee Edited Successfully!")
+                    return redirect("all-students")
+                if previous_is_application_fee is True and fee.is_application_fee is False and previous_is_material_fee is True and fee.is_material_fee is False:
+
+                    student_obj.paid_fee = student_obj.paid_fee - previous_fee_amount + fee_amount
+                    student_obj.outstanding_fee = student_obj.outstanding_fee + (
+                            previous_fee_amount - student_obj.application_fee - student_obj.material_fee)
+                    print("this is the amount to be addeed=====================",
+                          previous_fee_amount - student_obj.application_fee - student_obj.material_fee,
+                          'this is overall outstanding fee amount------------------', student_obj.outstanding_fee)
+                    student_obj.application_fee_paid = False
+                    student_obj.material_fee_paid = False
+
+                    deducted_fee_amount = fee_amount
+                    deducted_fee_amount = deducted_fee_amount
+                    student_obj.outstanding_fee = student_obj.outstanding_fee - deducted_fee_amount
+                    print("this is the amount to be addeed=====================",
+                          deducted_fee_amount,
+                          'this is overall outstanding fee amount------------------', student_obj.outstanding_fee)
+
+                    if student_obj.paid_fee > student_obj.total_fee:
+                        messages.error(request,
+                                       f"PROCESS NOT COMPLETED! Student Paid fee is exceeding his Total Fee amount")
+                        return redirect("all-students")
+                    if student_obj.paid_fee == student_obj.total_fee or deducted_fee_amount == student_obj.outstanding_fee:
+                        student_obj.outstanding_fee = 0
+
+                    calculate_commission_to_pay = student_utils.calculate_commission_including_gst_and_commission(
+                        student_obj, deducted_fee_amount)
+
+                    fee.agent_commision_amount = calculate_commission_to_pay
+                    student_obj.commission_to_pay = (student_obj.commission_to_pay - previous_commission_amount) + (
+                        calculate_commission_to_pay)
+                    student_obj.total_required_fee = student_obj.total_required_fee + previous_fee_amount - fee_amount
+                    student_obj.last_paid_on = paid_on
+                    student_obj.amount_already_inserted = True
+                    student_obj.save()
+                    fee.save()
+                    student_obj.save()
+
+                    messages.success(request, f"Fee Edited Successfully!")
+                    return redirect("all-students")
+
+                if fee.is_application_fee != previous_is_application_fee:
+                    if previous_is_application_fee is True and fee.is_application_fee is False:
+
+                        deducted_previous_fee_amount = previous_fee_amount
+                        if previous_is_application_fee and previous_is_material_fee:
+                            deducted_previous_fee_amount = previous_fee_amount - student_obj.material_fee - student_obj.application_fee
+                        elif previous_is_application_fee:
+                            deducted_previous_fee_amount = previous_fee_amount - student_obj.application_fee
+                        elif previous_is_material_fee:
+                            deducted_previous_fee_amount = previous_fee_amount - student_obj.material_fee
+
+                        print("this is previous deduction fee amount==============", deducted_previous_fee_amount)
+                        print("this is previous outstanfing fee amount==============", student_obj.outstanding_fee)
+                        #   TODO: Just for Information: Removing Old values from Student Profile.
+                        student_obj.paid_fee = student_obj.paid_fee - previous_fee_amount + fee_amount
+                        student_obj.outstanding_fee = student_obj.outstanding_fee + deducted_previous_fee_amount
+
+                        print("removing=========== paid fee romoving is===", previous_fee_amount,
+                              "now st paid feee is ==========", student_obj.paid_fee)
+                        print("now st outstanding feee is ==========",
+                              student_obj.outstanding_fee)
+                        student_obj.application_fee_paid = False
+
+                        if student_obj.material_fee_paid:
+                            deducted_fee_amount = fee_amount - student_obj.material_fee
+                        else:
+                            deducted_fee_amount = fee_amount
+                        student_obj.outstanding_fee = student_obj.outstanding_fee - deducted_fee_amount
+                        print("removing=========== outstanfing fee romoving is===", deducted_fee_amount,
+                              "now st outstanding feee is ==========",
+                              student_obj.outstanding_fee)
+
+                        if student_obj.paid_fee > student_obj.total_fee:
+                            messages.error(request,
+                                           f"PROCESS NOT COMPLETED! Student Paid fee is exceeding his Total Fee amount")
+                            return redirect("all-students")
+                        if student_obj.paid_fee == student_obj.total_fee or (
+                                deducted_fee_amount) == student_obj.outstanding_fee:
+                            student_obj.outstanding_fee = 0
+
+                        calculate_commission_to_pay = student_utils.calculate_commission_including_gst_and_commission(
+                            student_obj, deducted_fee_amount)
+                        student_utils._adding_final_values_to_student_and_agent_objects(fee,
+                                                                                        calculate_commission_to_pay,
+                                                                                        previous_commission_amount,
+                                                                                        fee_amount,
+                                                                                        student_obj, paid_on,
+                                                                                        previous_fee_amount)
+                        student_obj.save()
+                    elif not previous_is_application_fee and fee.is_application_fee:
+                        student_obj.paid_fee = student_obj.paid_fee - previous_fee_amount + fee_amount
+
+                        deducted_previous_fee_amount = previous_fee_amount
+                        if previous_is_application_fee and previous_is_material_fee:
+                            deducted_previous_fee_amount = previous_fee_amount - student_obj.material_fee - student_obj.application_fee
+                        elif previous_is_application_fee:
+                            deducted_previous_fee_amount = previous_fee_amount - student_obj.application_fee
+                        elif previous_is_material_fee:
+                            deducted_previous_fee_amount = previous_fee_amount - student_obj.material_fee
+
+                        student_obj.outstanding_fee = student_obj.outstanding_fee + deducted_previous_fee_amount
+                        student_obj.application_fee_paid = True
+                        if student_obj.material_fee_paid:
+                            deducted_fee_amount = fee_amount - student_obj.material_fee
+                        else:
+                            deducted_fee_amount = fee_amount
+                        deducted_fee_amount = deducted_fee_amount - student_obj.application_fee
+                        student_obj.outstanding_fee = student_obj.outstanding_fee - deducted_fee_amount
+                        if student_obj.paid_fee > student_obj.total_fee:
+                            messages.error(request,
+                                           f"PROCESS NOT COMPLETED! Student Paid fee is exceeding his Total Fee amount")
+                            return redirect("all-students")
+                        if student_obj.paid_fee == student_obj.total_fee or deducted_fee_amount == student_obj.outstanding_fee:
+                            student_obj.outstanding_fee = 0
+
+                        calculate_commission_to_pay = student_utils.calculate_commission_including_gst_and_commission(
+                            student_obj, deducted_fee_amount)
+
+                        fee.agent_commision_amount = calculate_commission_to_pay
+                        student_obj.commission_to_pay = (student_obj.commission_to_pay - previous_commission_amount) + (
+                            calculate_commission_to_pay)
+                        student_obj.total_required_fee = student_obj.total_required_fee + previous_fee_amount - fee_amount
+                        student_obj.last_paid_on = paid_on
+                        student_obj.amount_already_inserted = True
+                        student_obj.save()
+                        fee.save()
+                        student_obj.save()
+                        # messages.success(request, f"Fee Edited Successfully!")
+                        # return redirect("all-students")
+
+                if fee.is_material_fee != previous_is_material_fee:
+                    if previous_is_material_fee is True and fee.is_material_fee is False:
+                        #   TODO: Just for Information: Removing Old values from Student Profile.
+
+                        deducted_previous_fee_amount = previous_fee_amount
+                        if previous_is_application_fee and previous_is_material_fee:
+                            deducted_previous_fee_amount = previous_fee_amount - student_obj.material_fee - student_obj.application_fee
+                        elif previous_is_application_fee:
+                            deducted_previous_fee_amount = previous_fee_amount - student_obj.application_fee
+                        elif previous_is_material_fee:
+                            deducted_previous_fee_amount = previous_fee_amount - student_obj.material_fee
+
+                        student_obj.paid_fee = student_obj.paid_fee - previous_fee_amount + fee_amount
+                        student_obj.outstanding_fee = student_obj.outstanding_fee + deducted_previous_fee_amount
+                        student_obj.material_fee_paid = False
+                        if student_obj.application_fee_paid:
+                            deducted_fee_amount = fee_amount - student_obj.application_fee
+                        else:
+                            deducted_fee_amount = fee_amount
+                        student_obj.outstanding_fee = student_obj.outstanding_fee - deducted_fee_amount
+
+                        if student_obj.paid_fee > student_obj.total_fee:
+                            messages.error(request,
+                                           f"PROCESS NOT COMPLETED! Student Paid fee is exceeding his Total Fee amount")
+                            return redirect("all-students")
+                        if student_obj.paid_fee == student_obj.total_fee or (
+                                deducted_fee_amount) == student_obj.outstanding_fee:
+                            student_obj.outstanding_fee = 0
+
+                        calculate_commission_to_pay = student_utils.calculate_commission_including_gst_and_commission(
+                            student_obj, deducted_fee_amount)
+                        student_utils._adding_final_values_to_student_and_agent_objects(fee,
+                                                                                        calculate_commission_to_pay,
+                                                                                        previous_commission_amount,
+                                                                                        fee_amount,
+                                                                                        student_obj, paid_on,
+                                                                                        previous_fee_amount)
+                        student_obj.save()
+                        # messages.success(request, f"Fee Edited Successfully!")
+                        # return redirect("all-students")
+                    elif not previous_is_material_fee and fee.is_material_fee:
+                        student_obj.paid_fee = student_obj.paid_fee - previous_fee_amount + fee_amount
+
+                        deducted_previous_fee_amount = previous_fee_amount
+                        if previous_is_application_fee and previous_is_material_fee:
+                            deducted_previous_fee_amount = previous_fee_amount - student_obj.material_fee - student_obj.application_fee
+                        elif previous_is_application_fee:
+                            deducted_previous_fee_amount = previous_fee_amount - student_obj.application_fee
+                        elif previous_is_material_fee:
+                            deducted_previous_fee_amount = previous_fee_amount - student_obj.material_fee
+
+                        student_obj.outstanding_fee = student_obj.outstanding_fee + deducted_previous_fee_amount
+                        print("this is the amount adding in outstandin fee =====", deducted_previous_fee_amount,
+                              'thisa isthe new outstanding fee amount====', student_obj.outstanding_fee)
+                        student_obj.material_fee_paid = True
+                        if student_obj.application_fee_paid:
+                            deducted_fee_amount = fee_amount - student_obj.application_fee
+                        else:
+                            deducted_fee_amount = fee_amount
+                        deducted_fee_amount = deducted_fee_amount - student_obj.material_fee
+                        student_obj.outstanding_fee = student_obj.outstanding_fee - deducted_fee_amount
+                        print("this is the amount adding in outstandin fee ===2==", deducted_fee_amount,
+                              'thisa isthe new outstanding fee amount===2=', student_obj.outstanding_fee)
+                        if student_obj.paid_fee > student_obj.total_fee:
+                            messages.error(request,
+                                           f"PROCESS NOT COMPLETED! Student Paid fee is exceeding his Total Fee amount")
+                            return redirect("all-students")
+                        if student_obj.paid_fee == student_obj.total_fee or (
+                                deducted_fee_amount) == student_obj.outstanding_fee:
+                            student_obj.outstanding_fee = 0
+
+                        calculate_commission_to_pay = student_utils.calculate_commission_including_gst_and_commission(
+                            student_obj, deducted_fee_amount)
+                        student_utils._adding_final_values_to_student_and_agent_objects(fee,
+                                                                                        calculate_commission_to_pay,
+                                                                                        previous_commission_amount,
+                                                                                        fee_amount,
+                                                                                        student_obj, paid_on,
+                                                                                        previous_fee_amount)
+                        student_obj.save()
+                        # messages.success(request, f"Fee Edited Successfully!")
+                        # return redirect("all-students")
+                messages.success(request, f"Fee Edited Successfully!")
+                return redirect("all-students")
+
+
+
+
+
+            # TODO: IF MMATERIAL AND APPLICATION FEE ARE NOT CHANGED
+            elif fee.is_application_fee == previous_is_application_fee or fee.is_material_fee == previous_is_material_fee:
+                print("entered=============", fee_amount)
+                deducted_fee_amount = fee_amount
+                if fee.is_application_fee and fee.is_material_fee:
+                    deducted_fee_amount = fee_amount - student_obj.material_fee - student_obj.application_fee
+                elif fee.is_application_fee:
+                    deducted_fee_amount = fee_amount - student_obj.application_fee
+                elif fee.is_material_fee:
+                    deducted_fee_amount = fee_amount - student_obj.material_fee
+
+                previous_deducted_fee_amount = previous_fee_amount
+                if fee.is_application_fee and fee.is_material_fee:
+                    previous_deducted_fee_amount = previous_fee_amount - student_obj.material_fee - student_obj.application_fee
+                elif fee.is_application_fee:
+                    previous_deducted_fee_amount = previous_fee_amount - student_obj.application_fee
+                elif fee.is_material_fee:
+                    previous_deducted_fee_amount = previous_fee_amount - student_obj.material_fee
+                student_utils._removing_old_values(student_obj, previous_fee_amount, previous_deducted_fee_amount)
+                student_utils._adding_new_values(student_obj, fee_amount, deducted_fee_amount)
+                student_utils._performing_some_extra_checks(student_obj, request, fee_amount, deducted_fee_amount)
+                calculate_commission_to_pay = student_utils.calculate_commission_including_gst_and_commission(
+                    student_obj, deducted_fee_amount)
+                student_utils._adding_final_values_to_student_and_agent_objects(fee, calculate_commission_to_pay,
+                                                                                previous_commission_amount, fee_amount,
+                                                                                student_obj, paid_on,
+                                                                                previous_fee_amount)
+            messages.success(request, f"Fee Edited Successfully!")
             return redirect("all-students")
     else:
         form = student_form.EditFeeForm(instance=fee_obj)
         form1 = student_form.StudentFormAddFee(instance=fee_obj.student)
         context = {
-            "page_title": "Add Fee",
+            "page_title": "Edit Fee",
             "form1": form,
             'form2': form1,
             "nav_bar": render_to_string("dashboard/company/partials/nav.html"),

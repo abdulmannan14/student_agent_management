@@ -105,7 +105,7 @@ class EditFeeForm(forms.ModelForm):
 
     class Meta:
         model = student_models.PayModelStudent
-        fields = ['student', 'fee_pay', 'paid_on', ]
+        fields = ['student', 'fee_pay', 'paid_on', 'is_material_fee', 'is_application_fee']
 
 
 class StudentFormAddFee(forms.ModelForm):

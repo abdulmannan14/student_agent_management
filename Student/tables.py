@@ -223,7 +223,6 @@ class StudentTableForReport(tables.Table):
         return record.material_fee
 
     def render_application_fee_paid(self, record):
-        print("this is %%%%%%%%%%%%%%%%%%%%%%%%%", record.application_fee)
         if record.application_fee_paid:
             status = 'YES'
             bgclass = "bg-green"
@@ -239,7 +238,7 @@ class StudentTableForReport(tables.Table):
 
     def render_material_fee_paid(self, record):
         print("this is %%%%%%%%%%%%%%%%%%%%%%%%%", record.application_fee)
-        if record.application_fee_paid:
+        if record.material_fee_paid:
             status = 'YES'
             bgclass = "bg-green"
             style = 'border-radius: 15px;'
