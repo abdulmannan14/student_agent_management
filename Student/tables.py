@@ -61,8 +61,20 @@ class PayModelStudentTable(tables.Table):
 
     def render_actions(self, record):
         return format_html("<a class='btn btn-sm text-primary' href='{update}'><i class='fa fa-pen'></i></a>"
-                           .format(update=student_urls.edit_student_fee(record.pk))
+                           "{delete}"
+                           .format(update=student_urls.edit_student_fee(record.pk),
+                                   delete=delete_action(student_urls.delete_student_fee(record.pk),
+                                                        record.student.full_name))
                            )
+
+        # return format_html("<a class='btn btn-sm text-warning' href='{history}'><i class='fa fa-book'></i></a>"
+        #                    "<a class='btn btn-sm text-primary' href='{update}'><i class='fa fa-pen'></i></a>"
+        #                    "{delete}".format(
+        #     history=student_urls.history_student(record.pk),
+        #     update=student_urls.edit_student(record.pk),
+        #     delete=delete_action(student_urls.delete_student(record.pk), record.full_name),
+        # )
+        # )
 
 
 class StudentTable(tables.Table):

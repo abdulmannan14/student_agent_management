@@ -349,18 +349,13 @@ def edit_fee(request, pk):
                     student_obj.paid_fee = student_obj.paid_fee - previous_fee_amount + fee_amount
                     student_obj.outstanding_fee = student_obj.outstanding_fee + (
                             previous_fee_amount - student_obj.application_fee - student_obj.material_fee)
-                    print("this is the amount to be addeed=====================",
-                          previous_fee_amount - student_obj.application_fee - student_obj.material_fee,
-                          'this is overall outstanding fee amount------------------', student_obj.outstanding_fee)
+
                     student_obj.application_fee_paid = False
                     student_obj.material_fee_paid = False
 
                     deducted_fee_amount = fee_amount
                     deducted_fee_amount = deducted_fee_amount
                     student_obj.outstanding_fee = student_obj.outstanding_fee - deducted_fee_amount
-                    print("this is the amount to be addeed=====================",
-                          deducted_fee_amount,
-                          'this is overall outstanding fee amount------------------', student_obj.outstanding_fee)
 
                     if student_obj.paid_fee > student_obj.total_fee:
                         messages.error(request,
@@ -396,16 +391,10 @@ def edit_fee(request, pk):
                         elif previous_is_material_fee:
                             deducted_previous_fee_amount = previous_fee_amount - student_obj.material_fee
 
-                        print("this is previous deduction fee amount==============", deducted_previous_fee_amount)
-                        print("this is previous outstanfing fee amount==============", student_obj.outstanding_fee)
                         #   TODO: Just for Information: Removing Old values from Student Profile.
                         student_obj.paid_fee = student_obj.paid_fee - previous_fee_amount + fee_amount
                         student_obj.outstanding_fee = student_obj.outstanding_fee + deducted_previous_fee_amount
 
-                        print("removing=========== paid fee romoving is===", previous_fee_amount,
-                              "now st paid feee is ==========", student_obj.paid_fee)
-                        print("now st outstanding feee is ==========",
-                              student_obj.outstanding_fee)
                         student_obj.application_fee_paid = False
 
                         if student_obj.material_fee_paid:
@@ -413,9 +402,6 @@ def edit_fee(request, pk):
                         else:
                             deducted_fee_amount = fee_amount
                         student_obj.outstanding_fee = student_obj.outstanding_fee - deducted_fee_amount
-                        print("removing=========== outstanfing fee romoving is===", deducted_fee_amount,
-                              "now st outstanding feee is ==========",
-                              student_obj.outstanding_fee)
 
                         if student_obj.paid_fee > student_obj.total_fee:
                             messages.error(request,
@@ -527,8 +513,6 @@ def edit_fee(request, pk):
                             deducted_previous_fee_amount = previous_fee_amount - student_obj.material_fee
 
                         student_obj.outstanding_fee = student_obj.outstanding_fee + deducted_previous_fee_amount
-                        print("this is the amount adding in outstandin fee =====", deducted_previous_fee_amount,
-                              'thisa isthe new outstanding fee amount====', student_obj.outstanding_fee)
                         student_obj.material_fee_paid = True
                         if student_obj.application_fee_paid:
                             deducted_fee_amount = fee_amount - student_obj.application_fee
@@ -536,8 +520,6 @@ def edit_fee(request, pk):
                             deducted_fee_amount = fee_amount
                         deducted_fee_amount = deducted_fee_amount - student_obj.material_fee
                         student_obj.outstanding_fee = student_obj.outstanding_fee - deducted_fee_amount
-                        print("this is the amount adding in outstandin fee ===2==", deducted_fee_amount,
-                              'thisa isthe new outstanding fee amount===2=', student_obj.outstanding_fee)
                         if student_obj.paid_fee > student_obj.total_fee:
                             messages.error(request,
                                            f"PROCESS NOT COMPLETED! Student Paid fee is exceeding his Total Fee amount")
@@ -566,7 +548,6 @@ def edit_fee(request, pk):
 
             # TODO: IF MMATERIAL AND APPLICATION FEE ARE NOT CHANGED
             elif fee.is_application_fee == previous_is_application_fee or fee.is_material_fee == previous_is_material_fee:
-                print("entered=============", fee_amount)
                 deducted_fee_amount = fee_amount
                 if fee.is_application_fee and fee.is_material_fee:
                     deducted_fee_amount = fee_amount - student_obj.material_fee - student_obj.application_fee
@@ -609,6 +590,28 @@ def edit_fee(request, pk):
             },
         }
         return render(request, "dashboard/add_or_edit.html", context)
+
+
+def delete_fee(request, pk):
+    fee_obj = student_models.PayModelStudent.objects.get(pk=pk)
+    student_obj = fee_obj.student
+    application_fee = 0
+    material_fee = 0
+    if fee_obj.is_application_fee:
+        student_obj.application_fee_paid = False
+        application_fee = student_obj.application_fee
+    if fee_obj.is_material_fee:
+        student_obj.material_fee_paid = False
+        material_fee = student_obj.material_fee
+    fee_amount = fee_obj.fee_pay
+    agent_commission_amount = fee_obj.agent_commision_amount
+    student_obj.paid_fee = student_obj.paid_fee - fee_amount
+    student_obj.outstanding_fee += (fee_amount - application_fee - material_fee)
+    student_obj.commission_to_pay -= agent_commission_amount
+    student_obj.save()
+    backend_utils._delete_table_entry(fee_obj)
+    messages.success(request, f"{student_obj.full_name}'s Fee Record  is Deleted Successfully!")
+    return redirect('all-students')
 
 
 # ======AJAX JAVA SCRIPT======================================================
