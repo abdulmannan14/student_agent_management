@@ -619,9 +619,14 @@ def delete_fee(request, pk):
 def get_agent_commission(request):
     agent_id = request.GET.get('agent_id', 0)
     agent = get_object_or_404(agent_models.AgentModel, pk=agent_id)
+    agent:agent_models.AgentModel
     # agent:agent_models.AgentModel = agent_models.AgentModel.objects.get(pk=agent_id)
-    commission = agent.commission
-    return JsonResponse(success_response(data=commission), safe=False)
+    # commission = agent.commission
+    data = {
+        'commission': agent.commission,
+        'gst': 10 if agent.gst_status == agent.INCLUSIVE else 0,
+    }
+    return JsonResponse(success_response(data=data), safe=False)
 
 
 def get_student_fee_details(request):

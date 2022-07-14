@@ -689,11 +689,18 @@
             agent_name = agent_name.val()
             let url = "{% url 'get-agent-commission' %}?agent_id=" + agent_name
             $.get(url, function (response, success) {
-                let commission = response.data
-                console.log("this is commision variable===", commission)
+                console.log("this is response=========", response)
+                let commission = response.data.commission
+                let gst = response.data.gst
+
+                console.log("this is commision ===", commission)
                 let commission_amount = (commission / 100) * parseInt(tuition_fee)
+                console.log("this is tuition fee==========", tuition_fee, '=== this is commision amount====', commission_amount)
+                let gst_commission_amount = (commission_amount / 100 * 10)
+                console.log("this is the commission amount and GST amount===============", commission_amount, '=====', gst_commission_amount)
+                let latest_commission_amount = commission_amount + gst_commission_amount
                 console.log("this is commission amount==", commission_amount)
-                let agent_commission = $("#id_total_commission_amount").val(commission_amount)
+                let agent_commission = $("#id_total_commission_amount").val(latest_commission_amount)
             })
 
 
@@ -720,32 +727,34 @@
             let url = "{% url 'get-student-agent-details' %}?student=" + student
             $.get(url, function (response, success) {
                 let student_data = response.data
+                let agent_gst_amount = student_data.agent_gst
                 console.log("this is data==", student_data)
                 $("#id_agent_name").val(student_data.agent)
                 $("#id_agent_commission_percentage").val(student_data.agent_commission_percentage)
                 $("#id_agent_commission_amount").val(student_data.agent_commission_amount)
                 $("#id_total_commission_paid").val(student_data.total_commission_paid_till_now)
                 $("#id_current_commission_amount").val(student_data.commission_to_pay)
-                calculate_fee()
+                calculate_fee(agent_gst_amount)
 
             })
         })
     </script>
     {#    <script>#}
-{#            $('#id_student_paid_fee').on("keyup", function () {#}
+    {#            $('#id_student_paid_fee').on("keyup", function () {#}
     {#            let select = $(this)#}
     {#            let commission_percentage = $("#id_agent_commission_percentage").val()#}
     {#            let student = select.val()#}
     {#            $("#id_current_commission_amount").val((student / 100) * commission_percentage)#}
     {#        })#}
     {#    </script>#}
+
     <script>
-        function calculate_fee() {
+        function calculate_fee(agent_gst_amount) {
             let select = $("#id_current_commission_amount")
             let commission_percentage = $("#id_agent_commission_percentage").val()
-            let student = select.val()
+            let commission_amount = select.val()
             if (commission_percentage) {
-                $("#id_student_paid_fee").val((student * 100) / commission_percentage)
+                $("#id_student_paid_fee").val(((commission_amount - (commission_amount / 11)) * 100) / commission_percentage)
             } else {
                 $("#id_student_paid_fee").val(0)
             }
@@ -753,15 +762,15 @@
     </script>
     <script>
         $('#id_current_commission_amount').on("keyup", function () {
-            let select = $(this)
-            let commission_percentage = $("#id_agent_commission_percentage").val()
-            let student = select.val()
-            if (commission_percentage) {
-                $("#id_student_paid_fee").val((student * 100) / commission_percentage)
-            } else {
-                $("#id_student_paid_fee").val(0)
+                let select = $(this)
+                let commission_percentage = $("#id_agent_commission_percentage").val()
+                let student = select.val()
+                if (commission_percentage) {
+                    $("#id_student_paid_fee").val((student * 100) / commission_percentage)
+                } else {
+                    $("#id_student_paid_fee").val(0)
+                }
             }
-        }
         )
     </script>
 

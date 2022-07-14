@@ -9,6 +9,7 @@ urlpatterns = [
     # ====================COMMISSION URLS==================
     path('add/commission', agent_views.add_commission, name='add-commission'),
     path('edit/commission/<int:pk>', agent_views.edit_commission, name='edit-agent-commission'),
+    path('delete/commission/<int:pk>', agent_views.delete_commission, name='delete-agent-commission'),
     #     ============================JS URLS======================================
     path('agent/detials', agent_views.get_student_agent_details, name='get-student-agent-details'),
     #     ===========================AGENT STUDENTS AND HISTORY URLS==================================
@@ -32,6 +33,9 @@ def edit_agent(pk: int):
 
 def edit_agent_commission(pk: int):
     return reverse("edit-agent-commission", kwargs={"pk": pk})
+
+def delete_agent_commission(pk: int):
+    return reverse("delete-agent-commission", kwargs={"pk": pk})
 
 
 def delete_agent(pk: int):

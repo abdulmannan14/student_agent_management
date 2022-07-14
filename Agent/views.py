@@ -144,6 +144,7 @@ def add_commission(request):
 
 
 def edit_commission(request, pk):
+    print("this is commission object==========================", pk)
     commission_obj = agent_models.CommissionModelAgent.objects.get(pk=pk)
     previous_commission_amount = commission_obj.current_commission_amount
     today = datetime.today().date()
@@ -186,6 +187,19 @@ def edit_commission(request, pk):
             'agent_view': 1,
         }
         return render(request, "dashboard/add_or_edit.html", context)
+
+
+def delete_commission(request, pk):
+    print("this is commission object==========================", pk)
+    commission_obj = agent_models.CommissionModelAgent.objects.get(pk=pk)
+    student_obj = commission_obj.student
+    student_obj.total_commission_paid = student_obj.total_commission_paid - float(
+        commission_obj.current_commission_amount)
+    student_obj.commission_to_pay = student_obj.commission_to_pay + float(commission_obj.current_commission_amount)
+    student_obj.save()
+    backend_utils._delete_table_entry(commission_obj)
+    messages.success(request, f"{commission_obj.agent_name}'s commission Record  is Deleted Successfully!")
+    return redirect('all-agent')
 
 
 def agent_students(request, pk):
@@ -248,10 +262,11 @@ def get_student_agent_details(request):
     # today = datetime.today()
     student = request.GET.get('student', '')
     student_obj = student_models.StudentModel.objects.get(pk=student)
-
+    agent_gst = student_obj.agent_name.gst if student_obj.agent_name.gst_status is student_obj.agent_name.INCLUSIVE else 0
     context = {
         'agent': student_obj.agent_name.name,
         'agent_commission_percentage': student_obj.agent_name.commission,
+        'agent_gst': agent_gst,
         'agent_commission_amount': student_obj.total_commission_amount,
         'total_commission_paid_till_now': student_obj.total_commission_paid if student_obj.total_commission_paid else 0,
         'commission_to_pay': student_obj.commission_to_pay if student_obj.commission_to_pay else 0,
