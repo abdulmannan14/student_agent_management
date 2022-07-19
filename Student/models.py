@@ -1,4 +1,5 @@
 from django.db import models
+from Courses import models as courses_models
 
 
 # Create your models here.
@@ -14,7 +15,7 @@ class StudentModel(BaseModel):
     agent_name = models.ForeignKey('Agent.AgentModel', on_delete=models.CASCADE, null=True, blank=True)
     acmi_number = models.CharField(max_length=500, null=True, blank=True)
     full_name = models.CharField(max_length=500, null=True, blank=True)
-    course = models.CharField(max_length=500, null=True, blank=True)
+    course = models.ForeignKey(courses_models.Course, on_delete=models.SET_NULL, null=True, blank=True)
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     phone = models.CharField(max_length=500, null=True, blank=True)

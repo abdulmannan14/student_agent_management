@@ -34,6 +34,15 @@
                         </a>
                     </li>
                     <li class="nav-item Agent">
+                        <a class="nav-link" href="{% url 'all-course' %}" role="button"
+                           aria-expanded="true" aria-controls="navbar-dashboards">
+                            <div class="icon icon-shape rounded-circle shadow">
+                                <i class="fa-solid fa-book fa-gradient"></i>
+                            </div>
+
+                            <span class="nav-link-text ml-2 text-dark">Courses</span>
+                        </a>
+                    </li><li class="nav-item Agent">
                         <a class="nav-link" href="{% url 'all-agent' %}" role="button"
                            aria-expanded="true" aria-controls="navbar-dashboards">
                             <div class="icon icon-shape rounded-circle shadow">
@@ -69,6 +78,51 @@
                             </div>
 
                             <span class="nav-link-text ml-2 text-dark">Reports</span>
+                        </a>
+                    </li>
+                    <li class="nav-item Student">
+                        <a class="nav-link" href="{% url 'add-commission' %}" role="button"
+                           aria-expanded="false"
+                           aria-controls="navbar-vehicle">
+                            <div class="icon icon-shape rounded-circle shadow">
+                                <i class="fa-solid fa-money-bill-wave-alt fa-gradient"></i>
+                            </div>
+
+                            <span class="nav-link-text ml-2 text-dark">Add Commission</span>
+                        </a>
+                    </li>
+                    <li class="nav-item Student">
+                        <a class="nav-link" href="{% url 'add-fee' %}" role="button"
+                           aria-expanded="false"
+                           aria-controls="navbar-vehicle">
+                            <div class="icon icon-shape rounded-circle shadow">
+                                <i class="fa-solid fa-dollar-sign fa-gradient"></i>
+                            </div>
+
+                            <span class="nav-link-text ml-2 text-dark">Add Fee</span>
+                        </a>
+                    </li>
+                    <li class="nav-item Student">
+                        <a class="nav-link" href="{% url 'change-pass' %}" role="button"
+                           aria-expanded="false"
+                           aria-controls="navbar-vehicle">
+                            <div class="icon icon-shape rounded-circle shadow">
+                                <i class="fa-solid fa-lock  fa-gradient"></i>
+                            </div>
+
+                            <span class="nav-link-text ml-2 text-dark">Change Password</span>
+                        </a>
+                    </li>
+                    </li>
+                    <li class="nav-item Student">
+                        <a class="nav-link" href="{% url 'logout' %}" role="button"
+                           aria-expanded="false"
+                           aria-controls="navbar-vehicle">
+                            <div class="icon icon-shape rounded-circle shadow">
+                                <i class="fa-solid fa-sign-out fa-rotate-180 fa-gradient"></i>
+                            </div>
+
+                            <span class="nav-link-text ml-2 text-dark">Logout</span>
                         </a>
                     </li>
 

@@ -2,7 +2,10 @@ from django.urls import path, reverse
 from . import views as student_views
 
 urlpatterns = [
-    path("", student_views.index, name="student-index"),
+    path("", student_views.user_login, name="login"),
+    path("logout", student_views.user_logout, name="logout"),
+    path("change-password", student_views.user_change_password, name="change-pass"),
+    path("index", student_views.index, name="student-index"),
     path('students/all', student_views.all_students, name='all-students'),
     path('add', student_views.add_student, name='add-student'),
     path('edit/<int:pk>', student_views.edit_student, name='edit-student'),
@@ -36,6 +39,7 @@ def edit_student(pk: int):
 def edit_student_fee(pk: int):
     return reverse("edit-student-fee", kwargs={"pk": pk})
 
+
 def delete_student_fee(pk: int):
     return reverse("delete-student-fee", kwargs={"pk": pk})
 
@@ -46,3 +50,7 @@ def history_student(pk: int):
 
 def delete_student(pk: int):
     return reverse("delete-student", kwargs={"pk": pk})
+
+
+def user_login():
+    return reverse("login")

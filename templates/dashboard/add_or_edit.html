@@ -19,7 +19,44 @@
 
                         <div class="card-body">
 
-
+                            {% if change_pass %}
+                                <form method="post" action="{% url 'change-pass' %}">
+                                    {% csrf_token %}
+                                    <fieldset id="email-field" class="with-placeholder">
+                                        <legend>Current Password</legend>
+                                        <div>
+                                            <input type="password" name="current_password" id="current_password"
+                                                   autocomplete="off" autocorrect="off"
+                                                   autocapitalize="off"
+                                                   spellcheck="false" required/>
+                                            <div class="placeholder"></div>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset id="password-field">
+                                        <legend>New Password</legend>
+                                        <div>
+                                            <input type="password" name="new_password" id="new_password"
+                                                   autocomplete="off" autocorrect="off"
+                                                   autocapitalize="off" spellcheck="false" required/>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset id="password-field">
+                                        <legend>Confirm New Password</legend>
+                                        <div>
+                                            <input type="password" name="confirm_new_password"
+                                                   id="confirm_new_password" autocomplete="off" autocorrect="off"
+                                                   autocapitalize="off" spellcheck="false" required/>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset id="submit-field">
+                                        <legend></legend>
+                                        <div>
+                                            <input class="btn-md btn-success" type="submit" name="submit" id="submit"
+                                                   value="Submit"/>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            {% endif %}
                             <form method="post" class="mannan_form" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 {% if total_amount %}
@@ -28,6 +65,7 @@
                                     </div>
 
                                 {% endif %}
+
                                 {% if employee_form %}
                                     <div class="row">
                                         <div class="col-md-12 mt-3">
@@ -772,6 +810,17 @@
                 }
             }
         )
+    </script>
+    <script>
+        $("#id_weeks").on('keyup', function () {
+            let value = $(this).val()
+            let months = value / 4.34
+            months = months.toFixed(0);
+            $("#id_months").val(months)
+            let quarter = months / 3
+            quarter = quarter.toFixed(0);
+            $("#id_quarters").val(quarter)
+        })
     </script>
 
 

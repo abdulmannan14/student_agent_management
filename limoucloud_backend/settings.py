@@ -47,8 +47,9 @@ ALLOWED_HOSTS = ["limoucloud.com", "qa.limoucloud.com", "lc-qa-whq3ht5hlq-uc.a.r
 MY_APPS = [
     "django_tables2",
     'Agent',
-    'Student'
+    'Student',
     # 'rolepermissions',
+    'Courses',
 ]
 
 INSTALLED_APPS = [

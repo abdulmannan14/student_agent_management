@@ -1,5 +1,6 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Sum
+from django.contrib.auth import logout, authenticate, login
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
@@ -13,10 +14,91 @@ from . import models as student_models, tables as student_table, forms as studen
 from Agent import models as agent_models
 from django.templatetags.static import static
 from datetime import datetime, timedelta, date
+from django.contrib.auth.models import User
+from . import urls as student_urls
+from django.contrib.auth.hashers import check_password
 
 
 # Create your views here.
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(
+            username=username,
+            password=password
+        )
+        if user is not None:
+            login(request, user)
+            message = f'Hello {user.username}! You have been logged in'
+            messages.success(request, message)
+            return redirect('student-index')
+        else:
+            message = 'Login failed! User Not Found'
+            messages.error(request, message)
+            return redirect('login')
+    else:
+        context = {
+            'login_page': True,
+        }
 
+    return render(request, "dashboard/login.html", context)
+
+
+@login_required(login_url='login')
+def user_logout(request):
+    logout(request)
+    return redirect('login')
+
+
+@login_required(login_url='login')
+def user_change_password(request):
+    user = request.user
+    print("this is usern=========", user)
+    if request.method == 'POST':
+        previous_password = request.POST.get('current_password')
+        password = request.user.password
+        matchcheck = check_password(previous_password, password)
+        if not matchcheck:
+            messages.error(request, 'Current Password is Incorrect')
+            return redirect('change-pass')
+        new_password = request.POST.get('new_password')
+        confirm_new_password = request.POST.get('confirm_new_password')
+        if new_password != confirm_new_password:
+            messages.error(request, 'New Password and Confirm New Password is not Matching')
+            return redirect('change-pass')
+        user.set_password(new_password)
+        user.save()
+
+        user = authenticate(
+            username=user.username,
+            password=new_password
+        )
+        if user is not None:
+            login(request, user)
+
+        messages.success(request, 'Password Changed Successfully')
+
+        return redirect('change-pass')
+
+
+    else:
+        context = {
+            'change_pass': True,
+            "page_title": "Change Password",
+            # "form1": form,
+            "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
+            # 'button': 'Submit',
+            # 'cancel_button': 'Cancel',
+            # 'cancel_button_url': reverse('all-students'),
+            'nav_conf': {
+                'active_classes': ['student'],
+            },
+        }
+    return render(request, "dashboard/add_or_edit.html", context)
+
+
+@login_required(login_url='login')
 def index(request):
     today = date.today()
     upcoming_fees = []
@@ -73,6 +155,7 @@ def index(request):
     return render(request, "dashboard/company/index.html", context)
 
 
+@login_required(login_url='login')
 def all_students(request):
     students = student_models.StudentModel.objects.all()
     sort = request.GET.get('sort', None)
@@ -104,6 +187,7 @@ def all_students(request):
     return render(request, "dashboard/list-entries.html", context)
 
 
+@login_required(login_url='login')
 def history_student(request, pk):
     student = get_object_or_404(student_models.StudentModel, pk=pk)
     students = student_models.PayModelStudent.objects.filter(student=student, fee_pay__gt=0)
@@ -130,6 +214,7 @@ def history_student(request, pk):
     return render(request, "dashboard/list-entries.html", context)
 
 
+@login_required(login_url='login')
 def add_student(request):
     today = datetime.today()
     if request.method == "POST":
@@ -169,6 +254,7 @@ def add_student(request):
     return render(request, "dashboard/add_or_edit.html", context)
 
 
+@login_required(login_url='login')
 def edit_student(request, pk):
     student = get_object_or_404(student_models.StudentModel, pk=pk)
     if request.method == "POST":
@@ -208,6 +294,7 @@ def delete_student(request, pk):
 
 
 # =====+FEE RELATED+==========================================================
+@login_required(login_url='login')
 def add_fee(request):
     if request.method == 'POST':
         form = student_form.AddFeeForm(request.POST)
@@ -287,6 +374,7 @@ def add_fee(request):
         return render(request, "dashboard/add_or_edit.html", context)
 
 
+@login_required(login_url='login')
 def edit_fee(request, pk):
     fee_obj = student_models.PayModelStudent.objects.get(pk=pk)
     previous_fee_amount = fee_obj.fee_pay
@@ -592,6 +680,7 @@ def edit_fee(request, pk):
         return render(request, "dashboard/add_or_edit.html", context)
 
 
+@login_required(login_url='login')
 def delete_fee(request, pk):
     fee_obj = student_models.PayModelStudent.objects.get(pk=pk)
     student_obj = fee_obj.student
@@ -615,11 +704,11 @@ def delete_fee(request, pk):
 
 
 # ======AJAX JAVA SCRIPT======================================================
-
+@login_required(login_url='login')
 def get_agent_commission(request):
     agent_id = request.GET.get('agent_id', 0)
     agent = get_object_or_404(agent_models.AgentModel, pk=agent_id)
-    agent:agent_models.AgentModel
+    agent: agent_models.AgentModel
     # agent:agent_models.AgentModel = agent_models.AgentModel.objects.get(pk=agent_id)
     # commission = agent.commission
     data = {
@@ -629,6 +718,7 @@ def get_agent_commission(request):
     return JsonResponse(success_response(data=data), safe=False)
 
 
+@login_required(login_url='login')
 def get_student_fee_details(request):
     today = datetime.today()
     student = request.GET.get('student', '')
@@ -654,7 +744,7 @@ def get_student_fee_details(request):
 
 
 # ==============STUDENT REPORT===================================
-
+@login_required(login_url='login')
 def student_report(request):
     today = datetime.today()
     students = student_models.StudentModel.objects.all()
