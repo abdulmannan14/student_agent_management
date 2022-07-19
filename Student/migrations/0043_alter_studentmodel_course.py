@@ -10,6 +10,9 @@ class Migration(migrations.Migration):
         ('Courses', '0002_auto_20220720_0151'),
         ('Student', '0042_alter_paymodelstudent_agent_commision_amount'),
     ]
+    operations = [
+        migrations.RunSQL('ALTER TABLE documents_document_tags ALTER tag_id TYPE varchar(32);'),
+    ]
 
     operations = [
         migrations.AlterField(
