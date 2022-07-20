@@ -42,7 +42,8 @@
 
                             <span class="nav-link-text ml-2 text-dark">Courses</span>
                         </a>
-                    </li><li class="nav-item Agent">
+                    </li>
+                    <li class="nav-item Agent">
                         <a class="nav-link" href="{% url 'all-agent' %}" role="button"
                            aria-expanded="true" aria-controls="navbar-dashboards">
                             <div class="icon icon-shape rounded-circle shadow">
@@ -68,19 +69,6 @@
                         </a>
                     </li>
                     <li class="nav-item Student">
-                        <a class="nav-link" href="{% url 'student-report' %}" role="button"
-                           aria-expanded="false"
-                           aria-controls="navbar-vehicle">
-                            <div class="icon icon-shape rounded-circle shadow">
-                                {#                                <img src="https://img.icons8.com/external-photo3ideastudio-solid-photo3ideastudio/24/000000/external-reservation-restaurant-photo3ideastudio-solid-photo3ideastudio.png"/>#}
-                                {#                                <img class="sidebar-icons" src="{% static 'dashboard/assets/img/sidebar/reservations.svg' %}"/>#}
-                                <i class="fa-solid fa-bookmark fa-gradient"></i>
-                            </div>
-
-                            <span class="nav-link-text ml-2 text-dark">Reports</span>
-                        </a>
-                    </li>
-                    <li class="nav-item Student">
                         <a class="nav-link" href="{% url 'add-commission' %}" role="button"
                            aria-expanded="false"
                            aria-controls="navbar-vehicle">
@@ -102,6 +90,33 @@
                             <span class="nav-link-text ml-2 text-dark">Add Fee</span>
                         </a>
                     </li>
+                    <li class="nav-item Student">
+                        <a class="nav-link" href="{% url 'student-report' %}" role="button"
+                           aria-expanded="false"
+                           aria-controls="navbar-vehicle">
+                            <div class="icon icon-shape rounded-circle shadow">
+                                {#                                <img src="https://img.icons8.com/external-photo3ideastudio-solid-photo3ideastudio/24/000000/external-reservation-restaurant-photo3ideastudio-solid-photo3ideastudio.png"/>#}
+                                {#                                <img class="sidebar-icons" src="{% static 'dashboard/assets/img/sidebar/reservations.svg' %}"/>#}
+                                <i class="fa-solid fa-bookmark fa-gradient"></i>
+                            </div>
+
+                            <span class="nav-link-text ml-2 text-dark">Reports</span>
+                        </a>
+                    </li>
+                    <li class="nav-item Student">
+                        <a class="nav-link" href="{% url 'refunded-student' %}" role="button"
+                           aria-expanded="false"
+                           aria-controls="navbar-vehicle">
+                            <div class="icon icon-shape rounded-circle shadow">
+                                {#                                <img src="https://img.icons8.com/external-photo3ideastudio-solid-photo3ideastudio/24/000000/external-reservation-restaurant-photo3ideastudio-solid-photo3ideastudio.png"/>#}
+                                {#                                <img class="sidebar-icons" src="{% static 'dashboard/assets/img/sidebar/reservations.svg' %}"/>#}
+                                <i class="fa-solid fa-undo fa-gradient"></i>
+                            </div>
+
+                            <span class="nav-link-text ml-2 text-dark">Refunded Student List</span>
+                        </a>
+                    </li>
+
                     <li class="nav-item Student">
                         <a class="nav-link" href="{% url 'change-pass' %}" role="button"
                            aria-expanded="false"

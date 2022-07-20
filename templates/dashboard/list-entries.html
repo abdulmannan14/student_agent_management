@@ -31,19 +31,12 @@
                             </div>
                             <div class="col-lg-6 col-5 text-right">
                                 {% for link in links %}
-                                    {% if link.log == "log" %}
-                                        <a {{ link.attrs }}
-                                                class="btn btn-sm text-white close_account {{ link.color_class }}"><span><i
-                                                class="{{ link.icon }}"></i> {{ link.title }}</span></a>
-                                    {% endif %}
-                                    {% if  not link.log == "log" and link.log == "log2" %}
-                                        <a {{ link.attrs }}
-                                                class="btn btn-sm text-white reservation_btn {{ link.color_class }}"><span><i
-                                                class="{{ link.icon }}"></i> {{ link.title }}</span></a>
-                                    {% endif %}
                                     {% if  not link.log == "log" and not link.log == "log2" %}
                                         <a {{ link.attrs }} href="{{ link.href }}"
-                                                            class="btn btn-sm {{ link.color_class }}"><span><i
+                                                            class="btn btn-sm {{ link.color_class }}"
+                                                            data-toggle="{{ link.data_toggle }}"
+                                                            data-target="{{ link.data_target }}"
+                                                            data-name="{{ link.data_name }}"><span><i
                                                 class="{{ link.icon }}"></i> {{ link.title }}</span></a>
 
                                     {% endif %}
@@ -63,6 +56,47 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="refund" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="post" action="{{ redirect_from_modal }}">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            Refund Fee?
+                        </h5>
+
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+
+                    </div>
+                    <div class="modal-body">
+
+                        <p class="bold">Make sure before you Refund. This action will Stop all related data and will
+                            never be resumed.
+                            Please Select an Option Below</p>
+                        <h4 class="bold text-underline">Reason:</h4>
+                        <textarea placeholder="please enter the reason of refunding!" rows='4' cols='50'
+                                  name='refund_reason' id="refund_reason_id" required></textarea>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"><span>Cancel</span></button>
+                        <button  type="Submit" class="btn btn-danger confirm">Confirm</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
 
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
@@ -126,9 +160,10 @@
                 var name = button.data('name') // Extract info from data-* attributes
                 var url = button.data('whatever') // Extract info from data-* attributes
                 var modal = $(this)
-                modal.find('.modal-title').html('Delete <strong>' + name + '</strong> ?')
+                modal.find('.modal-title').html('Delete <strong>' + name + '</strong>`')
                 modal.find('.modal-body')
-                    .html(`<p>Make sure before you delete. This action will delete every data related to <code>${name}</code></p>`)
+                    .html(`<p>Make sure before you Delete. This action will Permenently delete every data related to <code class="text-dark">${name}</code> and will never be restored.</p>
+                            `)
                 modal.find('a.confirm').attr('href', url)
             })
             $('#detailModal').on('show.bs.modal', function (event) {

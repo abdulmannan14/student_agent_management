@@ -33,6 +33,12 @@ class AgentModel(BaseModel):
 
 # Create your models here.
 class CommissionModelAgent(BaseModel):
+    cash = "CASH"
+    bank = "BANK"
+    mode_of_payment_choices = [
+        (cash, cash),
+        (bank, bank),
+    ]
     student = models.ForeignKey('Student.StudentModel', on_delete=models.CASCADE, null=True, blank=True)
     agent_name = models.CharField(max_length=100, null=True)
     agent_commission_percentage = models.CharField(max_length=100, null=True)
@@ -41,4 +47,6 @@ class CommissionModelAgent(BaseModel):
     student_paid_fee = models.CharField(max_length=100, null=True)
     current_commission_amount = models.CharField(max_length=100, null=True)
     paid_on = models.DateField(null=True, blank=True)
+    comment = models.TextField(null=True, blank=True)
+    mode_of_payment = models.CharField(max_length=100, choices=mode_of_payment_choices, null=True, blank=True)
     # commission_left = models.IntegerField(null=True, blank=True)

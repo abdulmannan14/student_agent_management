@@ -41,4 +41,9 @@ class AgentCommissionForm(forms.ModelForm):
 
     class Meta:
         model = agent_models.CommissionModelAgent
-        fields = "__all__"
+        fields = ['student', 'agent_name', 'agent_commission_percentage', 'agent_commission_amount',
+                  'total_commission_paid', 'student_paid_fee', 'current_commission_amount', 'mode_of_payment',
+                  'paid_on', 'comment']
+        widgets = {
+            'comment': forms.Textarea(attrs={'rows': '5', 'cols': '3'}),
+        }

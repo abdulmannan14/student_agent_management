@@ -21,6 +21,9 @@ urlpatterns = [
     path('delete/fee/<int:pk>', student_views.delete_fee, name='delete-student-fee'),
     #     =====================STUDENT REPORT=============================================
     path('student/report', student_views.student_report, name='student-report'),
+    # ==================================STUDENT FEE REFUND==================================
+    path('refunded-student', student_views.refunded_student, name='refunded-student'),
+    path('student/fee-refund', student_views.student_fee_refund, name='student-fee-refund'),
 ]
 
 

@@ -23,36 +23,49 @@
                                 <form method="post" action="{% url 'change-pass' %}">
                                     {% csrf_token %}
                                     <fieldset id="email-field" class="with-placeholder">
-                                        <legend>Current Password</legend>
+                                        <legend class="form-control font-weight-bolder text-dark">Current Password
+                                        </legend>
                                         <div>
-                                            <input type="password" name="current_password" id="current_password"
+                                            <input class="form-control " type="password" name="current_password"
+                                                   id="current_password"
                                                    autocomplete="off" autocorrect="off"
                                                    autocapitalize="off"
-                                                   spellcheck="false" required/>
-                                            <div class="placeholder"></div>
+                                                   spellcheck="false" required placeholder="Current Password"/>
+                                            <div class=" placeholder">
+                                            </div>
                                         </div>
                                     </fieldset>
                                     <fieldset id="password-field">
-                                        <legend>New Password</legend>
+                                        <legend class="form-control font-weight-bolder text-dark">New Password</legend>
                                         <div>
-                                            <input type="password" name="new_password" id="new_password"
+                                            <input class="form-control" type="password" name="new_password"
+                                                   id="new_password"
                                                    autocomplete="off" autocorrect="off"
-                                                   autocapitalize="off" spellcheck="false" required/>
+                                                   autocapitalize="off" spellcheck="false" required
+                                                   placeholder="New Password"/>
                                         </div>
                                     </fieldset>
                                     <fieldset id="password-field">
-                                        <legend>Confirm New Password</legend>
+                                        <legend class="form-control font-weight-bolder text-dark">Confirm New Password
+                                        </legend>
                                         <div>
-                                            <input type="password" name="confirm_new_password"
+                                            <input class="form-control " type="password" name="confirm_new_password"
                                                    id="confirm_new_password" autocomplete="off" autocorrect="off"
-                                                   autocapitalize="off" spellcheck="false" required/>
+                                                   autocapitalize="off" spellcheck="false" required
+                                                   placeholder="Confirm New Password"/>
                                         </div>
                                     </fieldset>
-                                    <fieldset id="submit-field">
+                                    <fieldset id=" submit-field">
                                         <legend></legend>
-                                        <div>
-                                            <input class="btn-md btn-success" type="submit" name="submit" id="submit"
-                                                   value="Submit"/>
+                                        <div class="row">
+                                            <div class="col-5"></div>
+                                            <div class="col-6">
+                                                <input class="btn-lg btn-primary form-control"
+                                                       style="line-height: 0.75;font-size: 20px; height: 40px;width: 150px" type="submit"
+                                                       name="submit"
+                                                       id="submit"
+                                                       value="Submit"/>
+                                            </div>
                                         </div>
                                     </fieldset>
                                 </form>
@@ -286,7 +299,8 @@
                                                         <label class="form-control-label">{{ field.label }}</label>
                                                         {% render_field field class="form-control" placeholder=field.label %}
                                                         <button class="btn-sm btn-primary" style="margin-top: 5px"
-                                                                type="button" id="id-btn"><span>&plus; Add New Vehicle Type</span>
+                                                                type="button" id="id-btn">
+                                                            <span>&plus; Add New Vehicle Type</span>
                                                         </button>
                                                         <div id="id-input" style="display: none">
                                                             <input id="id-input-field-vehicle" class="add-manual-design"
@@ -294,7 +308,8 @@
                                                             />
                                                             <div class="text-white ml-8 form-inline mt-1"
                                                                  style="float:right;">
-                                                                <a id="id-submit" class="btn-sm btn-primary mr-1"><span>Add</span></a>
+                                                                <a id="id-submit"
+                                                                   class="btn-sm btn-primary mr-1"><span>Add</span></a>
                                                                 <a id="id-cancel" class="btn-sm btn-danger">Cancel</a>
                                                             </div>
                                                         </div>
@@ -335,14 +350,16 @@
                                                         <label class="form-control-label">{{ field.label }}</label>
                                                         {% render_field field class="form-control" placeholder=field.label %}
                                                         <button class="btn-sm btn-primary" style="margin-top: 5px"
-                                                                type="button" id="id-btn"><span>&plus; Add New Service Type</span>
+                                                                type="button" id="id-btn">
+                                                            <span>&plus; Add New Service Type</span>
                                                         </button>
                                                         <div id="id-input" style="display: none">
                                                             <input id="id-input-field-service" class="add-manual-design"
                                                                    placeholder="Add New Service Type "/>
                                                             <div class="text-white ml-8 form-inline mt-1"
                                                                  style="float: right">
-                                                                <a id="id-submit" class="btn-sm btn-primary mr-1"><span>Add</span></a>
+                                                                <a id="id-submit"
+                                                                   class="btn-sm btn-primary mr-1"><span>Add</span></a>
                                                                 <a id="id-cancel" class="btn-sm btn-danger">Cancel</a>
                                                             </div>
                                                         </div>
@@ -392,7 +409,8 @@
                                                                    placeholder="Add New Fleet "/>
                                                             <div class="text-white ml-8 form-inline mt-1"
                                                                  style="float: right">
-                                                                <a id="id-submit" class="btn-sm btn-primary mr-1"><span>Add</span></a>
+                                                                <a id="id-submit"
+                                                                   class="btn-sm btn-primary mr-1"><span>Add</span></a>
                                                                 <a id="id-cancel" class="btn-sm btn-danger">Cancel</a>
                                                             </div>
 
@@ -597,7 +615,7 @@
                 </div>
             </div>
         </div>
-        <div id="ordermodal" class="modal fade">
+        <div id="refunds" class="modal fade">
             <div class="modal-dialog" style="width:5250px;">
                 <div class="modal-content">
                     <div class="modal-header">

@@ -123,7 +123,7 @@ def add_commission(request):
             student_obj.save()
             commission.save()
             messages.success(request, f"Commission Added Successfully!")
-            return redirect("all-students")
+            return redirect('all-agent')
         else:
             pass
     else:
@@ -144,7 +144,6 @@ def add_commission(request):
 
 
 def edit_commission(request, pk):
-    print("this is commission object==========================", pk)
     commission_obj = agent_models.CommissionModelAgent.objects.get(pk=pk)
     previous_commission_amount = commission_obj.current_commission_amount
     today = datetime.today().date()
@@ -168,14 +167,14 @@ def edit_commission(request, pk):
             student_obj.commission_to_pay = student_obj.commission_to_pay - float(current_commission_amount)
             student_obj.save()
             commission.save()
-            messages.success(request, f"Commission Added Successfully!")
-            return redirect("all-students")
+            messages.success(request, f"Commission Edited Successfully!")
+            return redirect('commission-history', student)
         else:
             pass
     else:
         form = agent_form.AgentCommissionForm(instance=commission_obj)
         context = {
-            "page_title": "Add Commission",
+            "page_title": "Edit Commission",
             "form3": form,
             "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
             'button': 'Submit',

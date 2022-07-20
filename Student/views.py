@@ -54,7 +54,6 @@ def user_logout(request):
 @login_required(login_url='login')
 def user_change_password(request):
     user = request.user
-    print("this is usern=========", user)
     if request.method == 'POST':
         previous_password = request.POST.get('current_password')
         password = request.user.password
@@ -80,8 +79,6 @@ def user_change_password(request):
         messages.success(request, 'Password Changed Successfully')
 
         return redirect('change-pass')
-
-
     else:
         context = {
             'change_pass': True,
@@ -113,9 +110,11 @@ def index(request):
     for i in commissions:
         commission_to_pay.append(i.commission_to_pay)
     total_commissions_to_pay = sum(commission_to_pay)
-    total_student = student_models.StudentModel.objects.all().count()
+    total_student = student_models.StudentModel.objects.all()
+    total_student = total_student.values('acmi_number').distinct().count()
     total_agents = agent_models.AgentModel.objects.all().count()
-
+    total_enrollments = student_models.StudentModel.objects.all().count()
+    total_refunded_student = student_models.StudentModel.objects.filter(refunded=True).count()
     context = {
         "cards": [
             {
@@ -140,6 +139,18 @@ def index(request):
                 "title": " Total Agents",
                 "value": total_agents,
                 "icon": "fa-users",
+                # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/TripsToday.svg"),
+            },
+            {
+                "title": " Total Enrollments",
+                "value": total_enrollments,
+                "icon": "fa-book",
+                # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/TripsToday.svg"),
+            },
+            {
+                "title": " Total Refunded Student",
+                "value": total_refunded_student,
+                "icon": "fa-blind",
                 # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/TripsToday.svg"),
             },
 
@@ -199,12 +210,48 @@ def history_student(request, pk):
         "links": [
             {
                 "color_class": "btn-primary",
+                "title": f"Refund {student.full_name}'s Complete Fee",
+                "icon": "fa fa-undo",
+                'data_toggle': 'modal',
+                'data_target': '#refund',
+                'data_name': f'{student.full_name}',
+            }, {
+                "color_class": "btn-primary",
                 "title": "All Student",
                 "href": reverse("all-students"),
                 "icon": "fa fa-graduation-cap"
             },
         ],
+        'redirect_from_modal': reverse("student-fee-refund"),
         "page_title": f"{student.full_name} Payment History",
+        "table": students,
+        "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
+        'nav_conf': {
+            'active_classes': ['student'],
+        },
+    }
+    return render(request, "dashboard/list-entries.html", context)
+
+
+@login_required(login_url='login')
+def student_fee_refund(request):
+    print("entered===========================================HELLO WORLD====")
+    print("this is value========", request.POST.get('refund_reason'))
+    print("this is value========", request.POST.get('refund_reason_id'))
+    print("this is value========", request.GET.get('refund_reason'))
+    print("this is value========", request.GET.get('refund_reason_id'))
+
+
+@login_required(login_url='login')
+def refunded_student(request):
+    students = student_models.StudentModel.objects.filter(refunded=True)
+    sort = request.GET.get('sort', None)
+    if sort:
+        students = students.order_by(sort)
+    students = student_table.StudentTable(students)
+    context = {
+
+        "page_title": "List of Refunded Student",
         "table": students,
         "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
         'nav_conf': {
@@ -747,7 +794,7 @@ def get_student_fee_details(request):
 @login_required(login_url='login')
 def student_report(request):
     today = datetime.today()
-    students = student_models.StudentModel.objects.all()
+    students = student_models.StudentModel.objects.filter(refunded=False)
     for student in students:
         check_outstanding_fee = student_models.StudentModel.objects.filter(pk=student.id,
                                                                            last_paid_on__range=(

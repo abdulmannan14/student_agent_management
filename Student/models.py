@@ -40,6 +40,7 @@ class StudentModel(BaseModel):
     amount_inserting_date = models.DateField(null=True, blank=True)
     last_paid_on = models.DateField(null=True, blank=True)
     warning_sent = models.BooleanField(default=False)
+    refunded = models.BooleanField(default=False)
     commission_to_pay = models.FloatField(null=True, blank=True, default=0)
 
     def __str__(self):
@@ -48,6 +49,12 @@ class StudentModel(BaseModel):
 
 # Create your models here.
 class PayModelStudent(BaseModel):
+    cash = "CASH"
+    bank = "BANK"
+    mode_of_payment_choices = [
+        (cash, cash),
+        (bank, bank),
+    ]
     student = models.ForeignKey(StudentModel, on_delete=models.CASCADE, null=True, blank=True)
     fee_pay = models.FloatField(null=True, blank=True)
     paid_on = models.DateField(null=True, blank=True)
@@ -55,5 +62,7 @@ class PayModelStudent(BaseModel):
     is_application_fee = models.BooleanField(blank=True, default=False)
     is_tuition_and_material_fee = models.BooleanField(blank=True, default=False)
     agent_commision_amount = models.FloatField(null=True, blank=True, default=0)
+    comment = models.TextField(null=True, blank=True)
+    mode_of_payment = models.CharField(max_length=100, choices=mode_of_payment_choices, null=True, blank=True)
     # outstanding_fee = models.IntegerField(null=True, blank=True)
     # total_required_fee = models.IntegerField(null=True, blank=True)
