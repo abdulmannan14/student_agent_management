@@ -218,6 +218,13 @@ MEDIA_URL = '/media/'
 
 from .env_config import *
 
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'mannanmaan1425@gmail.com'
+EMAIL_HOST_PASSWORD = 'xnnsboiuxyvzrgvw'
+EMAIL_PORT = 587
+from_email = EMAIL_HOST_USER
+
 google_api_key = 'AIzaSyAPFHIiScwARNq20c7nNYzKPY6sPFL6grE'
 
 # FOR HEROKU

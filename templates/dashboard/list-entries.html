@@ -1,6 +1,9 @@
 {% extends 'dashboard/base.html' %}
 {% load django_tables2 %}
+{% load static %}
+
 {% block extra_styles %}
+
     {% load widget_tweaks %}
     {% include 'dashboard/partials/datatable-styles.html' %}
 {% endblock %}
@@ -8,9 +11,11 @@
     {{ nav_bar }}
 {% endblock %}
 {% block main %}
+
     <div class="main-content" id="panel">
         {% include 'dashboard/company/partials/header.html' %}
         <div class="container-fluid mt--6">
+
             <div class="row">
                 <div class="col">
                     <div class="card">
@@ -30,6 +35,12 @@
 
                             </div>
                             <div class="col-lg-6 col-5 text-right">
+                                {#                                    <a href="#" class="action-btn" data-original-title="Download">#}
+                                {#                                        <span class="btn-inner--icon"><i class="fas fa-download"></i></span>#}
+                                {#                                    </a>#}
+                            {% if export_enable %}
+                                <button type="button" id="export_button" class="btn btn-success btn-sm">Export</button>
+                            {% endif %}
                                 {% for link in links %}
                                     {% if  not link.log == "log" and not link.log == "log2" %}
                                         <a {{ link.attrs }} href="{{ link.href }}"
@@ -43,11 +54,11 @@
                                 {% endfor %}
                             </div>
                         </div>
-
                         {% if not client_form %}
                             {% if not reservation_form %}
                                 <div class="table-responsive">
                                     {% render_table table %}
+
                                 </div>
                             {% endif %}
                         {% endif %}
@@ -62,6 +73,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form method="post" action="{{ redirect_from_modal }}">
+                    {% csrf_token %}
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">
                             Refund Fee?
@@ -85,7 +97,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal"><span>Cancel</span></button>
-                        <button  type="Submit" class="btn btn-danger confirm">Confirm</button>
+                        <button type="Submit" class="btn btn-danger confirm">Confirm</button>
                     </div>
                 </form>
 
@@ -120,29 +132,30 @@
     </div>
 
 
-    {#    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel"#}
-    {#         aria-hidden="true">#}
-    {#        <div class="modal-dialog" role="document">#}
-    {#            <div class="modal-content">#}
-    {#                <div class="modal-header">#}
-    {#                    <h5 class="modal-title" id="detailModalLabel"></h5>#}
-    {#                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">#}
-    {#                        <span aria-hidden="true">&times;</span>#}
-    {#                    </button>#}
-    {#                </div>#}
-    {#                <div class="modal-body" style="text-align: center">#}
-    {##}
-    {#                </div>#}
-    {#                <div class="modal-footer">#}
-    {#                    <button type="button" class="btn btn-primary" data-dismiss="modal"><span>Close</span></button>#}
-    {##}
-    {#                </div>#}
-    {#            </div>#}
-    {#        </div>#}
-    {#    </div>#}
+    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align: center">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"><span>Close</span></button>
+
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
 {% block extra_js %}
+
     {% if messages %}
         {% for message in messages %}
             <script>
@@ -163,7 +176,7 @@
                 modal.find('.modal-title').html('Delete <strong>' + name + '</strong>`')
                 modal.find('.modal-body')
                     .html(`<p>Make sure before you Delete. This action will Permenently delete every data related to <code class="text-dark">${name}</code> and will never be restored.</p>
-                            `)
+                                `)
                 modal.find('a.confirm').attr('href', url)
             })
             $('#detailModal').on('show.bs.modal', function (event) {
@@ -209,4 +222,25 @@
         })
 
     </script>
+
+
+    <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+    <script>
+        function html_table_to_excel(type) {
+            var data = document.getElementById('printableArea');
+
+            var file = XLSX.utils.table_to_book(data, {sheet: "sheet1"});
+
+            XLSX.write(file, {bookType: type, bookSST: true, type: 'base64'});
+
+            XLSX.writeFile(file, 'file.' + type);
+        }
+
+        const export_button = document.getElementById('export_button');
+
+        export_button.addEventListener('click', () => {
+            html_table_to_excel('xlsx');
+        });
+    </script>
+
 {% endblock %}

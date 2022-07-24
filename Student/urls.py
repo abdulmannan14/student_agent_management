@@ -23,7 +23,11 @@ urlpatterns = [
     path('student/report', student_views.student_report, name='student-report'),
     # ==================================STUDENT FEE REFUND==================================
     path('refunded-student', student_views.refunded_student, name='refunded-student'),
-    path('student/fee-refund', student_views.student_fee_refund, name='student-fee-refund'),
+    path('student/fee-refund/<int:pk>', student_views.student_fee_refund, name='student-fee-refund'),
+    path('student/fee-refund/<int:pk>', student_views.student_fee_refund, name='student-fee-refund'),
+    # ===========================SEND MAIL TO STUDENT=================================================
+    path('student/send/warning/mail/<int:pk>', student_views.send_mail_to_student, name='send-mail-to-student'),
+
 ]
 
 
@@ -57,3 +61,11 @@ def delete_student(pk: int):
 
 def user_login():
     return reverse("login")
+
+
+def student_fee_refund(pk: int):
+    return reverse('student-fee-refund', kwargs={'pk': pk})
+
+
+def send_mail_student(pk: int):
+    return reverse('send-mail-to-student', kwargs={'pk': pk})

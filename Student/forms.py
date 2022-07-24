@@ -41,7 +41,7 @@ class StudentForm(forms.ModelForm):
         exclude = ['paid_fee', 'previous_student_fee_history', 'warning_sent', 'previous_commission_history',
                    'outstanding_fee', 'last_paid_on', 'total_commission_paid', 'amount_already_inserted',
                    'amount_inserting_date', 'commission_to_pay', 'application_fee_paid', 'material_fee_paid',
-                   'refunded']
+                   'refunded', 'refund_reason']
 
 
 class StudentFormEdit(forms.ModelForm):
@@ -72,7 +72,7 @@ class StudentFormEdit(forms.ModelForm):
         fields = "__all__"
         exclude = ['total_commission_paid', 'paid_fee', 'previous_student_fee_history', 'previous_commission_history',
                    'amount_inserting_date', 'amount_already_inserted', 'last_paid_on', 'application_fee_paid',
-                   'material_fee_paid', 'refunded']
+                   'material_fee_paid', 'refunded', 'refund_reason']
 
 
 class AddFeeForm(forms.ModelForm):

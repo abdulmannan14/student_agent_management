@@ -11,6 +11,7 @@ from limoucloud_backend import utils as backend_utils
 from . import tables as agent_table, forms as agent_form, models as agent_models, utils as agent_utils
 from Student import models as student_models, forms as student_form
 from limoucloud_backend.utils import success_response
+from Student import utils as student_utils
 
 
 # Create your views here.
@@ -271,3 +272,19 @@ def get_student_agent_details(request):
         'commission_to_pay': student_obj.commission_to_pay if student_obj.commission_to_pay else 0,
     }
     return JsonResponse(success_response(data=context), safe=False)
+
+
+def send_mail(request, pk):
+    commission_obj = agent_models.CommissionModelAgent.objects.get(pk=pk)
+    context = {
+        'subject': f'Dear Team,',
+        'message': f'Hope this email finds you well ! <br>'
+                   f' {commission_obj.student.full_name} ({commission_obj.student.acmi_number}) has paid $ {commission_obj.student_paid_fee} so far please send us the invoice so that we can process the commission accordingly.<br>'
+                   f'Please note it take 7-10 business days to process the request.<br><br>'
+                   f'Regards,<br>'
+                   f'Accounts Team <br>'
+                   f'ACMi'}
+    student_utils._thread_making(student_utils.send_email,
+                                 ["Welcome to ACMi", context, commission_obj.student.agent_name])
+    messages.success(request, "Email sent successfully")
+    return redirect('commission-history',commission_obj.student.pk)

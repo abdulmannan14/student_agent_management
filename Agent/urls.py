@@ -15,6 +15,7 @@ urlpatterns = [
     #     ===========================AGENT STUDENTS AND HISTORY URLS==================================
     path('agent/student/<int:pk>', agent_views.agent_students, name='agent-students'),
     path('commission/history/<int:pk>', agent_views.commission_history, name='commission-history'),
+    path('send/mail/<int:pk>/', agent_views.send_mail, name='send-mail-agent'),
 
 ]
 
@@ -34,6 +35,7 @@ def edit_agent(pk: int):
 def edit_agent_commission(pk: int):
     return reverse("edit-agent-commission", kwargs={"pk": pk})
 
+
 def delete_agent_commission(pk: int):
     return reverse("delete-agent-commission", kwargs={"pk": pk})
 
@@ -48,3 +50,7 @@ def agent_students(pk: int):
 
 def commission_history(pk: int):
     return reverse("commission-history", kwargs={"pk": pk})
+
+
+def send_mail_agent(pk: int):
+    return reverse("send-mail-agent", kwargs={"pk": pk})

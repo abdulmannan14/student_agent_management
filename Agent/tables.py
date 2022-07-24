@@ -93,8 +93,10 @@ class AgentCommissionTable(tables.Table):
     def render_actions(self, record):
         return format_html("<a class='btn btn-sm text-primary' href='{update}'><i class='fa fa-pen'></i></a>"
                            "{delete}"
+                            "<a class='btn btn-sm text-warning' href={send_mail} style=background:#adadad30;><i class='fa fa-envelope' ></i>&nbsp&nbspSend Mail</a>"
                            .format(update=agent_urls.edit_agent_commission(record.pk),
-                                   delete=delete_action(agent_urls.delete_agent_commission(record.pk), record.agent_name))
+                                   delete=delete_action(agent_urls.delete_agent_commission(record.pk), record.agent_name),
+                                   send_mail =agent_urls.send_mail_agent(record.pk) )
                            )
 
     # def render_course(self, record):

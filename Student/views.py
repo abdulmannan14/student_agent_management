@@ -19,6 +19,10 @@ from . import urls as student_urls
 from django.contrib.auth.hashers import check_password
 
 
+# import xlwt
+# from xlwt import Workbook
+
+
 # Create your views here.
 def user_login(request):
     if request.method == 'POST':
@@ -222,7 +226,7 @@ def history_student(request, pk):
                 "icon": "fa fa-graduation-cap"
             },
         ],
-        'redirect_from_modal': reverse("student-fee-refund"),
+        'redirect_from_modal': student_urls.student_fee_refund(pk),
         "page_title": f"{student.full_name} Payment History",
         "table": students,
         "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
@@ -234,12 +238,15 @@ def history_student(request, pk):
 
 
 @login_required(login_url='login')
-def student_fee_refund(request):
-    print("entered===========================================HELLO WORLD====")
-    print("this is value========", request.POST.get('refund_reason'))
-    print("this is value========", request.POST.get('refund_reason_id'))
-    print("this is value========", request.GET.get('refund_reason'))
-    print("this is value========", request.GET.get('refund_reason_id'))
+def student_fee_refund(request, pk):
+    refund_reason = request.POST.get('refund_reason')
+    student = get_object_or_404(student_models.StudentModel, pk=pk)
+    student: student_models.StudentModel
+    student.refunded = True
+    student.refund_reason = refund_reason
+    student.save()
+    messages.success(request, 'Student Refunded Successfully!')
+    return redirect('all-students')
 
 
 @login_required(login_url='login')
@@ -862,7 +869,22 @@ def student_report(request):
         "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
         'nav_conf': {
             'active_classes': ['student'],
+
         },
+        'export_enable': True,
 
     }
     return render(request, "dashboard/list-entries.html", context)
+
+
+def send_mail_to_student(request, pk):
+    student = get_object_or_404(student_models.StudentModel, pk=pk)
+    context = {
+        'subject': f'Dear {student.full_name}  ({student.acmi_number}),',
+        'message': f' Your $ {student.outstanding_fee} Tuition fee is outstanding; we request you to kindly settle the payment as per agreement so that you can smoothly continue your studies at ACMi.<br><br>'
+                   'Regards,<br>'
+                   'Accounts Team<br>'
+                   'ACMi'}
+    student_utils._thread_making(student_utils.send_email, ["Welcome to ACMi", context, student])
+    messages.success(request, "Email sent successfully")
+    return redirect('student-report')

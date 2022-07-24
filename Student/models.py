@@ -41,6 +41,7 @@ class StudentModel(BaseModel):
     last_paid_on = models.DateField(null=True, blank=True)
     warning_sent = models.BooleanField(default=False)
     refunded = models.BooleanField(default=False)
+    refund_reason = models.TextField(null=True, blank=True)
     commission_to_pay = models.FloatField(null=True, blank=True, default=0)
 
     def __str__(self):

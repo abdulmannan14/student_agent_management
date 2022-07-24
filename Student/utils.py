@@ -1,9 +1,13 @@
+from django.core.mail import send_mail
 from django.shortcuts import redirect
+from django.template.loader import render_to_string
 
 from .models import StudentModel
 from Agent.models import AgentModel
 from django.contrib import messages
 from . import models as student_models
+from limoucloud_backend.settings import from_email
+from threading import Thread
 
 
 def check_grater_or_lesser(fee_amount, previous_fee_amount):
@@ -89,7 +93,7 @@ def _adding_new_values(student_obj: student_models.StudentModel, fee_amount, ded
           student_obj.outstanding_fee)
 
 
-def _performing_some_extra_checks(student_obj, request, fee_amount,deducted_fee_amount):
+def _performing_some_extra_checks(student_obj, request, fee_amount, deducted_fee_amount):
     if student_obj.paid_fee > student_obj.total_fee:
         messages.success(request, f"PROCESS NOT COMPLETED! Student Paid fee is exceeding his Total Fee amount")
         return redirect("all-students")
@@ -107,6 +111,7 @@ def _adding_final_values_to_student_and_agent_objects(fee, calculate_commission_
     student_obj.amount_already_inserted = True
     student_obj.save()
     fee.save()
+
 
 # check_if_now_application_fee_is_false = student_utils._check_if_now_application_fee_is_false(
 #                             fee, previous_is_application_fee, student_obj, fee_amount)
@@ -132,3 +137,24 @@ def _adding_final_values_to_student_and_agent_objects(fee, calculate_commission_
 #                                                                                         fee_amount, student_obj,
 #                                                                                         paid_on, previous_fee_amount)
 #
+
+
+def send_email(subject, context, user=None, email=None, password=None):
+    html = render_to_string('studentemail.html', context)
+    if not subject:
+        subject = "Dear {}".format(user.full_name)
+    send_mail(
+        subject,
+        '',
+        from_email,
+        # recipient_list=['mannanmaan1425@gmail.com'],
+        recipient_list=[user.email if user else email],
+        html_message=html, fail_silently=False
+    )
+
+
+def _thread_making(target, arguments: list):
+    t = Thread(target=target,
+               args=arguments)
+    t.setDaemon(True)
+    t.start()

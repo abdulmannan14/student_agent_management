@@ -80,21 +80,9 @@ class PayModelStudentTable(tables.Table):
 class StudentTable(tables.Table):
     actions = tables.Column(empty_values=())
     acmi_number = tables.Column(verbose_name='ACMI Number#')
-    # non_refundable_fee = tables.Column(verbose_name='non refundable fee($)')
     material_fee = tables.Column(verbose_name='material fee($)')
     tuition_fee = tables.Column(verbose_name='tuition fee($)')
-    # total_required_fee = tables.Column(verbose_name='total required fee($)')
-    # paid_fee = tables.Column(verbose_name='paid fee($)')
-    # outstanding_fee = tables.Column(verbose_name='outstanding fee($)')
-    # commission = tables.Column(verbose_name='commission(%)')
     discount = tables.Column(verbose_name='discount($)')
-
-    # agent_bonus = tables.Column(verbose_name='agent bonus($)')
-    # total_commission_amount = tables.Column(verbose_name='total commission amount($)')
-
-    # previous_commission_history = tables.Column(verbose_name='previous commission history($)')
-
-    # price = tables.Column(empty_values=())
 
     class Meta:
         attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
@@ -105,10 +93,12 @@ class StudentTable(tables.Table):
                   ]
 
     def render_acmi_number(self, record):
-        return "#{}".format(record.acmi_number)
-
-    # def render_non_refundable_fee(self, record):
-    #     return "${}".format(record.non_refundable_fee)
+        if not record.refunded:
+            return "#{}".format(record.acmi_number)
+        else:
+            return format_html("<h5 class='text-warning'>{data}</h5>".format(
+                data="#{number} ({status})".format(number=record.acmi_number, status="Refunded"))
+            )
 
     def render_material_fee(self, record):
         return "${}".format(round(record.material_fee, 2))
@@ -119,23 +109,8 @@ class StudentTable(tables.Table):
     def render_total_required_fee(self, record):
         return "${}".format(round(record.total_required_fee, 2))
 
-    # def render_paid_fee(self, record):
-    #     return "${}".format(record.paid_fee)
-
-    # def render_outstanding_fee(self, record):
-    #     return "${}".format(record.outstanding_fee)
-
-    # def render_commission(self, record):
-    #     return "${}".format(record.commission)
-
     def render_discount(self, record):
         return "${}".format(round(record.discount, 2))
-
-    # def render_agent_bonus(self, record):
-    #     return "${}".format(record.agent_bonus)
-
-    # def render_total_commission_amount(self, record):
-    #     return "${}".format(record.total_commission_amount)
 
     def render_actions(self, record):
         if not record.refunded:
@@ -147,9 +122,15 @@ class StudentTable(tables.Table):
                 delete=delete_action(student_urls.delete_student(record.pk), record.full_name),
             )
             )
+        else:
+            return format_html("{delete}".format(
+                delete=delete_action(student_urls.delete_student(record.pk), record.full_name),
+            )
+            )
 
 
 class StudentTableForReport(tables.Table):
+    actions = tables.Column(empty_values=())
     status = tables.Column(empty_values=())
     acmi_number = tables.Column(verbose_name='ACMI Number#')
     total_required_fee = tables.Column(verbose_name='total required fee($)')
@@ -165,7 +146,7 @@ class StudentTableForReport(tables.Table):
 
     # previous_commission_history = tables.Column(verbose_name='previous commission history($)')
     class Meta:
-        attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
+        attrs = {"class": "table  table-stripped data-table", 'id': 'printableArea', "data-add-url": "Url here"}
         model = student_models.StudentModel
         fields = ['status', 'outstanding_fee', 'acmi_number', 'full_name', 'email', 'course', 'total_fee', 'paid_fee',
                   'total_required_fee',
@@ -187,17 +168,17 @@ class StudentTableForReport(tables.Table):
         if record.total_required_fee < 1:
             status = "Total Paid"
             bgclass = "bg-blue"
-            style = 'border-radius: 25px;'
+            style = 'border-block-style: inherit; border-bottom-style: solid; width: 75px; height: 28px; border-radius: 8px;'
         elif not record.outstanding_fee:
             status = "Clear"
             bgclass = "bg-green"
-            style = 'border-radius: 25px;'
+            style = 'border-block-style: inherit; border-bottom-style: solid; padding-left: 15px; width: 75px; height: 28px; border-radius: 8px;'
         else:
             status = "Not Clear"
             bgclass = "bg-danger"
-            style = 'border-radius: 25px;'
+            style = 'border-block-style: inherit; border-bottom-style: solid; width: 75px; height: 28px; border-radius: 8px;'
         return format_html(
-            '<h4 class={bgclass} style={style}>{}</h4>'.format(status, bgclass=bgclass, style=style))
+            '<h4 class="{bgclass}" style="{style}">{}</h4>'.format(status, bgclass=bgclass, style=style))
 
     # def render_non_refundable_fee(self, record):
     #     return "${}".format(record.non_refundable_fee)
@@ -239,30 +220,24 @@ class StudentTableForReport(tables.Table):
         if record.application_fee_paid:
             status = 'YES'
             bgclass = "bg-green"
-            style = 'border-radius: 15px;'
-            return format_html(
-                '<h4 class={bgclass} style={style}>{}</h4>'.format(status, bgclass=bgclass, style=style))
+
         else:
             status = "NO"
             bgclass = "bg-red"
-            style = 'border-radius: 15px;'
-            return format_html(
-                '<h4 class={bgclass} style={style}>{}</h4>'.format(status, bgclass=bgclass, style=style))
+        style = 'border-block-style: inherit; border-bottom-style: solid; padding-left: 20px; width: 75px; height: 28px; border-radius: 8px;'
+        return format_html(
+            '<h4 class={bgclass} style="{style}">{}</h4>'.format(status, bgclass=bgclass, style=style))
 
     def render_material_fee_paid(self, record):
-        print("this is %%%%%%%%%%%%%%%%%%%%%%%%%", record.application_fee)
         if record.material_fee_paid:
             status = 'YES'
             bgclass = "bg-green"
-            style = 'border-radius: 15px;'
-            return format_html(
-                '<h4 class={bgclass} style={style}>{}</h4>'.format(status, bgclass=bgclass, style=style))
         else:
             status = "NO"
             bgclass = "bg-red"
-            style = 'border-radius: 15px;'
-            return format_html(
-                '<h4 class={bgclass} style={style}>{}</h4>'.format(status, bgclass=bgclass, style=style))
+        style = 'border-block-style: inherit; border-bottom-style: solid;padding-left: 20px; width: 75px; height: 28px; border-radius: 8px;'
+        return format_html(
+            '<h4 class={bgclass} style="{style}">{}</h4>'.format(status, bgclass=bgclass, style=style))
 
     # def render_actions(self, record):
     #     return format_html("<a class='btn btn-sm text-primary' href='{update}'><i class='fa fa-pen'></i></a>"
@@ -271,3 +246,15 @@ class StudentTableForReport(tables.Table):
     #         delete=delete_action(student_urls.delete_student(record.pk), record.full_name),
     #     )
     #     )
+    def render_actions(self, record):
+        if not record.refunded:
+            return format_html(
+                "<a class='btn btn-sm text-warning' href={send_mail} style=background:#adadad30;><i class='fa fa-envelope' ></i>&nbsp&nbspSend Mail</a>"
+                .format(
+                    send_mail=student_urls.send_mail_student(record.pk)))
+
+        else:
+            return format_html("{delete}".format(
+                delete=delete_action(student_urls.delete_student(record.pk), record.full_name),
+            )
+            )
