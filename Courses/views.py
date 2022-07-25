@@ -2,11 +2,13 @@ from datetime import datetime
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse
 from rest_framework.generics import get_object_or_404
 from limoucloud_backend import utils as backend_utils
+from limoucloud_backend.utils import success_response
 from . import models as course_models, tables as course_table, forms as course_form
 
 
@@ -90,7 +92,7 @@ def edit_course(request, pk):
             'active_classes': ['course'],
         },
     }
-    return render(request, "dashboard/edit.html", context)
+    return render(request, "dashboard/add_or_edit.html", context)
 
 
 def delete_course(request, pk):
@@ -98,3 +100,12 @@ def delete_course(request, pk):
     backend_utils._delete_table_entry(course)
     messages.success(request, f"{course.name} is Deleted Successfully!")
     return redirect('all-course')
+
+
+def get_course_quarters(request):
+    course = course_models.Course.objects.get(pk=request.GET.get('course_id'))
+    print("this is course================", course.quarters)
+    data = {
+        'quarters': course.quarters,
+    }
+    return JsonResponse(success_response(data=data), safe=False)

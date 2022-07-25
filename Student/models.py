@@ -36,13 +36,18 @@ class StudentModel(BaseModel):
     paid_fee = models.FloatField(null=True, blank=True, default=0.0)
     previous_student_fee_history = models.CharField(max_length=500, null=True, blank=True)
     previous_commission_history = models.CharField(max_length=500, null=True, blank=True)
+
+
+
     amount_already_inserted = models.BooleanField(default=False)
     amount_inserting_date = models.DateField(null=True, blank=True)
     last_paid_on = models.DateField(null=True, blank=True)
+
     warning_sent = models.BooleanField(default=False)
     refunded = models.BooleanField(default=False)
     refund_reason = models.TextField(null=True, blank=True)
     commission_to_pay = models.FloatField(null=True, blank=True, default=0)
+    quarters_paid = models.IntegerField(null=True,blank=True,default=0)
 
     def __str__(self):
         return "{name}".format(name=self.full_name)

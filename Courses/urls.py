@@ -6,6 +6,7 @@ urlpatterns = [
     path('add', course_views.add_course, name='add-course'),
     path('edit/<int:pk>', course_views.edit_course, name='edit-course'),
     path('delete/<int:pk>', course_views.delete_course, name='delete-course'),
+    path('course_quarters_get', course_views.get_course_quarters, name='get_course_quarters'),
 
 
 ]

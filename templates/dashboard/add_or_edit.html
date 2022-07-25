@@ -61,7 +61,8 @@
                                             <div class="col-5"></div>
                                             <div class="col-6">
                                                 <input class="btn-lg btn-primary form-control"
-                                                       style="line-height: 0.75;font-size: 20px; height: 40px;width: 150px" type="submit"
+                                                       style="line-height: 0.75;font-size: 20px; height: 40px;width: 150px"
+                                                       type="submit"
                                                        name="submit"
                                                        id="submit"
                                                        value="Submit"/>
@@ -710,19 +711,12 @@
             $('#id-btn').hide()
         })
     </script>
-    <script>
-        $('#id_order_items').on('click', function () {
-            $("#ordermodal").modal('show');
-
-        })
-    </script>
 
 
 
 
     <script>
         $(".calculate_total_fee").on('keyup', function () {
-            {#let non_refundable_fee = $("#id_non_refundable_fee").val()#}
             let material_fee = $("#id_material_fee").val()
             let tuition_fee = $("#id_tuition_fee").val()
             let application_fee = $("#id_application_fee").val()
@@ -734,10 +728,33 @@
                 }
                 $("#id_total_fee").val(fee)
                 $("#id_total_required_fee").val(fee)
-                $("#id_quarterly_fee_amount").val(parseInt(tuition_fee / 4))
+                let course = $("#id_course")
+                let url = "{% url 'get_course_quarters' %}?course_id=" + course.val()
+                $.get(url, function (response, success) {
+
+                    let quarters = response.data.quarters
+                    console.log("this is response=========", quarters)
+                    $("#id_quarterly_fee_amount").val(parseFloat(tuition_fee / quarters))
+                    $("#id_course_quarters").val(parseInt(quarters))
+                })
             }
         })
     </script>
+        <script>
+            $("#id_course").on('change blur', function () {
+                let course = $(this).val()
+                let url = "{% url 'get_course_quarters' %}?course_id=" + course
+                $.get(url, function (response, success) {
+
+                    let quarters = response.data.quarters
+                    $("#id_course_quarters").val(parseInt(quarters))
+                })
+                $("#id_course_quarters").val(parseInt(0))
+            })
+        </script>
+
+
+
     <script>
         $("#id_tuition_fee").on('keyup', function () {
             let agent_name = $("#id_agent_name")

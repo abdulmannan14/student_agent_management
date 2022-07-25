@@ -9,6 +9,7 @@ class StudentForm(forms.ModelForm):
     start_date = forms.CharField(max_length=50, required=True,
                                  widget=forms.DateInput(attrs={'type': 'date'}))
     end_date = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'type': 'date'}))
+    course_quarters = forms.CharField(max_length=20, required=True)
 
     def __init__(self, *args, **kwargs):
         super(StudentForm, self).__init__(*args, **kwargs)
@@ -33,6 +34,7 @@ class StudentForm(forms.ModelForm):
         self.fields['agent_name'].label = " Agent Company"
         self.fields['discount'].label = "Discount($)"
         self.fields['total_commission_amount'].label = "Total Commission Amount($)"
+        self.fields['course_quarters'].label = "Course Quarters"
         self.fields['total_commission_amount'].widget.attrs['readonly'] = True
 
     class Meta:
@@ -41,12 +43,13 @@ class StudentForm(forms.ModelForm):
         exclude = ['paid_fee', 'previous_student_fee_history', 'warning_sent', 'previous_commission_history',
                    'outstanding_fee', 'last_paid_on', 'total_commission_paid', 'amount_already_inserted',
                    'amount_inserting_date', 'commission_to_pay', 'application_fee_paid', 'material_fee_paid',
-                   'refunded', 'refund_reason']
+                   'refunded', 'refund_reason', 'quarters_paid']
 
 
 class StudentFormEdit(forms.ModelForm):
     start_date = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'type': 'date'}))
     end_date = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'type': 'date'}))
+    course_quarters = forms.CharField(max_length=20, required=True)
 
     def __init__(self, *args, **kwargs):
         super(StudentFormEdit, self).__init__(*args, **kwargs)
@@ -65,6 +68,7 @@ class StudentFormEdit(forms.ModelForm):
         # self.fields['agent_bonus'].label = "Agent Bonus($)"
         self.fields['discount'].label = "Discount($)"
         self.fields['total_commission_amount'].label = "Total Commission Amount($)"
+        self.fields['course_quarters'].label = "Course Quarters"
         self.fields['agent_name'].label = "Agent Company"
 
     class Meta:
@@ -72,7 +76,7 @@ class StudentFormEdit(forms.ModelForm):
         fields = "__all__"
         exclude = ['total_commission_paid', 'paid_fee', 'previous_student_fee_history', 'previous_commission_history',
                    'amount_inserting_date', 'amount_already_inserted', 'last_paid_on', 'application_fee_paid',
-                   'material_fee_paid', 'refunded', 'refund_reason']
+                   'material_fee_paid', 'refunded', 'refund_reason', 'quarters_paid']
 
 
 class AddFeeForm(forms.ModelForm):

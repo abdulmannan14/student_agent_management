@@ -276,7 +276,9 @@ def add_student(request):
         if form.is_valid():
             tuition_fee = form.cleaned_data['tuition_fee']
             application_fee = form.cleaned_data['application_fee']
-            quarterly_fee = int(tuition_fee / 4)
+            quarters = form.cleaned_data['course_quarters']
+            quarterly_fee = float(tuition_fee / int(quarters))
+            quarterly_fee = round(quarterly_fee, 2)
             student = form.save(commit=False)
             agent_name = form.cleaned_data['agent_name']
             agent = agent_models.AgentModel.objects.get(company=agent_name)
@@ -337,7 +339,7 @@ def edit_student(request, pk):
             'active_classes': ['student'],
         },
     }
-    return render(request, "dashboard/edit.html", context)
+    return render(request, "dashboard/add_or_edit.html", context)
 
 
 def delete_student(request, pk):
@@ -805,24 +807,26 @@ def student_report(request):
     for student in students:
         check_outstanding_fee = student_models.StudentModel.objects.filter(pk=student.id,
                                                                            last_paid_on__range=(
-                                                                               today - timedelta(days=120), today))
+                                                                               today - timedelta(days=90), today))
         if not check_outstanding_fee:
-            pass
-            if student.outstanding_fee != student.quarterly_fee_amount:
+            if student.outstanding_fee != student.quarterly_fee_amount and student.outstanding_fee < student.quarterly_fee_amount:
                 last_paid_on = student.last_paid_on
+
                 try:
                     days_differnece = abs((today.date() - last_paid_on).days)
                     amount_inserting_day_difference = abs((today.date() - student.amount_inserting_date).days)
-                    if days_differnece >= 120 and amount_inserting_day_difference >= 120:
-                        student.amount_already_inserted = True
+                    if days_differnece >= 90:  # and amount_inserting_day_difference >= 90
+                        student.amount_already_inserted = False
 
                 except:
                     pass
                 if student.total_required_fee > 0 and student.outstanding_fee == 0:
                     student.outstanding_fee = student.quarterly_fee_amount
+                    student.last_paid_on = today
                 elif student.total_required_fee > 0 and student.outstanding_fee > 0 and student.amount_already_inserted is False and student.total_required_fee != student.outstanding_fee:
                     student.outstanding_fee = student.quarterly_fee_amount + student.outstanding_fee
                     student.amount_already_inserted = True
+                    student.last_paid_on = today
                     student.amount_inserting_date = today.date()
                 else:
                     student.save()
@@ -830,28 +834,45 @@ def student_report(request):
                 last_paid = student.last_paid_on
                 days_differnece = abs((today.date() - last_paid).days)
                 if days_differnece >= 365:  # and student.amount_already_inserted == False:
-                    fee_to_add = (3 * student.quarterly_fee_amount) + student.outstanding_fee
+                    fee_to_add = (4 * student.quarterly_fee_amount) + student.outstanding_fee
                     if student.total_required_fee < fee_to_add:
                         student.outstanding_fee = student.total_required_fee
+                        student.last_paid_on = today
                     else:
                         student.outstanding_fee = fee_to_add
-                    student.amount_already_inserted = True
-                    student.amount_inserting_date = today.date()
-                elif days_differnece >= 240:  # and student.amount_already_inserted == False:
-                    fee_to_add = (2 * student.quarterly_fee_amount) + student.outstanding_fee
-                    if student.total_required_fee < fee_to_add:
-                        student.outstanding_fee = student.total_required_fee
-                    else:
-                        student.outstanding_fee = fee_to_add
+                        student.last_paid_on = today
                     student.amount_already_inserted = True
                     student.amount_inserting_date = today.date()
 
-                elif days_differnece >= 120:  # and student.amount_already_inserted == False:
-                    fee_to_add = student.quarterly_fee_amount + student.outstanding_fee
+                elif days_differnece >= 270:  # and student.amount_already_inserted == False:
+                    fee_to_add = (3 * student.quarterly_fee_amount) + student.outstanding_fee
                     if student.total_required_fee < fee_to_add:
+                        student.outstanding_fee = student.total_required_fee
+                        student.last_paid_on = today
+                    else:
+                        student.outstanding_fee = fee_to_add
+                        student.last_paid_on = today
+                    student.amount_already_inserted = True
+                    student.amount_inserting_date = today.date()
+                elif days_differnece >= 180:  # and student.amount_already_inserted == False:
+                    fee_to_add = (2 * student.quarterly_fee_amount) + student.outstanding_fee
+                    if student.total_required_fee < fee_to_add:
+                        student.last_paid_on = today
                         student.outstanding_fee = student.total_required_fee
                     else:
                         student.outstanding_fee = fee_to_add
+                        student.last_paid_on = today
+                    student.amount_already_inserted = True
+                    student.amount_inserting_date = today.date()
+
+                elif days_differnece >= 90:  # and student.amount_already_inserted == False:
+                    fee_to_add = student.quarterly_fee_amount + student.outstanding_fee
+                    if student.total_required_fee < fee_to_add:
+                        student.last_paid_on = today
+                        student.outstanding_fee = student.total_required_fee
+                    else:
+                        student.outstanding_fee = fee_to_add
+                        student.last_paid_on = today
                     student.amount_already_inserted = True
                     student.amount_inserting_date = today.date()
                 else:
