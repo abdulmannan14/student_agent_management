@@ -220,8 +220,8 @@ from .env_config import *
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'mannanmaan1425@gmail.com'
-EMAIL_HOST_PASSWORD = 'xnnsboiuxyvzrgvw'
+EMAIL_HOST_USER = 'accounts@acmi.wa.edu.au'
+EMAIL_HOST_PASSWORD = 'xemynqaajkfzwppe'
 EMAIL_PORT = 587
 from_email = EMAIL_HOST_USER
 
