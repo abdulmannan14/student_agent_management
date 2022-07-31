@@ -29,6 +29,7 @@ class StudentModel(BaseModel):
     discount = models.IntegerField(null=True, blank=True, default=0)
     quarterly_fee_amount = models.FloatField(null=True, blank=True)
     total_fee = models.FloatField(null=True, blank=True)
+    oshc = models.IntegerField(null=True, blank=True)
     outstanding_fee = models.FloatField(null=True, blank=True)
     total_required_fee = models.FloatField(null=True, blank=True)
     total_commission_amount = models.FloatField(null=True, blank=True)
@@ -37,8 +38,6 @@ class StudentModel(BaseModel):
     previous_student_fee_history = models.CharField(max_length=500, null=True, blank=True)
     previous_commission_history = models.CharField(max_length=500, null=True, blank=True)
 
-
-
     amount_already_inserted = models.BooleanField(default=False)
     amount_inserting_date = models.DateField(null=True, blank=True)
     last_paid_on = models.DateField(null=True, blank=True)
@@ -46,20 +45,25 @@ class StudentModel(BaseModel):
     warning_sent = models.BooleanField(default=False)
     refunded = models.BooleanField(default=False)
     refund_reason = models.TextField(null=True, blank=True)
+    refund_amount = models.IntegerField(null=True, blank=True)
     commission_to_pay = models.FloatField(null=True, blank=True, default=0)
-    quarters_paid = models.IntegerField(null=True,blank=True,default=0)
+    quarters_paid = models.IntegerField(null=True, blank=True, default=0)
 
     def __str__(self):
-        return "{name}".format(name=self.full_name)
+        return "{name}  ({acmi_number})".format(name=self.full_name,acmi_number=self.acmi_number)
 
 
 # Create your models here.
 class PayModelStudent(BaseModel):
+    upfront_fee = 'UPFRONT FEE'
+    adjustment = 'ADJUSTMENT'
     cash = "CASH"
-    bank = "BANK"
+    bank = "BANK TRANSFER"
     mode_of_payment_choices = [
         (cash, cash),
         (bank, bank),
+        (upfront_fee, upfront_fee),
+        (adjustment, adjustment)
     ]
     student = models.ForeignKey(StudentModel, on_delete=models.CASCADE, null=True, blank=True)
     fee_pay = models.FloatField(null=True, blank=True)

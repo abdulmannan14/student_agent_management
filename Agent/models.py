@@ -33,11 +33,15 @@ class AgentModel(BaseModel):
 
 # Create your models here.
 class CommissionModelAgent(BaseModel):
+    upfront_fee = 'UPFRONT FEE'
+    adjustment = 'ADJUSTMENT'
     cash = "CASH"
-    bank = "BANK"
+    bank = "BANK TRANSFER"
     mode_of_payment_choices = [
         (cash, cash),
         (bank, bank),
+        (upfront_fee, upfront_fee),
+        (adjustment, adjustment)
     ]
     student = models.ForeignKey('Student.StudentModel', on_delete=models.CASCADE, null=True, blank=True)
     agent_name = models.CharField(max_length=100, null=True)

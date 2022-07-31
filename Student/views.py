@@ -214,7 +214,7 @@ def history_student(request, pk):
         "links": [
             {
                 "color_class": "btn-primary",
-                "title": f"Refund {student.full_name}'s Complete Fee",
+                "title": f"Refund {student.full_name}'s Fee",
                 "icon": "fa fa-undo",
                 'data_toggle': 'modal',
                 'data_target': '#refund',
@@ -241,9 +241,18 @@ def history_student(request, pk):
 def student_fee_refund(request, pk):
     refund_reason = request.POST.get('refund_reason')
     student = get_object_or_404(student_models.StudentModel, pk=pk)
+    fee_amount = request.POST.get('refund_amount', 0)
+    commission_perc = student.agent_name.commission
+    gst_status = student.agent_name.gst_status
+    gst_perc = student.agent_name.gst
+    commission_amount = (int(fee_amount) / 100) * commission_perc
+    if gst_status == agent_models.AgentModel.INCLUSIVE:
+        commission_amount += (commission_amount / 100) * gst_perc
     student: student_models.StudentModel
     student.refunded = True
     student.refund_reason = refund_reason
+    student.refund_amount = fee_amount
+    student.commission_to_pay -= commission_amount
     student.save()
     messages.success(request, 'Student Refunded Successfully!')
     return redirect('all-students')
@@ -255,7 +264,7 @@ def refunded_student(request):
     sort = request.GET.get('sort', None)
     if sort:
         students = students.order_by(sort)
-    students = student_table.StudentTable(students)
+    students = student_table.StudentRefundTable(students)
     context = {
 
         "page_title": "List of Refunded Student",

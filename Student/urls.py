@@ -23,7 +23,7 @@ urlpatterns = [
     path('student/report', student_views.student_report, name='student-report'),
     # ==================================STUDENT FEE REFUND==================================
     path('refunded-student', student_views.refunded_student, name='refunded-student'),
-    path('student/fee-refund/<int:pk>', student_views.student_fee_refund, name='student-fee-refund'),
+    # path('student/fee-refund/<int:pk>', student_views.student_fee_refund, name='student-fee-refund'),
     path('student/fee-refund/<int:pk>', student_views.student_fee_refund, name='student-fee-refund'),
     # ===========================SEND MAIL TO STUDENT=================================================
     path('student/send/warning/mail/<int:pk>', student_views.send_mail_to_student, name='send-mail-to-student'),

@@ -36,14 +36,14 @@ class StudentForm(forms.ModelForm):
         self.fields['total_commission_amount'].label = "Total Commission Amount($)"
         self.fields['course_quarters'].label = "Course Quarters"
         self.fields['total_commission_amount'].widget.attrs['readonly'] = True
-
+        self.fields['oshc'].label = "OSHC"
     class Meta:
         model = student_models.StudentModel
         fields = "__all__"
         exclude = ['paid_fee', 'previous_student_fee_history', 'warning_sent', 'previous_commission_history',
                    'outstanding_fee', 'last_paid_on', 'total_commission_paid', 'amount_already_inserted',
                    'amount_inserting_date', 'commission_to_pay', 'application_fee_paid', 'material_fee_paid',
-                   'refunded', 'refund_reason', 'quarters_paid']
+                   'refunded', 'refund_reason','refund_amount', 'quarters_paid']
 
 
 class StudentFormEdit(forms.ModelForm):
@@ -70,13 +70,14 @@ class StudentFormEdit(forms.ModelForm):
         self.fields['total_commission_amount'].label = "Total Commission Amount($)"
         self.fields['course_quarters'].label = "Course Quarters"
         self.fields['agent_name'].label = "Agent Company"
+        self.fields['oshc'].label = "OSHC"
 
     class Meta:
         model = student_models.StudentModel
         fields = "__all__"
         exclude = ['total_commission_paid', 'paid_fee', 'previous_student_fee_history', 'previous_commission_history',
                    'amount_inserting_date', 'amount_already_inserted', 'last_paid_on', 'application_fee_paid',
-                   'material_fee_paid', 'refunded', 'refund_reason', 'quarters_paid']
+                   'material_fee_paid', 'refunded', 'refund_reason','refund_amount', 'quarters_paid']
 
 
 class AddFeeForm(forms.ModelForm):

@@ -103,9 +103,11 @@ def delete_course(request, pk):
 
 
 def get_course_quarters(request):
-    course = course_models.Course.objects.get(pk=request.GET.get('course_id'))
-    print("this is course================", course.quarters)
-    data = {
-        'quarters': course.quarters,
-    }
-    return JsonResponse(success_response(data=data), safe=False)
+    try:
+        course = course_models.Course.objects.get(pk=request.GET.get('course_id'))
+        data = {
+            'quarters': course.quarters,
+        }
+        return JsonResponse(success_response(data=data), safe=False)
+    except:
+        return JsonResponse(success_response(data=None), safe=False)

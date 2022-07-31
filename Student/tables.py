@@ -127,7 +127,56 @@ class StudentTable(tables.Table):
                 delete=delete_action(student_urls.delete_student(record.pk), record.full_name),
             )
             )
+class StudentRefundTable(tables.Table):
+    actions = tables.Column(empty_values=())
+    acmi_number = tables.Column(verbose_name='ACMI Number#')
+    material_fee = tables.Column(verbose_name='material fee($)')
+    tuition_fee = tables.Column(verbose_name='tuition fee($)')
+    discount = tables.Column(verbose_name='discount($)')
 
+    class Meta:
+        attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
+        model = student_models.StudentModel
+        fields = ['acmi_number', 'full_name','refund_reason','refund_amount', 'course', 'phone', 'email', 'total_fee', 'application_fee',
+                  'material_fee',
+                  'tuition_fee', 'agent_name', 'discount',
+                  ]
+
+    def render_acmi_number(self, record):
+        if not record.refunded:
+            return "#{}".format(record.acmi_number)
+        else:
+            return format_html("<h5 class='text-warning'>{data}</h5>".format(
+                data="#{number} ({status})".format(number=record.acmi_number, status="Refunded"))
+            )
+
+    def render_material_fee(self, record):
+        return "${}".format(round(record.material_fee, 2))
+
+    def render_tuition_fee(self, record):
+        return "${}".format(round(record.tuition_fee, 2))
+
+    def render_total_required_fee(self, record):
+        return "${}".format(round(record.total_required_fee, 2))
+
+    def render_discount(self, record):
+        return "${}".format(round(record.discount, 2))
+
+    def render_actions(self, record):
+        if not record.refunded:
+            return format_html("<a class='btn btn-sm text-warning' href='{history}'><i class='fa fa-book'></i></a>"
+                               "<a class='btn btn-sm text-primary' href='{update}'><i class='fa fa-pen'></i></a>"
+                               "{delete}".format(
+                history=student_urls.history_student(record.pk),
+                update=student_urls.edit_student(record.pk),
+                delete=delete_action(student_urls.delete_student(record.pk), record.full_name),
+            )
+            )
+        else:
+            return format_html("{delete}".format(
+                delete=delete_action(student_urls.delete_student(record.pk), record.full_name),
+            )
+            )
 
 class StudentTableForReport(tables.Table):
     actions = tables.Column(empty_values=())
