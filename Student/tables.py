@@ -36,6 +36,11 @@ class PayModelStudentTable(tables.Table):
         return "{}".format(record.student.course)
 
     def render_status(self, record):
+        if record.is_oshc_fee:
+            status = "OSHC Fee"
+            bgclass = "bg-white"
+            style = 'border-radius: 5px;'
+            return format_html('<h5 class={bgclass} style={style}>{}</h5>'.format(status, bgclass=bgclass, style=style))
         if record.is_tuition_and_material_fee and record.is_application_fee:
             status = "Tuition , Material & Application Fee"
             bgclass = "bg-white"
@@ -127,6 +132,8 @@ class StudentTable(tables.Table):
                 delete=delete_action(student_urls.delete_student(record.pk), record.full_name),
             )
             )
+
+
 class StudentRefundTable(tables.Table):
     actions = tables.Column(empty_values=())
     acmi_number = tables.Column(verbose_name='ACMI Number#')
@@ -137,7 +144,8 @@ class StudentRefundTable(tables.Table):
     class Meta:
         attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
         model = student_models.StudentModel
-        fields = ['acmi_number', 'full_name','refund_reason','refund_amount', 'course', 'phone', 'email', 'total_fee', 'application_fee',
+        fields = ['acmi_number', 'full_name', 'refund_reason', 'refund_amount', 'course', 'phone', 'email', 'total_fee',
+                  'application_fee',
                   'material_fee',
                   'tuition_fee', 'agent_name', 'discount',
                   ]
@@ -177,6 +185,7 @@ class StudentRefundTable(tables.Table):
                 delete=delete_action(student_urls.delete_student(record.pk), record.full_name),
             )
             )
+
 
 class StudentTableForReport(tables.Table):
     actions = tables.Column(empty_values=())

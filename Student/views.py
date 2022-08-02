@@ -366,11 +366,17 @@ def add_fee(request):
         if form.is_valid():
             student = form.cleaned_data['student']
             student_obj = student_models.StudentModel.objects.get(pk=student.pk)
-
+            is_oshc_fee = form.cleaned_data['is_oshc_fee']
             is_material_fee = form.cleaned_data['is_material_fee']
             is_application_fee = form.cleaned_data['is_application_fee']
             fee_amount = form.cleaned_data['fee_pay']
             paid_on = form.cleaned_data['paid_on']
+            if is_oshc_fee:
+                form_obj = form.save(commit=False)
+                student_obj.oshc_fee_paid = True
+                form_obj.save()
+                messages.success(request, "OSHC Fee added successfully")
+                return redirect("all-students")
             if is_application_fee:
                 if not student_obj.application_fee_paid:
                     application_fee_to_subtract = student_obj.application_fee

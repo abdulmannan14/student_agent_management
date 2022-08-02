@@ -43,7 +43,7 @@ class StudentForm(forms.ModelForm):
         exclude = ['paid_fee', 'previous_student_fee_history', 'warning_sent', 'previous_commission_history',
                    'outstanding_fee', 'last_paid_on', 'total_commission_paid', 'amount_already_inserted',
                    'amount_inserting_date', 'commission_to_pay', 'application_fee_paid', 'material_fee_paid',
-                   'refunded', 'refund_reason','refund_amount', 'quarters_paid']
+                   'refunded', 'refund_reason','refund_amount', 'quarters_paid','oshc_fee_paid']
 
 
 class StudentFormEdit(forms.ModelForm):
@@ -77,7 +77,7 @@ class StudentFormEdit(forms.ModelForm):
         fields = "__all__"
         exclude = ['total_commission_paid', 'paid_fee', 'previous_student_fee_history', 'previous_commission_history',
                    'amount_inserting_date', 'amount_already_inserted', 'last_paid_on', 'application_fee_paid',
-                   'material_fee_paid', 'refunded', 'refund_reason','refund_amount', 'quarters_paid']
+                   'material_fee_paid', 'refunded', 'refund_reason','refund_amount', 'quarters_paid','oshc_fee_paid']
 
 
 class AddFeeForm(forms.ModelForm):
@@ -87,6 +87,9 @@ class AddFeeForm(forms.ModelForm):
         super(AddFeeForm, self).__init__(*args, **kwargs)
         self.fields['fee_pay'].label = "Fee Amount"
         self.fields['paid_on'].label = "Date"
+        self.fields['is_oshc_fee'].label = "OSHC Fee"
+        self.fields['is_material_fee'].label = "Material Fee"
+        self.fields['is_application_fee'].label = "Application Fee"
         self.fields['student'].required = True
         self.fields['fee_pay'].required = True
         # self.fields['total_required_fee'].label = "Total Required Fee($)"
@@ -94,7 +97,7 @@ class AddFeeForm(forms.ModelForm):
 
     class Meta:
         model = student_models.PayModelStudent
-        fields = ['student', 'fee_pay', 'mode_of_payment', 'paid_on', 'is_material_fee', 'is_application_fee',
+        fields = ['student', 'fee_pay', 'mode_of_payment', 'paid_on', 'is_material_fee', 'is_application_fee','is_oshc_fee',
                   'comment']
         widgets = {
             'comment': forms.Textarea(attrs={'rows': '5', 'cols': '3'}),

@@ -26,6 +26,8 @@ class AgentModel(BaseModel):
     # commission_get= models.IntegerField(null=True, blank=True)
     phone = models.CharField(max_length=500, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
+    email2 = models.EmailField(null=True, blank=True)
+    email3 = models.EmailField(null=True, blank=True)
 
     def __str__(self):
         return "{name}".format(name=self.company)

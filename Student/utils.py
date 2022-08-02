@@ -140,6 +140,13 @@ def _adding_final_values_to_student_and_agent_objects(fee, calculate_commission_
 
 
 def send_email(subject, context, user=None, email=None, password=None):
+    emails = []
+    try:
+        emails.append(user.email)
+        emails.append(user.email2)
+        emails.append(user.email3)
+    except:
+        emails.append(user.email)
     html = render_to_string('studentemail.html', context)
     if not subject:
         subject = "Dear {}".format(user.full_name)
@@ -148,7 +155,7 @@ def send_email(subject, context, user=None, email=None, password=None):
         '',
         from_email,
         # recipient_list=['mannanmaan1425@gmail.com'],
-        recipient_list=[user.email if user else email],
+        recipient_list=emails,
         html_message=html, fail_silently=False
     )
 
