@@ -142,6 +142,9 @@ def _adding_final_values_to_student_and_agent_objects(fee, calculate_commission_
 def send_email(subject, context, user=None, email=None, password=None):
     emails = []
     try:
+        # emails.append(user.email if user.email else '')
+        # emails.append(user.email2 if user.email2 else '')
+        # emails.append(user.email3 if user.email3 else '')
         emails.append(user.email)
         emails.append(user.email2)
         emails.append(user.email3)

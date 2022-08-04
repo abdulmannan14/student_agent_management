@@ -51,7 +51,8 @@ class StudentModel(BaseModel):
     quarters_paid = models.IntegerField(null=True, blank=True, default=0)
 
     def __str__(self):
-        return "{name}  ({acmi_number})".format(name=self.full_name,acmi_number=self.acmi_number)
+        return "{name}  ({acmi_number}) ({course})".format(name=self.full_name, acmi_number=self.acmi_number,
+                                                           course=self.course)
 
 
 # Create your models here.
