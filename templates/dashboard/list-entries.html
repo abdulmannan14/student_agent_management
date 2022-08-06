@@ -38,9 +38,10 @@
                                 {#                                    <a href="#" class="action-btn" data-original-title="Download">#}
                                 {#                                        <span class="btn-inner--icon"><i class="fas fa-download"></i></span>#}
                                 {#                                    </a>#}
-                            {% if export_enable %}
-                                <button type="button" id="export_button" class="btn btn-success btn-sm">Export</button>
-                            {% endif %}
+                                {% if export_enable %}
+                                    <button type="button" id="export_button" class="btn btn-success btn-sm">Export
+                                    </button>
+                                {% endif %}
                                 {% for link in links %}
                                     {% if  not link.log == "log" and not link.log == "log2" %}
                                         <a {{ link.attrs }} href="{{ link.href }}"
@@ -89,12 +90,24 @@
                         <p class="bold">Make sure before you Refund. This action will Stop all related data and will
                             never be resumed.
                             Please Select an Option Below</p>
+
+                        <h4 class="bold text-underline" for="refunded_ways">Refunded Way:</h4>
+
+                        <select class="form-control" name="refunded_ways" id="refunded_ways" required>
+                            <option value>-------</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Withdrawl">Withdrawl</option>
+                            <option value="Change of Course">Change of Course</option>
+                            <option value="Migrated to another Insttitute">Migrated to another Insttitute</option>
+                            <option value="Released">Released</option>
+                        </select>
                         <h4 class="bold text-underline">Reason:</h4>
                         <textarea placeholder="please enter the reason of refunding!" rows='4' cols='50'
                                   name='refund_reason' id="refund_reason_id" required></textarea>
                         <br>
                         <h4 class="bold text-underline">Fee Amount:</h4>
-                        <input id="refund_amount" name="refund_amount" type="number" class="form-control" placeholder="Fee Amount" required>
+                        <input id="refund_amount" name="refund_amount" type="number" class="form-control"
+                               placeholder="Fee Amount" required>
 
 
                     </div>

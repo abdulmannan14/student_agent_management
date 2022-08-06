@@ -45,6 +45,7 @@ class StudentModel(BaseModel):
 
     warning_sent = models.BooleanField(default=False)
     refunded = models.BooleanField(default=False)
+    refund_way = models.CharField(max_length=50,null=True, blank=True)
     refund_reason = models.TextField(null=True, blank=True)
     refund_amount = models.IntegerField(null=True, blank=True)
     commission_to_pay = models.FloatField(null=True, blank=True, default=0)

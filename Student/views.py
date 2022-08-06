@@ -240,17 +240,19 @@ def history_student(request, pk):
 @login_required(login_url='login')
 def student_fee_refund(request, pk):
     refund_reason = request.POST.get('refund_reason')
+    refunded_way = request.POST.get('refunded_ways')
     student = get_object_or_404(student_models.StudentModel, pk=pk)
     fee_amount = request.POST.get('refund_amount', 0)
     commission_perc = student.agent_name.commission
     gst_status = student.agent_name.gst_status
     gst_perc = student.agent_name.gst
     commission_amount = (int(fee_amount) / 100) * commission_perc
-    if gst_status == agent_models.AgentModel.INCLUSIVE:
+    if gst_status == agent_models.AgentModel.COMMISSION_PLUS_GST:
         commission_amount += (commission_amount / 100) * gst_perc
     student: student_models.StudentModel
     student.refunded = True
     student.refund_reason = refund_reason
+    student.refund_way = refunded_way
     student.refund_amount = fee_amount
     student.commission_to_pay -= commission_amount
     student.save()

@@ -4,7 +4,7 @@ from django.utils.html import format_html
 from . import models as student_models, urls as student_urls
 from limoucloud_backend.utils import delete_action
 from limoucloud_backend import utils as backend_utils
-from Agent import models as agent_models,urls as agent_urls
+from Agent import models as agent_models, urls as agent_urls
 
 
 class PayModelStudentTable(tables.Table):
@@ -148,7 +148,8 @@ class StudentRefundTable(tables.Table):
     class Meta:
         attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
         model = student_models.StudentModel
-        fields = ['acmi_number', 'full_name', 'refund_reason', 'refund_amount', 'course', 'phone', 'email', 'total_fee',
+        fields = ['acmi_number', 'full_name', 'refund_way', 'refund_reason', 'refund_amount', 'course', 'phone',
+                  'email', 'total_fee',
                   'application_fee',
                   'material_fee',
                   'tuition_fee', 'agent_name', 'discount',
