@@ -262,7 +262,7 @@ def get_student_agent_details(request):
     # today = datetime.today()
     student = request.GET.get('student', '')
     student_obj = student_models.StudentModel.objects.get(pk=student)
-    agent_gst = student_obj.agent_name.gst if student_obj.agent_name.gst_status is student_obj.agent_name.INCLUSIVE else 0
+    agent_gst = student_obj.agent_name.gst if student_obj.agent_name.gst_status is student_obj.agent_name.COMMISSION_PLUS_GST else 0
     context = {
         'agent': student_obj.agent_name.name,
         'agent_commission_percentage': student_obj.agent_name.commission,
@@ -270,21 +270,23 @@ def get_student_agent_details(request):
         'agent_commission_amount': student_obj.total_commission_amount,
         'total_commission_paid_till_now': student_obj.total_commission_paid if student_obj.total_commission_paid else 0,
         'commission_to_pay': student_obj.commission_to_pay if student_obj.commission_to_pay else 0,
+        'gst_status': student_obj.agent_name.gst_status if student_obj.agent_name.gst_status else '',
     }
     return JsonResponse(success_response(data=context), safe=False)
 
 
 def send_mail(request, pk):
-    commission_obj = agent_models.CommissionModelAgent.objects.get(pk=pk)
+    commission_obj = student_models.PayModelStudent.objects.get(pk=pk)
     context = {
         'subject': f'Dear Team,',
         'message': f'Hope this email finds you well ! <br>'
-                   f' {commission_obj.student.full_name} ({commission_obj.student.acmi_number}) has paid $ {commission_obj.student_paid_fee} so far please send us the invoice so that we can process the commission accordingly.<br>'
+                   f' {commission_obj.student.full_name} ({commission_obj.student.acmi_number}) has paid $ {commission_obj.fee_pay} so far please send us the invoice so that we can process the commission accordingly.<br><br>'
                    f'Please note it take 7-10 business days to process the request.<br><br>'
                    f'Regards,<br>'
                    f'Accounts Team <br>'
-                   f'ACMi'}
+                   f'ACMi',
+        'fee_notice':'Commission Due Notice'}
     student_utils._thread_making(student_utils.send_email,
                                  ["Welcome to ACMi", context, commission_obj.student.agent_name])
     messages.success(request, "Email sent successfully")
-    return redirect('commission-history',commission_obj.student.pk)
+    return redirect('history-student', commission_obj.student.pk)

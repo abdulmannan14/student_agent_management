@@ -29,6 +29,7 @@ class AgentCommissionForm(forms.ModelForm):
     # student_paid_fee = forms.CharField(max_length=100, required=False)
     # current_commission_amount = forms.CharField(max_length=100, required=False)
     paid_on = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'type': 'date'}))
+    gst_status = forms.CharField(max_length=50, required=False)
 
     def __init__(self, *args, **kwargs):
         super(AgentCommissionForm, self).__init__(*args, **kwargs)
@@ -38,10 +39,11 @@ class AgentCommissionForm(forms.ModelForm):
         self.fields['total_commission_paid'].widget.attrs['readonly'] = True
         self.fields['student_paid_fee'].widget.attrs['readonly'] = True
         self.fields['agent_commission_percentage'].widget.attrs['readonly'] = True
+        self.fields['gst_status'].widget.attrs['readonly'] = True
 
     class Meta:
         model = agent_models.CommissionModelAgent
-        fields = ['student', 'agent_name', 'agent_commission_percentage', 'agent_commission_amount',
+        fields = ['student', 'agent_name', 'agent_commission_percentage', 'gst_status', 'agent_commission_amount',
                   'total_commission_paid', 'student_paid_fee', 'current_commission_amount', 'mode_of_payment',
                   'paid_on', 'comment']
         widgets = {

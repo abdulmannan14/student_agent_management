@@ -4,7 +4,7 @@ from django.utils.html import format_html
 from . import models as student_models, urls as student_urls
 from limoucloud_backend.utils import delete_action
 from limoucloud_backend import utils as backend_utils
-from Agent import models as agent_models
+from Agent import models as agent_models,urls as agent_urls
 
 
 class PayModelStudentTable(tables.Table):
@@ -22,10 +22,10 @@ class PayModelStudentTable(tables.Table):
 
     def render_agent_commission_gst(self, record):
         record: student_models.PayModelStudent
-        if record.student.agent_name.gst_status == agent_models.AgentModel.EXCLUSIVE:
-            return 'Exclusive'
-        elif record.student.agent_name.gst_status == agent_models.AgentModel.INCLUSIVE:
-            return 'Inclusive'
+        if record.student.agent_name.gst_status == agent_models.AgentModel.COMMISSION_ONLY:
+            return 'Commission Only'
+        elif record.student.agent_name.gst_status == agent_models.AgentModel.COMMISSION_PLUS_GST:
+            return 'Commission + GST'
         else:
             return "NOT DEFINED"
 
@@ -67,9 +67,13 @@ class PayModelStudentTable(tables.Table):
     def render_actions(self, record):
         return format_html("<a class='btn btn-sm text-primary' href='{update}'><i class='fa fa-pen'></i></a>"
                            "{delete}"
+                           "<a class='btn btn-sm text-warning' href={send_mail} style=background:#adadad30;><i class='fa fa-envelope' ></i>&nbsp&nbspSend Mail</a>"
+
                            .format(update=student_urls.edit_student_fee(record.pk),
                                    delete=delete_action(student_urls.delete_student_fee(record.pk),
-                                                        record.student.full_name))
+                                                        record.student.full_name),
+                                   send_mail=agent_urls.send_mail_agent(record.pk)
+                                   )
                            )
 
         # return format_html("<a class='btn btn-sm text-warning' href='{history}'><i class='fa fa-book'></i></a>"
@@ -102,7 +106,7 @@ class StudentTable(tables.Table):
             return "#{}".format(record.acmi_number)
         else:
             return format_html("<h5 class='text-warning'>{data}</h5>".format(
-                data="#{number} ({status})".format(number=record.acmi_number, status="Refunded"))
+                data="#{number} ({status})".format(number=record.acmi_number, status="Cancelled"))
             )
 
     def render_material_fee(self, record):
@@ -155,7 +159,7 @@ class StudentRefundTable(tables.Table):
             return "#{}".format(record.acmi_number)
         else:
             return format_html("<h5 class='text-warning'>{data}</h5>".format(
-                data="#{number} ({status})".format(number=record.acmi_number, status="Refunded"))
+                data="#{number} ({status})".format(number=record.acmi_number, status="Cancelled"))
             )
 
     def render_material_fee(self, record):

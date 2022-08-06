@@ -10,11 +10,11 @@ class BaseModel(models.Model):
 
 # Create your models here.
 class AgentModel(BaseModel):
-    INCLUSIVE = 'INCLUSIVE'
-    EXCLUSIVE = 'EXCLUSIVE'
+    COMMISSION_ONLY = 'COMMISSION ONLY'
+    COMMISSION_PLUS_GST = 'COMMISSION + GST (10%)'
     gst_choices = [
-        (INCLUSIVE, INCLUSIVE),
-        (EXCLUSIVE, EXCLUSIVE)
+        (COMMISSION_ONLY, COMMISSION_ONLY),
+        (COMMISSION_PLUS_GST, COMMISSION_PLUS_GST)
     ]
     company = models.CharField(max_length=500, null=True, blank=True)
     name = models.CharField(max_length=500, null=True, blank=True)
@@ -22,7 +22,7 @@ class AgentModel(BaseModel):
     bonus = models.IntegerField(null=True, blank=True, default=0)
     commission = models.IntegerField(null=True, blank=True, default=30)
     gst = models.IntegerField(null=True, blank=True, default=10)
-    gst_status = models.CharField(max_length=30, choices=gst_choices, null=True, blank=True, default=EXCLUSIVE)
+    gst_status = models.CharField(max_length=30, choices=gst_choices, null=True, blank=True, default=COMMISSION_ONLY)
     # commission_get= models.IntegerField(null=True, blank=True)
     phone = models.CharField(max_length=500, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)

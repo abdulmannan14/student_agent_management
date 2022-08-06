@@ -741,18 +741,18 @@
             }
         })
     </script>
-        <script>
-            $("#id_course").on('change blur', function () {
-                let course = $(this).val()
-                let url = "{% url 'get_course_quarters' %}?course_id=" + course
-                $.get(url, function (response, success) {
+    <script>
+        $("#id_course").on('change blur', function () {
+            let course = $(this).val()
+            let url = "{% url 'get_course_quarters' %}?course_id=" + course
+            $.get(url, function (response, success) {
 
-                    let quarters = response.data.quarters
-                    $("#id_course_quarters").val(parseInt(quarters))
-                })
-                $("#id_course_quarters").val(parseInt(0))
+                let quarters = response.data.quarters
+                $("#id_course_quarters").val(parseInt(quarters))
             })
-        </script>
+            $("#id_course_quarters").val(parseInt(0))
+        })
+    </script>
 
 
 
@@ -808,7 +808,8 @@
                 $("#id_agent_commission_amount").val(student_data.agent_commission_amount)
                 $("#id_total_commission_paid").val(student_data.total_commission_paid_till_now)
                 $("#id_current_commission_amount").val(student_data.commission_to_pay)
-                calculate_fee(agent_gst_amount)
+                $("#id_gst_status").val(student_data.gst_status)
+                calculate_fee(student_data.gst_status)
 
             })
         })
@@ -823,14 +824,22 @@
     {#    </script>#}
 
     <script>
-        function calculate_fee(agent_gst_amount) {
+        function calculate_fee(status) {
             let select = $("#id_current_commission_amount")
+            console.log('===================', select)
             let commission_percentage = $("#id_agent_commission_percentage").val()
             let commission_amount = select.val()
-            if (commission_percentage) {
-                $("#id_student_paid_fee").val(((commission_amount - (commission_amount / 11)) * 100) / commission_percentage)
+            if (status == 'COMMISSION + GST (10%)') {
+                let free = commission_amount / 11
+                let fio = free * 10
+                let fee = fio
+                fee = (fee * 100) / commission_percentage
+                let gst = fee / 10
+                $("#id_student_paid_fee").val(fee)
+                {#console.log('===================', fee, gst)#}
             } else {
-                $("#id_student_paid_fee").val(0)
+                let fee = (commission_amount * 100) / commission_percentage
+                $("#id_student_paid_fee").val(fee)
             }
         }
     </script>
@@ -839,10 +848,16 @@
                 let select = $(this)
                 let commission_percentage = $("#id_agent_commission_percentage").val()
                 let student = select.val()
-                if (commission_percentage) {
-                    $("#id_student_paid_fee").val((student * 100) / commission_percentage)
+                let gst_status = $("#id_gst_status").val()
+                if (gst_status == 'COMMISSION + GST (10%)') {
+                    let free = student / 11
+                    let fio = free * 10
+                    let fee = fio
+                    fee = (fee * 100) / commission_percentage
+                    $("#id_student_paid_fee").val(fee)
+
                 } else {
-                    $("#id_student_paid_fee").val(0)
+                    $("#id_student_paid_fee").val((student * 100) / commission_percentage)
                 }
             }
         )

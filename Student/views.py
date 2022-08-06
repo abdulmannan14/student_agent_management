@@ -784,7 +784,7 @@ def get_agent_commission(request):
     # commission = agent.commission
     data = {
         'commission': agent.commission,
-        'gst': 10 if agent.gst_status == agent.INCLUSIVE else 0,
+        'gst': 10 if agent.gst_status == agent.COMMISSION_PLUS_GST else 0,
     }
     return JsonResponse(success_response(data=data), safe=False)
 
@@ -918,9 +918,10 @@ def send_mail_to_student(request, pk):
     context = {
         'subject': f'Dear {student.full_name}  ({student.acmi_number}),',
         'message': f' Your $ {student.outstanding_fee} Tuition fee is outstanding; we request you to kindly settle the payment as per agreement so that you can smoothly continue your studies at ACMi.<br><br>'
-                   'Regards,<br>'
+                   'Regards,<br>'   
                    'Accounts Team<br>'
-                   'ACMi'}
+                   'ACMi',
+        'fee_notice': 'Student Fee Notice', }
     student_utils._thread_making(student_utils.send_email, ["Welcome to ACMi", context, student])
     messages.success(request, "Email sent successfully")
     return redirect('student-report')
