@@ -259,7 +259,7 @@ class StudentTableForReport(tables.Table):
     #     return "${}".format(record.paid_fee)
 
     def render_outstanding_fee(self, record):
-        return "${}".format(record.outstanding_fee)
+        return "${}".format(round(record.outstanding_fee, 2))
 
     # def render_commission(self, record):
     #     return "${}".format(record.commission)

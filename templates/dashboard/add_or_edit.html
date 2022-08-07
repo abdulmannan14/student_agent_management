@@ -735,7 +735,7 @@
 
                     let quarters = response.data.quarters
                     console.log("this is response=========", quarters)
-                    $("#id_quarterly_fee_amount").val(parseFloat(tuition_fee / quarters))
+                    $("#id_quarterly_fee_amount").val(parseFloat(tuition_fee / quarters).toFixed(2))
                     $("#id_course_quarters").val(parseInt(quarters))
                 })
             }
@@ -774,7 +774,7 @@
                 console.log("this is the commission amount and GST amount===============", commission_amount, '=====', gst_commission_amount)
                 let latest_commission_amount = commission_amount + gst_commission_amount
                 console.log("this is commission amount==", commission_amount)
-                let agent_commission = $("#id_total_commission_amount").val(latest_commission_amount)
+                let agent_commission = $("#id_total_commission_amount").val(latest_commission_amount.toFixed(2))
             })
 
 

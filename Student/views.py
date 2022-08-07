@@ -119,6 +119,7 @@ def index(request):
     total_agents = agent_models.AgentModel.objects.all().count()
     total_enrollments = student_models.StudentModel.objects.all().count()
     total_refunded_student = student_models.StudentModel.objects.filter(refunded=True).count()
+    student_report(request)
     context = {
         "cards": [
             {
@@ -920,10 +921,12 @@ def send_mail_to_student(request, pk):
     context = {
         'subject': f'Dear {student.full_name}  ({student.acmi_number}),',
         'message': f' Your $ {student.outstanding_fee} Tuition fee is outstanding; we request you to kindly settle the payment as per agreement so that you can smoothly continue your studies at ACMi.<br><br>'
-                   'Regards,<br>'   
+                   'Regards,<br>'
                    'Accounts Team<br>'
                    'ACMi',
         'fee_notice': 'Student Fee Notice', }
     student_utils._thread_making(student_utils.send_email, ["Welcome to ACMi", context, student])
+    student.warning_sent = True
+    student.save()
     messages.success(request, "Email sent successfully")
     return redirect('student-report')
