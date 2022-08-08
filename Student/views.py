@@ -244,11 +244,11 @@ def student_fee_refund(request, pk):
     refunded_way = request.POST.get('refunded_ways')
     student = get_object_or_404(student_models.StudentModel, pk=pk)
     fee_amount = request.POST.get('refund_amount', 0)
-    commission_perc = student.agent_name.commission
-    gst_status = student.agent_name.gst_status
-    gst_perc = student.agent_name.gst
+    commission_perc = student.commission
+    gst_status = student.gst_status
+    gst_perc = student.gst
     commission_amount = (int(fee_amount) / 100) * commission_perc
-    if gst_status == agent_models.AgentModel.COMMISSION_PLUS_GST:
+    if gst_status == student.COMMISSION_PLUS_GST:
         commission_amount += (commission_amount / 100) * gst_perc
     student: student_models.StudentModel
     student.refunded = True
@@ -256,6 +256,7 @@ def student_fee_refund(request, pk):
     student.refund_way = refunded_way
     student.refund_amount = fee_amount
     student.commission_to_pay -= commission_amount
+    student.outstanding_fee= 0
     student.save()
     messages.success(request, 'Student Refunded Successfully!')
     return redirect('all-students')
@@ -370,10 +371,19 @@ def add_fee(request):
             student = form.cleaned_data['student']
             student_obj = student_models.StudentModel.objects.get(pk=student.pk)
             is_oshc_fee = form.cleaned_data['is_oshc_fee']
+            is_bonus = form.cleaned_data['is_bonus']
             is_material_fee = form.cleaned_data['is_material_fee']
             is_application_fee = form.cleaned_data['is_application_fee']
             fee_amount = form.cleaned_data['fee_pay']
             paid_on = form.cleaned_data['paid_on']
+            if is_bonus:
+                form_obj = form.save(commit=False)
+                student_obj.is_bonus = True
+                form_obj.save()
+                student_obj.total_commission_paid +=fee_amount
+                student_obj.save()
+                messages.success(request, "Bonus added successfully")
+                return redirect("all-students")
             if is_oshc_fee:
                 form_obj = form.save(commit=False)
                 student_obj.oshc_fee_paid = True

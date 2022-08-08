@@ -18,12 +18,13 @@ class PayModelStudentTable(tables.Table):
     class Meta:
         attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
         model = student_models.PayModelStudent
-        fields = ['acmi_number', 'student', 'course', 'fee_pay', 'agent_commision_amount','commission', 'agent_commission_gst',
+        fields = ['acmi_number', 'student', 'course', 'fee_pay', 'agent_commision_amount', 'commission',
+                  'agent_commission_gst',
                   'paid_on', 'status']
 
+    def render_commission(self, record):
+        return f"{record.commission_percentage if record.commission_percentage else 0} %"
 
-    def render_commission(self,record):
-        return f"{record.commission_percentage} %"
     def render_agent_commission_gst(self, record):
         record: student_models.PayModelStudent
         if record.student.gst_status == record.student.COMMISSION_ONLY:
@@ -40,6 +41,11 @@ class PayModelStudentTable(tables.Table):
         return "{}".format(record.student.course)
 
     def render_status(self, record):
+        if record.is_bonus:
+            status = "Bonus Paid"
+            bgclass = "bg-white"
+            style = 'border-radius: 5px;'
+            return format_html('<h5 class={bgclass} style={style}>{}</h5>'.format(status, bgclass=bgclass, style=style))
         if record.is_oshc_fee:
             status = "OSHC Fee"
             bgclass = "bg-white"

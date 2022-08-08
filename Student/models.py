@@ -83,6 +83,7 @@ class PayModelStudent(BaseModel):
     is_application_fee = models.BooleanField(blank=True, default=False)
     is_tuition_and_material_fee = models.BooleanField(blank=True, default=False)
     is_oshc_fee = models.BooleanField(blank=True, default=False)
+    is_bonus = models.BooleanField(blank=True, default=False)
     agent_commision_amount = models.FloatField(null=True, blank=True, default=0)
     comment = models.TextField(null=True, blank=True)
     mode_of_payment = models.CharField(max_length=100, choices=mode_of_payment_choices, null=True, blank=True)

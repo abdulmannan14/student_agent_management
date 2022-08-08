@@ -124,7 +124,7 @@ class AddFeeForm(forms.ModelForm):
     class Meta:
         model = student_models.PayModelStudent
         fields = ['student', 'fee_pay', 'mode_of_payment', 'paid_on', 'is_material_fee', 'is_application_fee',
-                  'is_oshc_fee',
+                  'is_oshc_fee','is_bonus',
                   'comment']
         widgets = {
             'comment': forms.Textarea(attrs={'rows': '5', 'cols': '3'}),
