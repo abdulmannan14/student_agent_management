@@ -11,9 +11,9 @@ class AgentForm(forms.ModelForm):
         self.fields['email'].required = True
         self.fields['country'].required = True
         self.fields['phone'].required = True
-        self.fields['commission'].required = True
+        # self.fields['commission'].required = True
         self.fields['company'].required = True
-        self.fields['gst'].label = 'GST (10%)'
+        # self.fields['gst'].label = 'GST (10%)'
 
     class Meta:
         model = agent_models.AgentModel
@@ -35,6 +35,7 @@ class AgentCommissionForm(forms.ModelForm):
         super(AgentCommissionForm, self).__init__(*args, **kwargs)
 
         self.fields['agent_name'].label = "Agent Name"
+        self.fields['agent_commission_percentage'].label = "Commission Percentage"
         self.fields['agent_commission_amount'].widget.attrs['readonly'] = True
         self.fields['total_commission_paid'].widget.attrs['readonly'] = True
         self.fields['student_paid_fee'].widget.attrs['readonly'] = True

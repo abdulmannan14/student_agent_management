@@ -12,6 +12,12 @@ class BaseModel(models.Model):
 
 # Create your models here.
 class StudentModel(BaseModel):
+    COMMISSION_ONLY = 'COMMISSION ONLY'
+    COMMISSION_PLUS_GST = 'COMMISSION + GST (10%)'
+    gst_choices = [
+        (COMMISSION_ONLY, COMMISSION_ONLY),
+        (COMMISSION_PLUS_GST, COMMISSION_PLUS_GST)
+    ]
     agent_name = models.ForeignKey('Agent.AgentModel', on_delete=models.CASCADE, null=True, blank=True)
     acmi_number = models.CharField(max_length=500, null=True, blank=True)
     full_name = models.CharField(max_length=500, null=True, blank=True)
@@ -38,19 +44,21 @@ class StudentModel(BaseModel):
     paid_fee = models.FloatField(null=True, blank=True, default=0.0)
     previous_student_fee_history = models.CharField(max_length=500, null=True, blank=True)
     previous_commission_history = models.CharField(max_length=500, null=True, blank=True)
-
+    commission = models.IntegerField(null=True, blank=True, default=30)
+    gst = models.IntegerField(null=True, blank=True, default=10)
+    gst_status = models.CharField(max_length=30, choices=gst_choices, null=True, blank=True, default=COMMISSION_ONLY)
     amount_already_inserted = models.BooleanField(default=False)
     amount_inserting_date = models.DateField(null=True, blank=True)
     last_paid_on = models.DateField(null=True, blank=True)
 
     warning_sent = models.BooleanField(default=False)
     refunded = models.BooleanField(default=False)
-    refund_way = models.CharField(max_length=50,null=True, blank=True)
+    refund_way = models.CharField(max_length=50, null=True, blank=True)
     refund_reason = models.TextField(null=True, blank=True)
     refund_amount = models.IntegerField(null=True, blank=True)
     commission_to_pay = models.FloatField(null=True, blank=True, default=0)
     quarters_paid = models.IntegerField(null=True, blank=True, default=0)
-
+    comment = models.TextField(null=True,blank=True)
     def __str__(self):
         return "{name}  ({acmi_number}) ({course})".format(name=self.full_name, acmi_number=self.acmi_number,
                                                            course=self.course)
@@ -78,5 +86,6 @@ class PayModelStudent(BaseModel):
     agent_commision_amount = models.FloatField(null=True, blank=True, default=0)
     comment = models.TextField(null=True, blank=True)
     mode_of_payment = models.CharField(max_length=100, choices=mode_of_payment_choices, null=True, blank=True)
+    commission_percentage = models.IntegerField(null=True,blank=True)
     # outstanding_fee = models.IntegerField(null=True, blank=True)
     # total_required_fee = models.IntegerField(null=True, blank=True)

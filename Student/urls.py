@@ -13,7 +13,7 @@ urlpatterns = [
     path('delete/<int:pk>', student_views.delete_student, name='delete-student'),
 
     # JS URLS
-    path('get_agent_commission', student_views.get_agent_commission, name='get-agent-commission'),
+    path('get_student_commission', student_views.get_student_commission, name='get-student-commission'),
     path('get_student_fee_details', student_views.get_student_fee_details, name='get-student-fee-details'),
     # FEE Related
     path('add/fee', student_views.add_fee, name='add-fee'),

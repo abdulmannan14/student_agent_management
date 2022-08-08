@@ -148,15 +148,19 @@
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     {% if  field.label == 'Non Refundable Fee($)' or field.label == 'Material Fee($)' or field.label == 'Tuition Fee($)' or field.label == 'Application Fee($)' or field.label == 'Discount($)' %}
-                                                        <label class="form-control-label label-form-dex">{{ field.label }}
-                                                            :</label>
+                                                        <label class="form-control-label label-form-dex">{{ field.label }}:
+                                                            {% if field.field.required %}
+                                                                <span class="text-danger">*</span>
+                                                            {% endif %}</label>
                                                         {% with "form-control "|add:'calculate_total_fee' as classnames %}
                                                             {% render_field field class=classnames placeholder=field.label %}
                                                         {% endwith %}
 
                                                     {% else %}
-                                                        <label class="form-control-label label-form-dex">{{ field.label }}
-                                                            :</label>
+                                                        <label class="form-control-label label-form-dex">{{ field.label }}:
+                                                            {% if field.field.required %}
+                                                                <span class="text-danger">*</span>
+                                                            {% endif %}</label>
                                                         {% render_field field class="form-control" placeholder=field.label %}
                                                         <small style="color: red">
                                                             {{ field.errors }}
@@ -452,7 +456,10 @@
                                         {% for field in form3 %}
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label class="form-control-label">{{ field.label }}</label>
+                                                    <label class="form-control-label">{{ field.label }}:
+                                                    {% if field.field.required %}
+                                                                <span class="text-danger">*</span>
+                                                            {% endif %}</label>
                                                     {% render_field field class="form-control" placeholder=field.label %}
                                                     <small style="color: red">
                                                         {{ field.errors }}
@@ -728,6 +735,7 @@
                     fee = fee - parseInt(discount)
                 }
                 $("#id_total_fee").val(fee)
+                {#$("#id_tuition_fee").val(tuition_fee-discount)#}
                 $("#id_total_required_fee").val(fee)
                 let course = $("#id_course")
                 let url = "{% url 'get_course_quarters' %}?course_id=" + course.val()
@@ -756,28 +764,62 @@
 
 
 
+    {#    <script>#}
+    {#        $("#id_tuition_fee").on('keyup', function () {#}
+    {#            let agent_name = $("#id_agent_name")#}
+    {#            let tuition_fee = $("#id_tuition_fee").val()#}
+    {#            agent_name = agent_name.val()#}
+    {#            let url = "{% url 'get-student-commission' %}?agent_id=" + agent_name#}
+    {#            $.get(url, function (response, success) {#}
+    {#                console.log("this is response=========", response)#}
+    {#                let commission = response.data.commission#}
+    {#                let gst = response.data.gst#}
+    {##}
+    {#                console.log("this is commision ===", commission)#}
+    {#                let commission_amount = (commission / 100) * parseInt(tuition_fee)#}
+    {#                console.log("this is tuition fee==========", tuition_fee, '=== this is commision amount====', commission_amount)#}
+    {#                let gst_commission_amount = (commission_amount / 100 * 10)#}
+    {#                console.log("this is the commission amount and GST amount===============", commission_amount, '=====', gst_commission_amount)#}
+    {#                let latest_commission_amount = commission_amount + gst_commission_amount#}
+    {#                console.log("this is commission amount==", commission_amount)#}
+    {#                let agent_commission = $("#id_total_commission_amount").val(latest_commission_amount.toFixed(2))#}
+    {#            })#}
+    {##}
+    {##}
+    {#        })#}
+    {#    </script>#}
+
+
+    <script>
+        function calculate_commision_while_add_edit_student() {
+            let student_commission = $("#id_commission").val()
+            let tuition_fee = $("#id_tuition_fee").val()
+            let commission_amount = (student_commission / 100) * parseInt(tuition_fee)
+            let gst_status = $("#id_gst_status").val()
+            let latest_commission_amount = commission_amount
+            if (gst_status == 'COMMISSION + GST (10%)') {
+                let gst_commission_amount = (commission_amount / 100 * 10)
+                latest_commission_amount = commission_amount + gst_commission_amount
+            }
+            let agent_commission = $("#id_total_commission_amount").val(latest_commission_amount.toFixed(2))
+        }
+    </script>
     <script>
         $("#id_tuition_fee").on('keyup', function () {
-            let agent_name = $("#id_agent_name")
-            let tuition_fee = $("#id_tuition_fee").val()
-            agent_name = agent_name.val()
-            let url = "{% url 'get-agent-commission' %}?agent_id=" + agent_name
-            $.get(url, function (response, success) {
-                console.log("this is response=========", response)
-                let commission = response.data.commission
-                let gst = response.data.gst
 
-                console.log("this is commision ===", commission)
-                let commission_amount = (commission / 100) * parseInt(tuition_fee)
-                console.log("this is tuition fee==========", tuition_fee, '=== this is commision amount====', commission_amount)
-                let gst_commission_amount = (commission_amount / 100 * 10)
-                console.log("this is the commission amount and GST amount===============", commission_amount, '=====', gst_commission_amount)
-                let latest_commission_amount = commission_amount + gst_commission_amount
-                console.log("this is commission amount==", commission_amount)
-                let agent_commission = $("#id_total_commission_amount").val(latest_commission_amount.toFixed(2))
-            })
+            calculate_commision_while_add_edit_student()
+        })
+    </script>
+    <script>
+        $("#id_commission").on('keyup', function () {
 
+            calculate_commision_while_add_edit_student()
+        })
+    </script>
+    <script>
+        $("#id_gst_status").on('change', function () {
 
+            calculate_commision_while_add_edit_student()
         })
     </script>
     <script>
@@ -835,11 +877,11 @@
                 let fee = fio
                 fee = (fee * 100) / commission_percentage
                 let gst = fee / 10
-                $("#id_student_paid_fee").val(fee)
+                $("#id_student_paid_fee").val(fee.toFixed(2))
                 {#console.log('===================', fee, gst)#}
             } else {
                 let fee = (commission_amount * 100) / commission_percentage
-                $("#id_student_paid_fee").val(fee)
+                $("#id_student_paid_fee").val(fee.toFixed(2))
             }
         }
     </script>
@@ -854,10 +896,10 @@
                     let fio = free * 10
                     let fee = fio
                     fee = (fee * 100) / commission_percentage
-                    $("#id_student_paid_fee").val(fee)
+                    $("#id_student_paid_fee").val(fee.toFixed(2))
 
                 } else {
-                    $("#id_student_paid_fee").val((student * 100) / commission_percentage)
+                    $("#id_student_paid_fee").val(((student * 100) / commission_percentage).toFixed(2))
                 }
             }
         )

@@ -13,18 +13,22 @@ class PayModelStudentTable(tables.Table):
     agent_commission_gst = tables.Column(empty_values=(), verbose_name='Agent Gst Status')
     acmi_number = tables.Column(empty_values=(), verbose_name='ACMI Number#')
     course = tables.Column(empty_values=(), verbose_name='Course')
+    commission = tables.Column(empty_values=(), verbose_name='Commission (%)')
 
     class Meta:
         attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
         model = student_models.PayModelStudent
-        fields = ['acmi_number', 'student', 'course', 'fee_pay', 'agent_commision_amount', 'agent_commission_gst',
+        fields = ['acmi_number', 'student', 'course', 'fee_pay', 'agent_commision_amount','commission', 'agent_commission_gst',
                   'paid_on', 'status']
 
+
+    def render_commission(self,record):
+        return f"{record.commission_percentage} %"
     def render_agent_commission_gst(self, record):
         record: student_models.PayModelStudent
-        if record.student.agent_name.gst_status == agent_models.AgentModel.COMMISSION_ONLY:
+        if record.student.gst_status == record.student.COMMISSION_ONLY:
             return 'Commission Only'
-        elif record.student.agent_name.gst_status == agent_models.AgentModel.COMMISSION_PLUS_GST:
+        elif record.student.gst_status == record.student.COMMISSION_PLUS_GST:
             return 'Commission + GST'
         else:
             return "NOT DEFINED"
@@ -67,7 +71,7 @@ class PayModelStudentTable(tables.Table):
     def render_actions(self, record):
         return format_html("<a class='btn btn-sm text-primary' href='{update}'><i class='fa fa-pen'></i></a>"
                            "{delete}"
-                           "<a class='btn btn-sm text-warning' href={send_mail} style=background:#adadad30;><i class='fa fa-envelope' ></i>&nbsp&nbspSend Mail</a>"
+                           "<a class='btn btn-sm text-warning' href={send_mail} style=background:#adadad30;><i class='fa fa-envelope' ></i>&nbsp&nbspSend Mail To Agent</a>"
 
                            .format(update=student_urls.edit_student_fee(record.pk),
                                    delete=delete_action(student_urls.delete_student_fee(record.pk),
@@ -92,13 +96,14 @@ class StudentTable(tables.Table):
     material_fee = tables.Column(verbose_name='material fee($)')
     tuition_fee = tables.Column(verbose_name='tuition fee($)')
     discount = tables.Column(verbose_name='discount($)')
+    commission = tables.Column(verbose_name='Commission(%)')
 
     class Meta:
         attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
         model = student_models.StudentModel
         fields = ['acmi_number', 'full_name', 'course', 'phone', 'email', 'total_fee', 'application_fee',
                   'material_fee',
-                  'tuition_fee', 'agent_name', 'discount',
+                  'tuition_fee', 'agent_name', 'commission', 'gst_status', 'discount',
                   ]
 
     def render_acmi_number(self, record):
@@ -111,6 +116,9 @@ class StudentTable(tables.Table):
 
     def render_material_fee(self, record):
         return "${}".format(round(record.material_fee, 2))
+
+    def render_commission(self, record):
+        return f"{record.commission} %"
 
     def render_tuition_fee(self, record):
         return "${}".format(round(record.tuition_fee, 2))
@@ -206,12 +214,14 @@ class StudentTableForReport(tables.Table):
     agent_bonus = tables.Column(empty_values=(), verbose_name='agent bonus($)')
     total_commission_amount = tables.Column(verbose_name='Agent Total commission ($)')
     agent_previous_commission_history = tables.Column(empty_values=(), verbose_name='Agent Last Paid on (Y-M-D)')
+    commission = tables.Column(empty_values=())
 
     # previous_commission_history = tables.Column(verbose_name='previous commission history($)')
     class Meta:
         attrs = {"class": "table  table-stripped data-table", 'id': 'printableArea', "data-add-url": "Url here"}
         model = student_models.StudentModel
-        fields = ['status', 'outstanding_fee', 'acmi_number', 'full_name', 'email', 'course', 'total_fee', 'paid_fee',
+        fields = ['status', 'outstanding_fee', 'acmi_number', 'full_name', 'email', 'course', 'commission',
+                  'gst_status', 'total_fee', 'paid_fee',
                   'total_required_fee',
                   'quarterly_fee_amount', 'application_fee', 'application_fee_paid', 'material_fee',
                   'material_fee_paid', 'previous_student_fee_history', 'agent_name',
@@ -220,6 +230,9 @@ class StudentTableForReport(tables.Table):
 
     def render_acmi_number(self, record):
         return "#{}".format(record.acmi_number)
+
+    def render_commission(self, record):
+        return f"{record.commission} %"
 
     def render_previous_student_fee_history(self, record):
         return "Last Paid On : {} ".format(record.last_paid_on)

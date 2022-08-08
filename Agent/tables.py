@@ -11,21 +11,22 @@ class AgentTable(tables.Table):
     actions = tables.Column(empty_values=())
     bonus = tables.Column(verbose_name='bonus($)')
     commission_to_pay = tables.Column(empty_values=(), verbose_name='Commission To Pay')
-    commission = tables.Column(verbose_name='Commission(%)')
+
+    # commission = tables.Column(verbose_name='Commission(%)')
 
     # price = tables.Column(empty_values=())
 
     class Meta:
         attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
         model = agent_models.AgentModel
-        fields = ['company', 'name', 'email', 'country', 'phone', 'commission', 'gst_status', 'bonus',
+        fields = ['company', 'name', 'email', 'country', 'phone', 'bonus',
                   'commission_to_pay']
 
     def render_bonus(self, record):
         return "${}".format(record.bonus)
 
-    def render_commission(self, record):
-        return "%{}".format(record.commission)
+    # def render_commission(self, record):
+    #     return "%{}".format(record.commission)
 
     def render_commission_to_pay(self, record):
         student = student_models.StudentModel.objects.filter(agent_name=record)
@@ -80,12 +81,21 @@ class AgentStudentTable(tables.Table):
 class AgentCommissionTable(tables.Table):
     # total_commission_paid = tables.Column(empty_values=(), verbose_name='total_commission_paid')
     actions = tables.Column(empty_values=())
+    commission_percentage = tables.Column(empty_values=(),verbose_name='Commission Percentage')
+
 
     class Meta:
         attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
         model = agent_models.CommissionModelAgent
-        fields = ['agent_name', 'student', 'student_paid_fee', 'agent_commission_percentage', 'total_commission_paid',
-                  'agent_commission_amount', 'paid_on', ]
+        fields = ['agent_name', 'student', 'student_paid_fee', 'agent_commission_amount', 'commission_percentage',
+                  'total_commission_paid',
+                  'paid_on', ]
+
+    def render_agent_commission_amount(self, record):
+        return f"${record.agent_commission_amount}"
+
+    def render_commission_percentage(self, record):
+        return f"{record.agent_commission_percentage}%"
 
     def render_total_commission_paid(self, record):
         return "${}".format(record.student.total_commission_paid)
@@ -93,9 +103,10 @@ class AgentCommissionTable(tables.Table):
     def render_actions(self, record):
         return format_html("<a class='btn btn-sm text-primary' href='{update}'><i class='fa fa-pen'></i></a>"
                            "{delete}"
-                            # "<a class='btn btn-sm text-warning' href={send_mail} style=background:#adadad30;><i class='fa fa-envelope' ></i>&nbsp&nbspSend Mail</a>"
+                           # "<a class='btn btn-sm text-warning' href={send_mail} style=background:#adadad30;><i class='fa fa-envelope' ></i>&nbsp&nbspSend Mail</a>"
                            .format(update=agent_urls.edit_agent_commission(record.pk),
-                                   delete=delete_action(agent_urls.delete_agent_commission(record.pk), record.agent_name),
+                                   delete=delete_action(agent_urls.delete_agent_commission(record.pk),
+                                                        record.agent_name),
                                    # send_mail =agent_urls.send_mail_agent(record.pk)
                                    )
                            )

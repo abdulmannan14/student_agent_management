@@ -294,8 +294,8 @@ def add_student(request):
             student = form.save(commit=False)
             agent_name = form.cleaned_data['agent_name']
             agent = agent_models.AgentModel.objects.get(company=agent_name)
-            student.commission = agent.commission
-            student.quarterly_fee_amount = quarterly_fee
+            # student.commission = st
+            # student.quarterly_fee_amount = quarterly_fee
             student.outstanding_fee = quarterly_fee
             # paid_fee = student.total_fee - student.tuition_fee
             # student.paid_fee = application_fee
@@ -332,7 +332,7 @@ def edit_student(request, pk):
             student = form.save(commit=False)
             agent_name = form.cleaned_data['agent_name']
             agent = agent_models.AgentModel.objects.get(company=agent_name)
-            student.commission = agent.commission
+            student.commission = form.cleaned_data['commission']
             student.save()
 
             messages.success(request, f" Student updated Successfully")
@@ -419,6 +419,7 @@ def add_fee(request):
                 student_obj.outstanding_fee = 0
             total_fee_amount = form.cleaned_data['fee_pay']
             fee.fee_pay = total_fee_amount
+            fee.commission_percentage = student_obj.commission
             student_obj.total_required_fee = student_obj.total_required_fee - total_fee_amount
             student_obj.paid_fee = student_obj.paid_fee + total_fee_amount if student_obj.paid_fee else 0 + total_fee_amount
             # student_obj.material_fee = student_obj.material_fee + fee_amount
@@ -512,12 +513,16 @@ def edit_fee(request, pk):
                     student_obj.outstanding_fee = student_obj.outstanding_fee + (
                             previous_fee_amount - student_obj.application_fee - student_obj.material_fee)
 
+                    print("this is student outstanding fe=============1", student_obj.outstanding_fee)
+
                     student_obj.application_fee_paid = False
                     student_obj.material_fee_paid = False
 
                     deducted_fee_amount = fee_amount
                     deducted_fee_amount = deducted_fee_amount
                     student_obj.outstanding_fee = student_obj.outstanding_fee - deducted_fee_amount
+
+                    print("this is student outstanding fe=============2", student_obj.outstanding_fee)
 
                     if student_obj.paid_fee > student_obj.total_fee:
                         messages.error(request,
@@ -556,6 +561,7 @@ def edit_fee(request, pk):
                         #   TODO: Just for Information: Removing Old values from Student Profile.
                         student_obj.paid_fee = student_obj.paid_fee - previous_fee_amount + fee_amount
                         student_obj.outstanding_fee = student_obj.outstanding_fee + deducted_previous_fee_amount
+                        print("this is student outstanding fe=============3", student_obj.outstanding_fee)
 
                         student_obj.application_fee_paid = False
 
@@ -564,6 +570,7 @@ def edit_fee(request, pk):
                         else:
                             deducted_fee_amount = fee_amount
                         student_obj.outstanding_fee = student_obj.outstanding_fee - deducted_fee_amount
+                        print("this is student outstanding fe=============4", student_obj.outstanding_fee)
 
                         if student_obj.paid_fee > student_obj.total_fee:
                             messages.error(request,
@@ -779,7 +786,7 @@ def delete_fee(request, pk):
 
 # ======AJAX JAVA SCRIPT======================================================
 @login_required(login_url='login')
-def get_agent_commission(request):
+def get_student_commission(request):
     agent_id = request.GET.get('agent_id', 0)
     agent = get_object_or_404(agent_models.AgentModel, pk=agent_id)
     agent: agent_models.AgentModel

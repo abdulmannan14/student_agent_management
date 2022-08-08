@@ -20,16 +20,15 @@ def check_grater_or_lesser(fee_amount, previous_fee_amount):
 
 
 def calculate_gst_if_applicable(commission, student_obj):
-    agent = student_obj.agent_name
-    if agent.gst_status == AgentModel.COMMISSION_PLUS_GST:
-        gst_amount = (commission / 100) * agent.gst
+    if student_obj.gst_status == student_obj.COMMISSION_PLUS_GST:
+        gst_amount = (commission / 100) * student_obj.gst
     else:
         return 0
     return gst_amount
 
 
 def calculate_commission_including_gst_and_commission(student_obj, fee_amount):
-    commission = student_obj.agent_name.commission * (fee_amount / 100)
+    commission = student_obj.commission * (fee_amount / 100)
     gst = calculate_gst_if_applicable(commission, student_obj)
     new_commission = float(commission) + float(gst)
     return new_commission
