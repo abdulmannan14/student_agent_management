@@ -81,6 +81,7 @@ class StudentFormEdit(forms.ModelForm):
         self.fields['total_commission_amount'].widget.attrs['readonly'] = True
         self.fields['course_quarters'].widget.attrs['readonly'] = True
         self.fields['paid_fee'].widget.attrs['readonly'] = True
+        self.fields['total_required_fee'].widget.attrs['readonly'] = True
         self.fields['material_fee'].label = "Material Fee($)"
         self.fields['acmi_number'].label = "ACMi Number"
         self.fields['quarterly_fee_amount'].label = "Qaurterly Fee($)"
@@ -99,7 +100,7 @@ class StudentFormEdit(forms.ModelForm):
         model = student_models.StudentModel
         fields = ['agent_name', 'acmi_number', 'full_name', 'phone', 'email', 'course', 'course_quarters', 'discount',
                   'start_date', 'end_date', 'commission', 'gst_status', 'material_fee', 'tuition_fee',
-                  'application_fee', 'quarterly_fee_amount', 'total_fee', 'paid_fee','oshc', 'total_commission_amount','total_required_fee','comment']
+                  'application_fee', 'quarterly_fee_amount', 'total_fee','oshc', 'total_commission_amount','paid_fee','total_required_fee','comment']
         # exclude = ['total_commission_paid', 'paid_fee', 'previous_student_fee_history', 'previous_commission_history',
         #            'amount_inserting_date', 'amount_already_inserted', 'last_paid_on', 'application_fee_paid',
         #            'material_fee_paid', 'refunded', 'refund_reason', 'refund_amount', 'quarters_paid', 'oshc_fee_paid',

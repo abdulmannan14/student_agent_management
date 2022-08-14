@@ -34,7 +34,7 @@ class AgentModel(BaseModel):
 
 # Create your models here.
 class CommissionModelAgent(BaseModel):
-    upfront_fee = 'UPFRONT FEE'
+    upfront_fee = 'UPFRONT COMMISSION'
     adjustment = 'ADJUSTMENT'
     cash = "CASH"
     bank = "BANK TRANSFER"

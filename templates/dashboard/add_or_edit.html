@@ -457,9 +457,9 @@
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label class="form-control-label">{{ field.label }}:
-                                                    {% if field.field.required %}
-                                                                <span class="text-danger">*</span>
-                                                            {% endif %}</label>
+                                                        {% if field.field.required %}
+                                                            <span class="text-danger">*</span>
+                                                        {% endif %}</label>
                                                     {% render_field field class="form-control" placeholder=field.label %}
                                                     <small style="color: red">
                                                         {{ field.errors }}
@@ -747,6 +747,39 @@
                     $("#id_course_quarters").val(parseInt(quarters))
                 })
             }
+        })
+    </script>
+    <script>
+        $("#id_discount").on('keyup', function () {
+            let total_required_fee = $("#id_total_required_fee").val()
+            let total_paid_fee = $("#id_paid_fee").val()
+            let old_quarterly_fee = $("#id_quarterly_fee_amount").val()
+            let course_quarters = $("#id_course_quarters").val()
+            let url = "{% url 'get_course_quarters' %}?check=" + $("#id_full_name").val()
+            $.get(url, function (response, success) {
+                let data = response.data
+                let is_material_fee_paid = data.is_material_fee_paid
+                let is_application_fee_paid = data.is_application_fee_paid
+                let material_fee = data.material_fee
+                let application_fee = data.application_fee
+                console.log("this is response=========", data)
+                if (!is_material_fee_paid && !is_application_fee_paid) {
+                    console.log("this is response=========111111")
+                    total_required_fee = total_required_fee - material_fee - application_fee
+                    console.log("this is response=========aaaaa====", total_required_fee)
+                    console.log("this is response=========paid fee====", total_paid_fee)
+                    console.log("this is response=========old quarterly  fee====", old_quarterly_fee)
+                    let quarters_paid1 = (total_paid_fee / old_quarterly_fee)
+                    console.log("this is response=========quarterly fee====", quarters_paid1)
+                    let quarters_paid = parseInt(total_paid_fee / old_quarterly_fee)
+                    console.log("this is response=========222", quarters_paid)
+                    let left_quarters = course_quarters - quarters_paid
+                    console.log("this is response=========333", left_quarters)
+                    let new_quarterly_amount = (total_paid_fee / left_quarters).toFixed(2)
+                    console.log("this is response=========444", new_quarterly_amount)
+                    $("#id_quarterly_fee").val(new_quarterly_amount)
+                }
+            })
         })
     </script>
     <script>

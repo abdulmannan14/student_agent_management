@@ -276,10 +276,11 @@ def get_student_agent_details(request):
 
 from datetime import datetime
 
+
 def send_mail(request, pk):
     commission_obj = student_models.PayModelStudent.objects.get(pk=pk)
-    date= commission_obj.paid_on
-    date= datetime.strftime(date,"%d-%m-%Y")
+    date = commission_obj.paid_on
+    date = datetime.strftime(date, "%d-%m-%Y")
     context = {
         'subject': f'Dear Team,',
         'message': f'Hope this email finds you well ! <br>'
@@ -290,8 +291,8 @@ def send_mail(request, pk):
                    f'ACMi <br><br>'
                    f'Address: Unit 1 / 33 Archer Street, Carlisle Western Australia,Post code: 6101',
 
-        'fee_notice':'Commission Due Notice'}
+        'fee_notice': 'Commission Due Notice'}
     student_utils._thread_making(student_utils.send_email,
-                                 ["Welcome to ACMi", context, commission_obj.student.agent_name])
+                                 ["Commission Due Notice", context, commission_obj.student.agent_name])
     messages.success(request, "Email sent successfully")
     return redirect('history-student', commission_obj.student.pk)

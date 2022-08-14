@@ -256,7 +256,7 @@ def student_fee_refund(request, pk):
     student.refund_way = refunded_way
     student.refund_amount = fee_amount
     student.commission_to_pay -= commission_amount
-    student.outstanding_fee= 0
+    student.outstanding_fee = 0
     student.save()
     messages.success(request, 'Student Refunded Successfully!')
     return redirect('all-students')
@@ -380,7 +380,7 @@ def add_fee(request):
                 form_obj = form.save(commit=False)
                 student_obj.is_bonus = True
                 form_obj.save()
-                student_obj.total_commission_paid +=fee_amount
+                student_obj.total_commission_paid += fee_amount
                 student_obj.save()
                 messages.success(request, "Bonus added successfully")
                 return redirect("all-students")
@@ -940,7 +940,8 @@ def send_mail_to_student(request, pk):
         'message': f' Your $ {student.outstanding_fee} Tuition fee is outstanding; we request you to kindly settle the payment as per agreement so that you can smoothly continue your studies at ACMi.<br><br>'
                    'Regards,<br>'
                    'Accounts Team<br>'
-                   'ACMi',
+                   'ACMi <br><br>'
+                   'Address: Unit 1 / 33 Archer Street, Carlisle Western Australia,Post code: 6101',
         'fee_notice': 'Student Fee Notice', }
     student_utils._thread_making(student_utils.send_email, ["Welcome to ACMi", context, student])
     student.warning_sent = True

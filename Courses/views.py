@@ -10,6 +10,7 @@ from rest_framework.generics import get_object_or_404
 from limoucloud_backend import utils as backend_utils
 from limoucloud_backend.utils import success_response
 from . import models as course_models, tables as course_table, forms as course_form
+from Student import models as student_models
 
 
 # Create your views here.
@@ -103,6 +104,16 @@ def delete_course(request, pk):
 
 
 def get_course_quarters(request):
+    if request.GET.get('check'):
+        student_name = request.GET.get('check')
+        student = student_models.StudentModel.objects.get(full_name=student_name)
+        data = {
+            "material_fee": student.material_fee,
+            "application_fee": student.application_fee,
+            "is_material_fee_paid": student.material_fee_paid,
+            "is_application_fee_paid": student.application_fee_paid,
+        }
+        return JsonResponse(success_response(data=data), safe=False)
     try:
         course = course_models.Course.objects.get(pk=request.GET.get('course_id'))
         data = {
