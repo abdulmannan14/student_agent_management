@@ -293,6 +293,6 @@ def send_mail(request, pk):
 
         'fee_notice': 'Commission Due Notice'}
     student_utils._thread_making(student_utils.send_email,
-                                 ["Commission Due Notice", context, commission_obj.student.agent_name])
+                                 ["ACMi Commission Due Notice", context, commission_obj.student.agent_name])
     messages.success(request, "Email sent successfully")
     return redirect('history-student', commission_obj.student.pk)
