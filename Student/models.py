@@ -92,3 +92,6 @@ class PayModelStudent(BaseModel):
     commission_percentage = models.IntegerField(null=True,blank=True)
     # outstanding_fee = models.IntegerField(null=True, blank=True)
     # total_required_fee = models.IntegerField(null=True, blank=True)
+
+
+

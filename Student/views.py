@@ -244,12 +244,15 @@ def student_fee_refund(request, pk):
     refunded_way = request.POST.get('refunded_ways')
     student = get_object_or_404(student_models.StudentModel, pk=pk)
     fee_amount = request.POST.get('refund_amount', 0)
+    fee_amount = float(fee_amount)
     commission_perc = student.commission
     gst_status = student.gst_status
     gst_perc = student.gst
-    commission_amount = (int(fee_amount) / 100) * commission_perc
-    if gst_status == student.COMMISSION_PLUS_GST:
-        commission_amount += (commission_amount / 100) * gst_perc
+    commission_amount = 0
+    if int(fee_amount) > 0:
+        commission_amount = (int(fee_amount) / 100) * commission_perc
+        if gst_status == student.COMMISSION_PLUS_GST:
+            commission_amount += (commission_amount / 100) * gst_perc
     student: student_models.StudentModel
     student.refunded = True
     student.refund_reason = refund_reason
