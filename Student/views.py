@@ -944,6 +944,8 @@ def send_mail_to_student(request, pk):
                    'Regards,<br>'
                    'Accounts Team<br>'
                    'ACMi <br><br>'
+                   'RTO Code: 45535 <br>'
+                   'CRICOS Code:03800K <br> <br>'
                    'Address: Unit 1 / 33 Archer Street, Carlisle Western Australia,Post code: 6101',
         'fee_notice': 'Student Fee Notice', }
     student_utils._thread_making(student_utils.send_email, ["Welcome to ACMi", context, student])
