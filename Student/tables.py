@@ -2,8 +2,8 @@
 import django_tables2 as tables
 from django.utils.html import format_html
 from . import models as student_models, urls as student_urls
-from limoucloud_backend.utils import delete_action
-from limoucloud_backend import utils as backend_utils
+from acmimanagement.utils import delete_action, archive_action, undo_archive_action
+from acmimanagement import utils as backend_utils
 from Agent import models as agent_models, urls as agent_urls
 
 
@@ -139,10 +139,12 @@ class StudentTable(tables.Table):
         if not record.refunded:
             return format_html("<a class='btn btn-sm text-warning' href='{history}'><i class='fa fa-book'></i></a>"
                                "<a class='btn btn-sm text-primary' href='{update}'><i class='fa fa-pen'></i></a>"
-                               "{delete}".format(
+                               "{delete}"
+                               "{archive}".format(
                 history=student_urls.history_student(record.pk),
                 update=student_urls.edit_student(record.pk),
                 delete=delete_action(student_urls.delete_student(record.pk), record.full_name),
+                archive=archive_action(student_urls.archive_student(record.pk), record.full_name),
             )
             )
         else:
@@ -205,6 +207,32 @@ class StudentRefundTable(tables.Table):
             )
             )
 
+
+class StudentArchivedTable(tables.Table):
+    actions = tables.Column(empty_values=())
+    acmi_number = tables.Column(verbose_name='ACMI Number#')
+
+    class Meta:
+        attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
+        model = student_models.StudentModel
+        fields = ['acmi_number', 'full_name', 'archived_tag', 'phone',
+                  'email', 'agent_name',
+                  ]
+
+    def render_acmi_number(self, record):
+        if not record.refunded:
+            return "#{}".format(record.acmi_number)
+        else:
+            return format_html("<h5 class='text-warning'>{data}</h5>".format(
+                data="#{number} ({status})".format(number=record.acmi_number, status="Cancelled"))
+            )
+
+    def render_actions(self, record):
+        if not record.refunded:
+            return format_html("{unarchive}".format(
+                unarchive=undo_archive_action(student_urls.unarchive_student(record.pk), record.full_name),
+            )
+            )
 
 class StudentTableForReport(tables.Table):
     actions = tables.Column(empty_values=())

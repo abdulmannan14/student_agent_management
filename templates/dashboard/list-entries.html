@@ -146,6 +146,69 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="archiveModal" tabindex="-1" role="dialog" aria-labelledby="archiveModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="archiveModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"><span>Cancel</span></button>
+                    <a href="javascript:;" id="archiveFormButton" type="button"
+                       class="btn btn-danger confirm">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="agentarchiveModal" tabindex="-1" role="dialog" aria-labelledby="agentarchiveModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="archiveModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"><span>Cancel</span></button>
+                    <a href="javascript:;" id="archiveFormButton" type="button"
+                       class="btn btn-danger confirm">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="UndoarchiveModal" tabindex="-1" role="dialog" aria-labelledby="UndoarchiveModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="archiveModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"><span>Cancel</span></button>
+                    <a href="javascript:;" id="archiveFormButton" type="button"
+                       class="btn btn-danger confirm">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel"
@@ -189,7 +252,7 @@
                 var name = button.data('name') // Extract info from data-* attributes
                 var url = button.data('whatever') // Extract info from data-* attributes
                 var modal = $(this)
-                modal.find('.modal-title').html('Delete <strong>' + name + '</strong>`')
+                modal.find('.modal-title').html('Delete <strong>' + name + '</strong>?')
                 modal.find('.modal-body')
                     .html(`<p>Make sure before you Delete. This action will Permenently delete every data related to <code class="text-dark">${name}</code> and will never be restored.</p>
                                 `)
@@ -206,10 +269,104 @@
                 $.get(url, function (response, success) {
                     modal.find('.modal-body').html(response)
                 })
+            });
+
+
+            $('#UndoarchiveModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) // Button that triggered the modal
+                var name = button.data('name') // Extract info from data-* attributes
+                var url = button.data('url') // Extract info from data-* attributes
+                var modal = $(this)
+                console.log("this is the url", url)
+
+                modal.find('.modal-title').html('Un-Archive <strong>' + name + '</strong>')
+                modal.find('a.confirm').attr('href', url);
 
             })
 
         })
+
+    </script>
+    <script>
+        $('#archiveModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var name = button.data('name'); // Extract info from data-* attributes
+            var url = button.data('url'); // Extract info from data-* attributes
+
+            var modal = $(this);
+            modal.find('.modal-title').html('Archive <strong>' + name + '</strong>?');
+            modal.find('.modal-body')
+                .html(`
+            <div class="form-group">
+                <label for="archiveType">Select Archive Type:</label>
+                <select class="form-control" id="archiveType" required>
+                    <option value="completed_archive">COMPLETED ARCHIVE</option>
+                    <option value="withdrawal_archive">WITHDRAWAL ARCHIVE</option>
+                    <option value="refund_archive">REFUNDED ARCHIVE</option>
+                </select>
+            </div>
+            <p></p>
+            <input type="hidden" id="userId" value="">
+            <p>Make sure before you Archive. This action will archive
+            <code class="text-dark">${name}</code> and can be restored from Archive Student Section.</p>
+        `);
+
+            // Initial URL with default archive type
+            var fullUrl = url + '?type=' + $('#archiveType').val();
+            modal.find('a.confirm').attr('href', fullUrl);
+
+            // Update the URL dynamically when archive type changes
+            $('#archiveType').on('change', function () {
+                var selectedType = $(this).val();
+                var updatedUrl = url + '?type=' + selectedType;
+                modal.find('a.confirm').attr('href', updatedUrl); // Update the URL in the confirm link
+            });
+
+            console.log("this is the initial url:", fullUrl);
+        });
+
+        {#.html(`<form id="archiveForm"><div class="form-group"><label for="archiveType">Select Archive Type:</label><select class="form-control" id="archiveType" required><option value="soft">COMPLETED ARCHIVE</option><option value="medium">WITHDRAWAL ARCHIVE</option><option value="hard">REFUNDED ARCHIVE</option></select></div><p></p><input type="hidden" id="userId" value=""></form><p>Make sure before you Delete. This action will Permenently delete every data related to <code class="text-dark">${name}</code> and will never be restored.</p>`)#}
+
+    </script>
+    <script>
+        $('#agentarchiveModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var name = button.data('name'); // Extract info from data-* attributes
+            var url = button.data('url'); // Extract info from data-* attributes
+
+            var modal = $(this);
+            modal.find('.modal-title').html('Archive <strong>' + name + '</strong>?');
+            modal.find('.modal-body')
+                .html(`
+            <div class="form-group">
+                <label for="archiveType">Select Archive Type:</label>
+                <select class="form-control" id="archiveType" required>
+                    <option value="onshore">Onshore</option>
+                    <option value="offshore">Offshore</option>
+
+                </select>
+            </div>
+            <p></p>
+            <input type="hidden" id="userId" value="">
+            <p>Make sure before you Archive. This action will archive
+            <code class="text-dark">${name}</code> and can be restored from Archive Agent Section.</p>
+        `);
+
+            // Initial URL with default archive type
+            var fullUrl = url + '?type=' + $('#archiveType').val();
+            modal.find('a.confirm').attr('href', fullUrl);
+
+            // Update the URL dynamically when archive type changes
+            $('#archiveType').on('change', function () {
+                var selectedType = $(this).val();
+                var updatedUrl = url + '?type=' + selectedType;
+                modal.find('a.confirm').attr('href', updatedUrl); // Update the URL in the confirm link
+            });
+
+            console.log("this is the initial url:", fullUrl);
+        });
+
+        {#.html(`<form id="archiveForm"><div class="form-group"><label for="archiveType">Select Archive Type:</label><select class="form-control" id="archiveType" required><option value="soft">COMPLETED ARCHIVE</option><option value="medium">WITHDRAWAL ARCHIVE</option><option value="hard">REFUNDED ARCHIVE</option></select></div><p></p><input type="hidden" id="userId" value=""></form><p>Make sure before you Delete. This action will Permenently delete every data related to <code class="text-dark">${name}</code> and will never be restored.</p>`)#}
 
     </script>
     <script>

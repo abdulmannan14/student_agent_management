@@ -1,1 +1,1 @@
-web: gunicorn limoucloud_backend.wsgi
+web: gunicorn acmimanagement.wsgi

@@ -11,6 +11,8 @@ urlpatterns = [
     path('edit/<int:pk>', student_views.edit_student, name='edit-student'),
     path('history/<int:pk>', student_views.history_student, name='history-student'),
     path('delete/<int:pk>', student_views.delete_student, name='delete-student'),
+    path('archive/<int:pk>', student_views.archive_student, name='archive-student'),
+    path('unarchive/<int:pk>', student_views.unarchive_student, name='unarchive-student'),
 
     # JS URLS
     path('get_student_commission', student_views.get_student_commission, name='get-student-commission'),
@@ -23,6 +25,7 @@ urlpatterns = [
     path('student/report', student_views.student_report, name='student-report'),
     # ==================================STUDENT FEE REFUND==================================
     path('refunded-student', student_views.refunded_student, name='refunded-student'),
+    path('archived-student', student_views.archived_student, name='archived-student'),
     # path('student/fee-refund/<int:pk>', student_views.student_fee_refund, name='student-fee-refund'),
     path('student/fee-refund/<int:pk>', student_views.student_fee_refund, name='student-fee-refund'),
     # ===========================SEND MAIL TO STUDENT=================================================
@@ -57,6 +60,12 @@ def history_student(pk: int):
 
 def delete_student(pk: int):
     return reverse("delete-student", kwargs={"pk": pk})
+
+
+def archive_student(pk: int):
+    return reverse("archive-student", kwargs={"pk": pk})
+def unarchive_student(pk: int):
+    return reverse("unarchive-student", kwargs={"pk": pk})
 
 
 def user_login():

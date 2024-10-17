@@ -2,8 +2,8 @@
 import django_tables2 as tables
 from django.utils.html import format_html
 from . import models as course_models, urls as course_urls
-from limoucloud_backend.utils import delete_action
-from limoucloud_backend import utils as backend_utils
+from acmimanagement.utils import delete_action
+from acmimanagement import utils as backend_utils
 from Agent import models as agent_models
 
 

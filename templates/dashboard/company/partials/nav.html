@@ -113,7 +113,33 @@
                                 <i class="fa-solid fa-undo fa-gradient"></i>
                             </div>
 
-                            <span class="nav-link-text ml-2 text-dark">Refunded Student List</span>
+                            <span class="nav-link-text ml-2 text-dark">Refunded Student</span>
+                        </a>
+                    </li>
+                    <li class="nav-item Student">
+                        <a class="nav-link" href="{% url 'archived-student' %}" role="button"
+                           aria-expanded="false"
+                           aria-controls="navbar-vehicle">
+                            <div class="icon icon-shape rounded-circle shadow">
+                                {#                                <img src="https://img.icons8.com/external-photo3ideastudio-solid-photo3ideastudio/24/000000/external-reservation-restaurant-photo3ideastudio-solid-photo3ideastudio.png"/>#}
+                                {#                                <img class="sidebar-icons" src="{% static 'dashboard/assets/img/sidebar/reservations.svg' %}"/>#}
+                                <i class="fa-solid fa-archive fa-gradient"></i>
+                            </div>
+
+                            <span class="nav-link-text ml-2 text-dark">Archived Student</span>
+                        </a>
+                    </li>
+                    <li class="nav-item Agent">
+                        <a class="nav-link" href="{% url 'archived-agent' %}" role="button"
+                           aria-expanded="false"
+                           aria-controls="navbar-vehicle">
+                            <div class="icon icon-shape rounded-circle shadow">
+                                {#                                <img src="https://img.icons8.com/external-photo3ideastudio-solid-photo3ideastudio/24/000000/external-reservation-restaurant-photo3ideastudio-solid-photo3ideastudio.png"/>#}
+                                {#                                <img class="sidebar-icons" src="{% static 'dashboard/assets/img/sidebar/reservations.svg' %}"/>#}
+                                <i class="fa-solid fa-archive fa-gradient"></i>
+                            </div>
+
+                            <span class="nav-link-text ml-2 text-dark">Archived Agent</span>
                         </a>
                     </li>
 

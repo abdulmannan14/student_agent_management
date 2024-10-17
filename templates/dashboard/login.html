@@ -1,285 +1,99 @@
-{% extends 'dashboard/base.html' %}
-{% load django_tables2 %}
+{% extends "dashboard/base.html" %}
 {% load static %}
-{% block extra_styles %}
-    {% load widget_tweaks %}
-    {% include 'dashboard/partials/datatable-styles.html' %}
-    <style>
-        @import url('https://fonts.googleapis.com/css?family=Roboto|K2D');
-
-        html, body {
-            /* Frankenstein Green?
-            --light-main-color: #293532;
-            --dark-main-color: #57ad68;
-            --darker-main-color: #227744;
-            */
-            --light-main-color: rgba(235, 97, 35, 0.4) /*#221925*/;
-            --dark-main-color: #ee7c11;
-            --darker-main-color: #bf6d1c;
-
-            background: var(--light-main-color);
-            font-size: 16px;
-            margin: 0;
-            padding: 0;
-            font-family: K2D, Roboto, Arial, Verdana, sans-serif;
-        }
-
-        form {
-            display: inline-block;
-            background: #f5f5f5;
-            padding: 1.5rem;
-            border: 3px solid var(--dark-main-color);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 350px;
-            -webkit-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-            box-sizing: border-box;
-            border-radius: 4px;
-        }
-
-        form svg {
-            margin: auto auto;
-            display: block;
-        }
-
-        fieldset {
-            border: 0;
-            padding: 0;
-            margin: 1.2rem 0 0 0;
-        }
-
-        legend {
-            margin: 0;
-            padding: 0;
-            color: var(--darker-main-color);
-        }
-
-        fieldset > div {
-            border: 3px solid var(--dark-main-color);
-            border-radius: 3px;
-            position: relative;
-            margin-top: 0.5rem;
-            background: white;
-        }
-
-        fieldset#submit-field > div {
-            border-color: var(--darker-main-color);
-            background: var(--darker-main-color);
-        }
-
-        fieldset .placeholder {
-            position: absolute;
-            top: 50%;
-            left: 1rem;
-            -webkit-transform: translate(0, -50%);
-            transform: translate(0, -50%);
-            z-index: 5;
-            font-size: 1.1rem;
-            transition: all 0.25s;
-            color: #666;
-            pointer-events: none;
-        }
-
-        fieldset .placeholder.active {
-            font-size: 0.6rem;
-            color: #999;
-            margin-top: -0.8rem;
-        }
-
-        fieldset input {
-            display: block;
-            width: 100%;
-            height: 100%;
-            box-sizing: border-box;
-            background: transparent;
-            border: 0;
-            padding: 1rem;
-            font-size: 1.1rem;
-            position: relative;
-            z-index: 3;
-            outline-color: var(--dark-main-color);
-        }
-
-        fieldset.with-placeholder input {
-            padding: 1.3rem 1rem 0.7rem 1rem;
-        }
-
-        fieldset input[type=submit] {
-            border: 0;
-            color: white;
-            cursor: pointer;
-            font-family: Roboto, K2D, Arial, Verdana, Sans-serif;
-        }
-
-        footer {
-            position: absolute;
-            bottom: 1rem;
-            right: 1rem;
-        }
-    </style>
-
-{% endblock %}
-
-
 {% block main %}
-    {% if login_page %}
-    <form method="post" action="{% url 'login' %}">
-        {% csrf_token %}
-        <h1 class="ml-4 heading-title" style="color: #204949">ACMi Portal Login</h1>
-        <svg width="200px" height="200px" viewBox="0 0 200 200" aria-labelledby="svg-title svg-desc">
-            <title id="svg-title">Floating Ghost</title>
-            <desc id="svg-desc">A smiling ghost that floats ups and down while looking at the user interactions.</desc>
-            <style type="text/css">
-                @keyframes float {
-                    from {
-                        transform: translate(0, 0px);
-                    }
-                    to {
-                        transform: translate(0, 8px);
-                    }
-                }
 
-                @keyframes float-arm {
-                    from {
-                        transform: translate(-1px, 0px);
-                    }
-                    to {
-                        transform: translate(1px, 4px);
-                    }
-                }
 
-                #ghost-body {
-                    animation: float 2s linear alternate infinite;
-                }
+    <div class="main-content" id="panel">
 
-                .ghost-arm {
-                    animation: float-arm 3s linear alternate infinite;
-                }
+        {#        {% include 'dashboard/company/partials/top-nav.html' %}#}
+        <!-- Header -->
+        <!-- Header -->
+        {% include 'dashboard/company/partials/header.html' %}
+        <div class="container "
+             style="min-height: 69.75vh;">
+            <div class="card" style="margin-top: 4%">
+                {% if login_page %}
+                    <form method="post" action="{% url 'login' %}">
+                        {% csrf_token %}
+                        <div class="card-header">
+                            {#                        <h1 class="heading-title"#}
+                            {#                            style="color: #204949l; margin-left: 30%;margin-top: 3%;font-size: 40px">#}
+                            {#                            ACMi Portal Login</h1>#}
+                            <img src="{% static 'assets/img/logo2.jpg' %}" style="margin-left: 15%">
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <div class="col-2"></div>
+                                <div class="col-8">
+                                    <fieldset id="email-field" class="with-placeholder">
+                                        <legend>Username</legend>
+                                        <div>
+                                            <input class=" form-control" type="username" name="username" id="email"
+                                                   autocomplete="off"
+                                                   autocorrect="off"
+                                                   autocapitalize="off"
+                                                   spellcheck="false" required/>
+                                            <div class="placeholder"></div>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset id="password-field">
+                                        <legend>Password</legend>
+                                        <div>
+                                            <input class=" form-control" type="password" name="password" id="password"
+                                                   autocomplete="off" autocorrect="off"
+                                                   autocapitalize="off" spellcheck="false" required/>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset id="submit-field">
+                                        <legend></legend>
+                                        <div>
+                                            <button class=" btn btn-md btn-primary float-right" type="submit"
+                                                    name="submit"
+                                                    id="submit"
+                                                    value="Login"><span>Login</span>
+                                            </button>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <div class="col-2"></div>
 
-                .pupil, #mouth, .ghost-arm {
-                    transition: all 0.25s;
-                }
-            </style>
-            <g id="ghost-body" fill="white" fill="#fff" stroke="#999" stroke-width="3" stroke-linejoin="round">
-                <path d="M 54,181 C 44,131 13,11 99,11 185,12 164,110 150,182 146,195 139,185 137,177 134,170 126,169 124,179 120,192 114,190 109,179 105,167 98,166 94,179 92,185 85,193 79,179 74,170 68,168 66,179 62,193 56,191 54,181 Z"/>
-                <path id="eye-right" class="eye" fill="#ffffee"
-                      d="M 69,71 C 69,64 73,54 84,55 96,56 100,62 100,70 100,79 89,83 84,83 78,83 69,80 69,71 Z"/>
-                <path id="eye-left" class="eye" fill="#ffffee"
-                      d="M 105,73 C 104,66 108,57 120,57 130,57 134,65 134,71 134,80 125,85 119,85 114,85 105,82 105,73 Z"/>
-                <circle id="pupil-right" class="pupil" cx="84" cy="69" r="3" fill="rgba(0,0,0,0.25)"/>
-                <circle id="pupil-left" class="pupil" cx="120" cy="71" r="3" fill="rgba(0,0,0,0.25)"/>
-                <path id="mouth"
-                      d="M 75,115 C 79,120 91,126 101,125 110,125 126,118 127,114 125,117 117,125 101,125 85,126 79,117 75,115 Z"
-                      fill="#aa4040" stroke="#600"/>
-                <path id="ghost-arm-right" class="ghost-arm" d="M 45,89 C 25,92 9,108 11,124 13,141 27,115 48,119"/>
-                <path id="ghost-arm-left" class="ghost-arm"
-                      d="M 155,88 C 191,90 194,114 192,125 191,137 172,109 155,116"
-                      data-hover="M 155,88 C 145,68 105,51 103,62 102,74 123,117 155,116" style="animation-delay:-1s"/>
-            </g>
-        </svg>
-        <fieldset id="email-field" class="with-placeholder">
-            <legend>Username</legend>
-            <div>
-                <input type="username" name="username" id="email" autocomplete="off" autocorrect="off"
-                       autocapitalize="off"
-                       spellcheck="false" required/>
-                <div class="placeholder"></div>
+                            </div>
+                        </div>
+                    </form>
+                {% endif %}
             </div>
-        </fieldset>
-        <fieldset id="password-field">
-            <legend>Password</legend>
-            <div>
-                <input type="password" name="password" id="password" autocomplete="off" autocorrect="off"
-                       autocapitalize="off" spellcheck="false" required/>
-            </div>
-        </fieldset>
-        <fieldset id="submit-field">
-            <legend></legend>
-            <div>
-                <input type="submit" name="submit" id="submit" value="Login"/>
-            </div>
-        </fieldset>
-    </form>
+        </div>
 
-    <footer>
-        <h3 style="color: #0a0a0a">Copyright of <a href="https://www.acmi.wa.edu.au/" style="color: #8e0615">ACMi</a>
-        </h3>
-    </footer>
-    {% endif %}
+        <footer>
+            <h3 style="color: #0a0a0a; display: flex;justify-content: center;">Copyright of <a target="_blank"
+                                                                                               href="https://www.acmi.wa.edu.au/"
+                                                                                               style="color: #8e0615">ACMi</a>
+            </h3>
+        </footer>
 
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <script>
-                    showNotification("", "{{message}}", "{{ message.tags }}", "fa fa-check")
-                </script>
-            {% endfor %}
-        </ul>
-    {% endif %}
+
+        <!-- Page content -->
+
+        <!-- Footer -->
+        <footer class="footer pt-3 bg-primary" style="height: 58px">
+            <div class="row align-items-center justify-content-between pr-4 pl-4">
+                <div class="col-lg-6">
+                    <div class="copyright text-center  text-lg-left  text-white">
+                        <a style="color: white" href="/" class="font-weight-bold ml-1" target="_blank">ACMi Fee
+                            Management System</a>
+                        &copy;<span
+                            id="copy-year"></span> All Right Reserved!
+                    </div>
+                </div>
+                <div class="col-lg-6" style="display: flex;justify-content: end">
+                    <div class="copyright text-center  text-lg-left  text-white">
+                        <span>Developed & Designed By <a style="color: white" href="https://binarymindtechnologies.com/"
+                                                         class="font-weight-bold ml-1"
+                                                         target="_blank">BinaryMind Technologies</a></span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
 {% endblock %}
 
-
-
-
-
-{% block extra_js %}
-    <script>
-        // generic: inputs with placeholder will have some animation to minimize the placeholder
-        document.querySelectorAll("fieldset.with-placeholder input").forEach(function (el, idx) {
-            el.addEventListener("focus", function () {
-                this.parentNode.querySelector(".placeholder").classList.add("active");
-            });
-            el.addEventListener("blur", function () {
-                if (this.value == "") {
-                    this.parentNode.querySelector(".placeholder").classList.remove("active");
-                }
-            })
-        });
-
-        function updateMouthEyes() {
-            if (email.value.length > 0) {
-                if (email.value.indexOf("@") > 0 && email.value.indexOf("@") < email.value.length - 1) {
-                    document.querySelector("#mouth").setAttribute("d", "M 75,115 C 79,110 92,117 102,117 111,117 123,111 127,114 131,117 123,136 102,136 81,137 73,121 75,115 Z");
-                } else {
-                    document.querySelector("#mouth").setAttribute("d", "M 75,115 C 79,110 92,119 101,119 110,119 123,111 127,114 131,117 118,131 102,132 87,132 73,121 75,115 Z");
-                }
-            } else {
-                document.querySelector("#mouth").setAttribute("d", "M 75,115 C 79,120 91,126 101,125 110,125 126,118 127,114 125,117 117,125 101,125 85,126 79,117 75,115 Z");
-            }
-
-            let pupilRight = document.querySelector("#pupil-right");
-            let pupilLeft = document.querySelector("#pupil-left");
-            let movePos = email.value.length > 30 ? 13.33 : email.value.length / 2.25;
-            pupilRight.setAttribute("cy", 75);
-            pupilLeft.setAttribute("cy", 76);
-            pupilRight.setAttribute("cx", 78 + movePos)
-            pupilLeft.setAttribute("cx", 113 + movePos);
-        }
-
-        let email = document.querySelector("#email");
-        email.addEventListener("focus", updateMouthEyes);
-        email.addEventListener("input", updateMouthEyes);
-        email.addEventListener("blur", function () {
-            let pupilRight = document.querySelector("#pupil-right");
-            let pupilLeft = document.querySelector("#pupil-left");
-            pupilRight.setAttribute("cx", 84);
-            pupilRight.setAttribute("cy", 69);
-            pupilLeft.setAttribute("cx", 120);
-            pupilLeft.setAttribute("cy", 71);
-        });
-
-        // password animation: move arms to cover eyes on focus,
-        // and return to original position on blur
-        let password = document.querySelector("#password");
-        password.addEventListener("focus", function () {
-            document.querySelector("#ghost-arm-left").setAttribute("d", "M 155,88 C 145,68 105,51 103,62 102,74 123,117 155,116");
-            document.querySelector("#ghost-arm-right").setAttribute("d", "M 45,89 C 54,64 103,48 106,64 108,80 65,121 48,119");
-        });
-        password.addEventListener("blur", function () {
-            document.querySelector("#ghost-arm-left").setAttribute("d", "M 155,88 C 191,90 194,114 192,125 191,137 172,109 155,116");
-            document.querySelector("#ghost-arm-right").setAttribute("d", "M 45,89 C 25,92 9,108 11,124 13,141 27,115 48,119");
-        })
-    </script>
-{% endblock %}

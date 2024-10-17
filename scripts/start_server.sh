@@ -1,4 +1,4 @@
 #!/bin/bash
-cd /home/ubuntu/limoucloud_backend/
+cd /home/ubuntu/acmimanagement/
 source venv/bin/activate
 supervisord -c supervisord.conf

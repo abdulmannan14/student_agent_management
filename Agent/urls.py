@@ -6,6 +6,8 @@ urlpatterns = [
     path('add', agent_views.add_agent, name='add-agent'),
     path('edit/<int:pk>', agent_views.edit_agent, name='edit-agent'),
     path('delete/<int:pk>', agent_views.delete_agent, name='delete-agent'),
+    path('archive/<int:pk>', agent_views.archive_agent, name='archive-agent'),
+    path('unarchive/<int:pk>', agent_views.unarchive_agent, name='unarchive-agent'),
     # ====================COMMISSION URLS==================
     path('add/commission', agent_views.add_commission, name='add-commission'),
     path('edit/commission/<int:pk>', agent_views.edit_commission, name='edit-agent-commission'),
@@ -16,6 +18,8 @@ urlpatterns = [
     path('agent/student/<int:pk>', agent_views.agent_students, name='agent-students'),
     path('commission/history/<int:pk>', agent_views.commission_history, name='commission-history'),
     path('send/mail/<int:pk>/', agent_views.send_mail, name='send-mail-agent'),
+    path('archived-agent', agent_views.archived_agent, name='archived-agent'),
+    path('export-agent-report/<int:pk>', agent_views.export_individual_agent_details, name='export-agent-report'),
 
 ]
 
@@ -54,3 +58,11 @@ def commission_history(pk: int):
 
 def send_mail_agent(pk: int):
     return reverse("send-mail-agent", kwargs={"pk": pk})
+
+
+def archive_agent(pk: int):
+    return reverse("archive-agent", kwargs={"pk": pk})
+
+
+def unarchive_agent(pk: int):
+    return reverse("unarchive-agent", kwargs={"pk": pk})

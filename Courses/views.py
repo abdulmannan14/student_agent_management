@@ -7,8 +7,8 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse
 from rest_framework.generics import get_object_or_404
-from limoucloud_backend import utils as backend_utils
-from limoucloud_backend.utils import success_response
+from acmimanagement import utils as backend_utils
+from acmimanagement.utils import success_response
 from . import models as course_models, tables as course_table, forms as course_form
 from Student import models as student_models
 

@@ -2,8 +2,8 @@
 import django_tables2 as tables
 from django.utils.html import format_html
 from . import models as agent_models, urls as agent_urls
-from limoucloud_backend.utils import delete_action
-from limoucloud_backend import utils as backend_utils
+from acmimanagement.utils import delete_action, undo_archive_action, archive_action
+from acmimanagement import utils as backend_utils
 from Student import models as student_models
 
 
@@ -38,10 +38,12 @@ class AgentTable(tables.Table):
     def render_actions(self, record):
         return format_html("<a class='btn btn-sm text-warning' href='{student}'><i class='fa fa-user'></i></a>"
                            "<a class='btn btn-sm text-primary' href='{update}'><i class='fa fa-pen'></i></a>"
-                           "{delete}".format(
+                           "{delete}"
+                           "{archive}".format(
             student=agent_urls.agent_students(record.pk),
             update=agent_urls.edit_agent(record.pk),
             delete=delete_action(agent_urls.delete_agent(record.pk), record.name),
+            archive=archive_action(agent_urls.archive_agent(record.pk), record.name, modal_name='agentarchiveModal'),
         )
         )
 
@@ -81,8 +83,7 @@ class AgentStudentTable(tables.Table):
 class AgentCommissionTable(tables.Table):
     # total_commission_paid = tables.Column(empty_values=(), verbose_name='total_commission_paid')
     actions = tables.Column(empty_values=())
-    commission_percentage = tables.Column(empty_values=(),verbose_name='Commission Percentage')
-
+    commission_percentage = tables.Column(empty_values=(), verbose_name='Commission Percentage')
 
     class Meta:
         attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
@@ -113,3 +114,35 @@ class AgentCommissionTable(tables.Table):
 
     # def render_course(self, record):
     #     return "{}".format(record.course)
+
+
+class AgentArchivedTable(tables.Table):
+    actions = tables.Column(empty_values=())
+    # acmi_number = tables.Column(verbose_name='ACMI Number#')
+    commission_to_pay = tables.Column(empty_values=(), verbose_name='Commission To Pay')
+    bonus = tables.Column(verbose_name='bonus($)')
+
+    class Meta:
+        attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
+        model = agent_models.AgentModel
+        fields = ['company', 'name', 'email', 'country', 'phone', 'bonus',
+                  'commission_to_pay']
+
+    def render_actions(self, record):
+        return format_html("{unarchive}".format(
+            unarchive=undo_archive_action(agent_urls.unarchive_agent(record.pk), record.name),
+        )
+        )
+
+    def render_bonus(self, record):
+        return "${}".format(record.bonus)
+
+        # def render_commission(self, record):
+        #     return "%{}".format(record.commission)
+
+    def render_commission_to_pay(self, record):
+        student = student_models.StudentModel.objects.filter(agent_name=record)
+        total_commission_to_pay = 0
+        for s in student:
+            total_commission_to_pay += s.commission_to_pay
+        return "${}".format(total_commission_to_pay)

@@ -8,7 +8,7 @@
 
     <div class="main-content" id="panel">
 
-{#        {% include 'dashboard/company/partials/top-nav.html' %}#}
+        {#        {% include 'dashboard/company/partials/top-nav.html' %}#}
         <!-- Header -->
         <!-- Header -->
         {% include 'dashboard/company/partials/header.html' %}
@@ -20,20 +20,23 @@
                         {#                        <div class="col-2 col-2 col-12 col-12">#}
                         <div class="col-xl-6 col-lg-6 col-md-12 col-md-12">
                             <div class="card card-stats dashboard-card ">
-                                <div class="card-body">
-                                    <div class="row ">
-                                        <div class="col-3 col-3 col-3 col-3">
-                                            {#                                        <div class="col-xl-3 col-md-3 col-lg-3 col-md-3">#}
-                                            <div class="box">
-                                                <img class="dashbaord-card-icons fa {{ card.icon }}" src="{{ card.icon_path }}">
+                                <a href="{{ card.url }}">
+                                    <div class="card-body">
+                                        <div class="row ">
+                                            <div class="col-3 col-3 col-3 col-3">
+                                                {#                                        <div class="col-xl-3 col-md-3 col-lg-3 col-md-3">#}
+                                                <div class="box">
+                                                    <img class="dashbaord-card-icons fa {{ card.icon }}"
+                                                         src="{{ card.icon_path }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-9">
+                                                <h5 class="h2 font-weight-bold mb-0 text-white">{{ card.title }}</h5>
+                                                <span class="h2 font-weight-bold mb-0 text-white">{{ card.value }}</span>
                                             </div>
                                         </div>
-                                        <div class="col-9">
-                                            <h5 class="h2 font-weight-bold mb-0 text-white">{{ card.title }}</h5>
-                                            <span class="h2 font-weight-bold mb-0 text-white">{{ card.value }}</span>
-                                        </div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                         </div>
                     {% endfor %}
@@ -58,9 +61,9 @@
     </div>
 
     <link rel="stylesheet" href={% static 'dashboard/assets/css/messages.css' %}>
-{#    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"#}
-{#            integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q=="#}
-{#            crossOrigin="anonymous" referrerpolicy="no-referrer"></script>#}
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"#}
+    {#            integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q=="#}
+    {#            crossOrigin="anonymous" referrerpolicy="no-referrer"></script>#}
     {% if messages %}
         {% for message in messages %}
             <script>

@@ -2,21 +2,24 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 from requests import Response
-from rest_framework.generics import get_object_or_404
 from datetime import datetime, timedelta
-from limoucloud_backend import utils as backend_utils
-from limoucloud_backend.utils import success_response
+
+import Courses.models
+from acmimanagement import utils as backend_utils
+from acmimanagement.utils import success_response
 from . import models as student_models, tables as student_table, forms as student_form, utils as student_utils
-from Agent import models as agent_models
+from Agent import models as agent_models, urls as agent_urls
 from django.templatetags.static import static
 from datetime import datetime, timedelta, date
 from django.contrib.auth.models import User
 from . import urls as student_urls
 from django.contrib.auth.hashers import check_password
+from Courses import urls as course_urls
 
 
 # import xlwt
@@ -44,6 +47,9 @@ def user_login(request):
     else:
         context = {
             'login_page': True,
+            # 'header_msg': "ACMi Portal Login",
+            # 'header_small_msg': "ACMi Portal Login",
+            'logo': True
         }
 
     return render(request, "dashboard/login.html", context)
@@ -99,6 +105,7 @@ def user_change_password(request):
     return render(request, "dashboard/add_or_edit.html", context)
 
 
+@csrf_exempt
 @login_required(login_url='login')
 def index(request):
     today = date.today()
@@ -126,44 +133,60 @@ def index(request):
                 "title": "Upcoming Fee",
                 "value": f"${round(total_upcoming_fee, 2)}",
                 "icon": "fa-money",
+                "url": '#'
                 # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/PendingTrips.svg"),
             },
             {
                 "title": " Commission To Pay",
                 "value": f"${round(total_commissions_to_pay, 1)}",
                 "icon": "fa-percent",
+                "url": '#'
                 # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/TripsToday.svg"),
             },
             {
                 "title": "Total Student",
                 "value": total_student,
                 "icon": "fa-graduation-cap",
+                "url": student_urls.all_student()
                 # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/PendingTrips.svg"),
             },
             {
                 "title": " Total Agents",
                 "value": total_agents,
                 "icon": "fa-users",
+                "url": agent_urls.all_agent()
                 # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/TripsToday.svg"),
             },
             {
-                "title": " Total Enrollments",
+                "title": " Current Enrollments",
                 "value": total_enrollments,
                 "icon": "fa-book",
+                "url": '#'
                 # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/TripsToday.svg"),
             },
             {
                 "title": " Total Refunded Student",
                 "value": total_refunded_student,
                 "icon": "fa-blind",
+                "url": reverse('refunded-student')
+                # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/TripsToday.svg"),
+            },
+            {
+                "title": "Fee Collected This Month",
+                "value": total_agents,
+                "icon": "fa-blind",
+                "url": '#'
+                # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/TripsToday.svg"),
+            },
+            {
+                "title": "Total Courses",
+                "value": Courses.models.Course.objects.all().count(),
+                "icon": "fa-blind",
+                "url": course_urls.all_course()
                 # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/TripsToday.svg"),
             },
 
         ],
-        'driver_trips_info': 'driver_trips_info',
-        'vehicles_trips_info': 'vehicles_trips_info',
-        'graph_year_data': [5333, 3, 1, 4, 1, 6, 2, 6, 6],
-        'get_user_role': 'user_role',
         'nav_conf': {
             'active_classes': ['index'],
         },
@@ -171,9 +194,10 @@ def index(request):
     return render(request, "dashboard/company/index.html", context)
 
 
+@csrf_exempt
 @login_required(login_url='login')
 def all_students(request):
-    students = student_models.StudentModel.objects.all()
+    students = student_models.StudentModel.objects.filter(archived=False)
     sort = request.GET.get('sort', None)
     if sort:
         students = students.order_by(sort)
@@ -285,6 +309,25 @@ def refunded_student(request):
 
 
 @login_required(login_url='login')
+def archived_student(request):
+    students = student_models.StudentModel.objects.filter(archived=True)
+    sort = request.GET.get('sort', None)
+    if sort:
+        students = students.order_by(sort)
+    students = student_table.StudentArchivedTable(students)
+    context = {
+
+        "page_title": "List of Archived Student",
+        "table": students,
+        "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
+        'nav_conf': {
+            'active_classes': ['student'],
+        },
+    }
+    return render(request, "dashboard/list-entries.html", context)
+
+
+@login_required(login_url='login')
 def add_student(request):
     today = datetime.today()
     if request.method == "POST":
@@ -362,6 +405,31 @@ def delete_student(request, pk):
     student = get_object_or_404(student_models.StudentModel, pk=pk)
     backend_utils._delete_table_entry(student)
     messages.success(request, f"{student.full_name} is Deleted Successfully!")
+    return redirect('all-students')
+
+
+def archive_student(request, pk):
+    student_id = pk
+    archive_type = request.GET.get('type')
+
+    student = get_object_or_404(student_models.StudentModel, pk=pk)
+    student.archived = True
+    student.archived_tag = archive_type
+    student.save()
+    messages.success(request, f"{student.full_name} is Un-Archived Successfully!")
+    return redirect('all-students')
+
+
+def unarchive_student(request, pk):
+    print("=========entedted")
+    student_id = pk
+    archive_type = request.GET.get('type')
+
+    student = get_object_or_404(student_models.StudentModel, pk=pk)
+    student.archived = False
+    student.archived_tag = None
+    student.save()
+    messages.success(request, f"{student.full_name} is Un-Archived Successfully!")
     return redirect('all-students')
 
 

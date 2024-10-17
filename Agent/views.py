@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -6,18 +7,18 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from rest_framework.generics import get_object_or_404
 from datetime import datetime
-from limoucloud_backend import utils as backend_utils
+from acmimanagement import utils as backend_utils
 # from Restaurant import models as restaurant_models
 from . import tables as agent_table, forms as agent_form, models as agent_models, utils as agent_utils
 from Student import models as student_models, forms as student_form
-from limoucloud_backend.utils import success_response
+from acmimanagement.utils import success_response
 from Student import utils as student_utils
 
 
 # Create your views here.
 
 def all_agents(request):
-    agents = agent_models.AgentModel.objects.all()
+    agents = agent_models.AgentModel.objects.filter(archived=False)
     sort = request.GET.get('sort', None)
     if sort:
         agents = agents.order_by(sort)
@@ -101,6 +102,50 @@ def delete_agent(request, pk):
     agent = get_object_or_404(agent_models.AgentModel, pk=pk)
     backend_utils._delete_table_entry(agent)
     messages.success(request, f"{agent.name} is Deleted Successfully!")
+    return redirect('all-agent')
+
+
+def archive_agent(request, pk):
+    agent_id = pk
+    archive_type = request.GET.get('type')
+
+    agent = get_object_or_404(agent_models.AgentModel, pk=pk)
+    agent.archived = True
+    agent.archived_tag = archive_type
+    agent.save()
+    messages.success(request, f"{agent.name} is Un-Archived Successfully!")
+    return redirect('all-agent')
+
+
+@login_required(login_url='login')
+def archived_agent(request):
+    agents = agent_models.AgentModel.objects.filter(archived=True)
+    sort = request.GET.get('sort', None)
+    if sort:
+        agents = agents.order_by(sort)
+    agents = agent_table.AgentArchivedTable(agents)
+    context = {
+
+        "page_title": "List of Archived Agents",
+        "table": agents,
+        "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
+        'nav_conf': {
+            'active_classes': ['agent'],
+        },
+    }
+    return render(request, "dashboard/list-entries.html", context)
+
+
+def unarchive_agent(request, pk):
+    print("=========entedted")
+    agent_id = pk
+    archive_type = request.GET.get('type')
+
+    agent = get_object_or_404(agent_models.AgentModel, pk=pk)
+    agent.archived = False
+    agent.archived_tag = None
+    agent.save()
+    messages.success(request, f"{agent.name} is Un-Archived Successfully!")
     return redirect('all-agent')
 
 
@@ -217,6 +262,12 @@ def agent_students(request, pk):
                 "href": reverse("all-agent"),
                 "icon": "fa fa-graduation-cap"
             },
+            {
+                "color_class": "btn-primary",
+                "title": "Export Agent Report",
+                "href": reverse("export-agent-report", kwargs={'pk': pk}),
+                "icon": "fa fa-download"
+            },
         ],
         "page_title": f"{agent.name} All Student",
         "table": agent_students,
@@ -296,3 +347,33 @@ def send_mail(request, pk):
                                  ["ACMi Commission Due Notice", context, commission_obj.student.agent_name])
     messages.success(request, "Email sent successfully")
     return redirect('history-student', commission_obj.student.pk)
+
+
+def export_individual_agent_details(request, pk=None):
+    import csv
+    from django.http import HttpResponse
+    print("=========+++AJAOoooo============")
+    # Create the HttpResponse object with CSV headers.
+    agent = get_object_or_404(agent_models.AgentModel, pk=pk)
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="{agent.name}_Students.csv"'
+
+    # Create a CSV writer object
+    writer = csv.writer(response)
+
+    # Write the header row (you can modify this according to your table's structure)
+    writer.writerow(['ACMI#', 'Full Name', 'Course', 'Start Date', 'End Date', 'Total Fee', 'Total Commission Amount',
+                     'Total Commission Paid', 'Commission Yet To Pay'])  # Replace with actual column names
+
+    agent_students = student_models.StudentModel.objects.filter(agent_name=agent).order_by('-pk').values_list(
+        'acmi_number',
+        'full_name', 'course',
+        'start_date', 'end_date',
+        'total_fee',
+        'total_commission_amount',
+        'total_commission_paid',
+        'commission_to_pay')
+    for row in agent_students:
+        writer.writerow(row)
+
+    return response

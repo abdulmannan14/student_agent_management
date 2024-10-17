@@ -8,7 +8,14 @@ class BaseModel(models.Model):
         abstract = True
 
 
+onshore = 'OnShore'
+offshore = 'Offshore'
+archived_choices = [(onshore, onshore), (offshore, offshore)]
+
+
 # Create your models here.
+
+
 class AgentModel(BaseModel):
     # COMMISSION_ONLY = 'COMMISSION ONLY'
     # COMMISSION_PLUS_GST = 'COMMISSION + GST (10%)'
@@ -25,6 +32,8 @@ class AgentModel(BaseModel):
     # gst_status = models.CharField(max_length=30, choices=gst_choices, null=True, blank=True, default=COMMISSION_ONLY)
     phone = models.CharField(max_length=500, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
+    archived = models.BooleanField(default=False)
+    archived_tag = models.CharField(max_length=50, null=True, blank=True, choices=archived_choices)
     email2 = models.EmailField(null=True, blank=True)
     email3 = models.EmailField(null=True, blank=True)
 

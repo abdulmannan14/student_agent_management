@@ -6,7 +6,7 @@ from .models import StudentModel
 from Agent.models import AgentModel
 from django.contrib import messages
 from . import models as student_models
-from limoucloud_backend.settings import from_email
+from acmimanagement.settings import from_email
 from threading import Thread
 
 

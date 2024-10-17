@@ -10,6 +10,13 @@ class BaseModel(models.Model):
         abstract = True
 
 
+completed_archive = 'COMPLETED ARCHIVE'
+withdrawl_archive = 'WITHDRAWAL ARCHIVE'
+refunded_archive = 'REFUNDED ARCHIVE'
+archived_choices = [(completed_archive, completed_archive), (withdrawl_archive, withdrawl_archive),
+                    (refunded_archive, refunded_archive)]
+
+
 # Create your models here.
 class StudentModel(BaseModel):
     NO_COMMISSION = 'NO COMMISSION'
@@ -55,12 +62,16 @@ class StudentModel(BaseModel):
 
     warning_sent = models.BooleanField(default=False)
     refunded = models.BooleanField(default=False)
+    archived = models.BooleanField(default=False)
+    archived_tag = models.CharField(max_length=50, null=True, blank=True, choices=archived_choices)
+
     refund_way = models.CharField(max_length=50, null=True, blank=True)
     refund_reason = models.TextField(null=True, blank=True)
     refund_amount = models.IntegerField(null=True, blank=True)
     commission_to_pay = models.FloatField(null=True, blank=True, default=0)
     quarters_paid = models.IntegerField(null=True, blank=True, default=0)
-    comment = models.TextField(null=True,blank=True)
+    comment = models.TextField(null=True, blank=True)
+
     def __str__(self):
         return "{name}  ({acmi_number}) ({course})".format(name=self.full_name, acmi_number=self.acmi_number,
                                                            course=self.course)
@@ -89,9 +100,6 @@ class PayModelStudent(BaseModel):
     agent_commision_amount = models.FloatField(null=True, blank=True, default=0)
     comment = models.TextField(null=True, blank=True)
     mode_of_payment = models.CharField(max_length=100, choices=mode_of_payment_choices, null=True, blank=True)
-    commission_percentage = models.IntegerField(null=True,blank=True)
+    commission_percentage = models.IntegerField(null=True, blank=True)
     # outstanding_fee = models.IntegerField(null=True, blank=True)
     # total_required_fee = models.IntegerField(null=True, blank=True)
-
-
-
