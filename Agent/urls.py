@@ -20,7 +20,7 @@ urlpatterns = [
     path('send/mail/<int:pk>/', agent_views.send_mail, name='send-mail-agent'),
     path('archived-agent', agent_views.archived_agent, name='archived-agent'),
     path('export-agent-report/<int:pk>', agent_views.export_individual_agent_details, name='export-agent-report'),
-
+    path('export-agents', agent_views.export_agents_details, name='export-agents'),
 ]
 
 

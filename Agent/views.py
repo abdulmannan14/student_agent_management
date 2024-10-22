@@ -37,6 +37,12 @@ def all_agents(request):
                 "href": reverse("add-agent"),
                 "icon": "fa fa-plus"
             },
+            {
+                "color_class": "btn-primary",
+                "title": "Export Agents",
+                "href": reverse("export-agents"),
+                "icon": "fa fa-download"
+            },
         ],
         # 'vehicle_count': len(vehicles),
         "page_title": "All Agents",
@@ -375,5 +381,37 @@ def export_individual_agent_details(request, pk=None):
         'commission_to_pay')
     for row in agent_students:
         writer.writerow(row)
+
+    return response
+
+def export_agents_details(request):
+    import csv
+    from django.http import HttpResponse
+    print("=========+++AJAOoooo============1")
+    # Create the HttpResponse object with CSV headers.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="All_Agents.csv"'
+
+    # Create a CSV writer object
+    writer = csv.writer(response)
+
+    # Write the header row (you can modify this according to your table's structure)
+    writer.writerow(['Company', 'Name', 'Email', 'Country', 'Phone', 'Bonus',
+                     'Commission To Pay'])  # Replace with actual column names
+
+    agents = agent_models.AgentModel.objects.filter(archived=False).order_by('-pk').values_list(
+        'company',
+        'name', 'email',
+        'country', 'phone',
+        'bonus',
+    )
+    for row in agents:
+        student = student_models.StudentModel.objects.filter(agent_name__email=row[2])
+        total_commission_to_pay = 0
+        for s in student:
+            total_commission_to_pay += s.commission_to_pay
+
+        add_total_commission_to_pay = row + (total_commission_to_pay,)
+        writer.writerow(add_total_commission_to_pay)
 
     return response
