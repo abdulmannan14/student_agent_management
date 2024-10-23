@@ -30,7 +30,7 @@ class StudentModel(BaseModel):
     agent_name = models.ForeignKey('Agent.AgentModel', on_delete=models.CASCADE, null=True, blank=True)
     acmi_number = models.CharField(max_length=500, null=True, blank=True)
     full_name = models.CharField(max_length=500, null=True, blank=True)
-    course = models.ForeignKey(courses_models.Course, on_delete=models.SET_NULL, null=True, blank=True)
+    courses = models.ManyToManyField(courses_models.Course, null=True, blank=True)
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     phone = models.CharField(max_length=500, null=True, blank=True)
@@ -73,8 +73,7 @@ class StudentModel(BaseModel):
     comment = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return "{name}  ({acmi_number}) ({course})".format(name=self.full_name, acmi_number=self.acmi_number,
-                                                           course=self.course)
+        return "{name}  ({acmi_number})".format(name=self.full_name, acmi_number=self.acmi_number)
 
 
 # Create your models here.

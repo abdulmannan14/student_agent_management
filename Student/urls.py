@@ -10,6 +10,7 @@ urlpatterns = [
     path('add', student_views.add_student, name='add-student'),
     path('edit/<int:pk>', student_views.edit_student, name='edit-student'),
     path('history/<int:pk>', student_views.history_student, name='history-student'),
+    path('student/courses/<int:pk>', student_views.student_courses, name='student-courses'),
     path('delete/<int:pk>', student_views.delete_student, name='delete-student'),
     path('archive/<int:pk>', student_views.archive_student, name='archive-student'),
     path('unarchive/<int:pk>', student_views.unarchive_student, name='unarchive-student'),
@@ -58,12 +59,18 @@ def history_student(pk: int):
     return reverse("history-student", kwargs={"pk": pk})
 
 
+def student_courses(pk: int):
+    return reverse("student-courses", kwargs={"pk": pk})
+
+
 def delete_student(pk: int):
     return reverse("delete-student", kwargs={"pk": pk})
 
 
 def archive_student(pk: int):
     return reverse("archive-student", kwargs={"pk": pk})
+
+
 def unarchive_student(pk: int):
     return reverse("unarchive-student", kwargs={"pk": pk})
 

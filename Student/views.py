@@ -114,7 +114,10 @@ def index(request):
     upcoming_fee = student_models.StudentModel.objects.all()
     for i in upcoming_fee:
         upcoming_fees.append(i.outstanding_fee)
-    total_upcoming_fee = sum(upcoming_fees)
+    if upcoming_fees:
+        total_upcoming_fee = sum(upcoming_fees)
+    else:
+        total_upcoming_fee = 0
 
     commission_to_pay = []
     commissions = student_models.StudentModel.objects.all()
@@ -204,12 +207,12 @@ def all_students(request):
     students = student_table.StudentTable(students)
     context = {
         "links": [
-            {
-                "color_class": "btn-primary",
-                "title": "Add Fee",
-                "href": reverse("add-fee"),
-                "icon": "fa fa-plus"
-            },
+            # {
+            #     "color_class": "btn-primary",
+            #     "title": "Add Fee",
+            #     "href": reverse("add-fee"),
+            #     "icon": "fa fa-plus"
+            # },
             {
                 "color_class": "btn-primary",
                 "title": "Add Student",
@@ -253,6 +256,43 @@ def history_student(request, pk):
         ],
         'redirect_from_modal': student_urls.student_fee_refund(pk),
         "page_title": f"{student.full_name} Payment History",
+        "table": students,
+        "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
+        'nav_conf': {
+            'active_classes': ['student'],
+        },
+    }
+    return render(request, "dashboard/list-entries.html", context)
+
+
+@login_required(login_url='login')
+def student_courses(request, pk):
+    student = get_object_or_404(student_models.StudentModel, pk=pk)
+    student_courses = student.courses.all()
+    sort = request.GET.get('sort', None)
+    print("these are the Coursses=-=====", student_courses)
+    if sort:
+        students = student_courses.order_by(sort)
+    students = student_table.StudentCoursesTable(student_courses, user_id=student.id)
+    context = {
+        "links": [
+            # {
+            #     "color_class": "btn-primary",
+            #     "title": f"Refund {student.full_name}'s Fee",
+            #     "icon": "fa fa-undo",
+            #     'data_toggle': 'modal',
+            #     'data_target': '#refund',
+            #     'data_name': f'{student.full_name}',
+            # },
+            {
+                "color_class": "btn-primary",
+                "title": "All Student",
+                "href": reverse("all-students"),
+                "icon": "fa fa-graduation-cap"
+            },
+        ],
+        'redirect_from_modal': student_urls.student_fee_refund(pk),
+        "page_title": f"{student.full_name} Courses",
         "table": students,
         "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
         'nav_conf': {
@@ -329,27 +369,15 @@ def archived_student(request):
 
 @login_required(login_url='login')
 def add_student(request):
-    today = datetime.today()
     if request.method == "POST":
         form = student_form.StudentForm(request.POST)
         if form.is_valid():
-            tuition_fee = form.cleaned_data['tuition_fee']
-            application_fee = form.cleaned_data['application_fee']
-            quarters = form.cleaned_data['course_quarters']
-            quarterly_fee = float(tuition_fee / int(quarters))
-            quarterly_fee = round(quarterly_fee, 2)
+            student_email = form.cleaned_data['email']
+            student = student_models.StudentModel.objects.filter(email=student_email)
+            if student:
+                messages.error(request, f"Student with email {student_email} already exists")
+                return redirect("add-student")
             student = form.save(commit=False)
-            agent_name = form.cleaned_data['agent_name']
-            agent = agent_models.AgentModel.objects.get(company=agent_name)
-            # student.commission = st
-            # student.quarterly_fee_amount = quarterly_fee
-            student.outstanding_fee = quarterly_fee
-            # paid_fee = student.total_fee - student.tuition_fee
-            # student.paid_fee = application_fee
-            student.total_required_fee = student.total_fee
-            student.amount_inserting_date = today.date()
-            student.last_paid_on = today.date()
-
             student.save()
             messages.success(request, f"{student.full_name} Added Successfully!")
             return redirect("all-students")
@@ -369,6 +397,53 @@ def add_student(request):
     return render(request, "dashboard/add_or_edit.html", context)
 
 
+#
+# @login_required(login_url='login')
+# def add_student(request):
+#     today = datetime.today()
+#     if request.method == "POST":
+#         form = student_form.StudentForm(request.POST)
+#         if form.is_valid():
+#             student_email = form.cleaned_data['email']
+#             student = student_models.StudentModel.objects.filter(email=student_email)
+#             if student:
+#                 messages.error(request, f"Student with email {student_email} already exists")
+#                 return redirect("add-student")
+#             tuition_fee = form.cleaned_data['tuition_fee']
+#             application_fee = form.cleaned_data['application_fee']
+#             quarters = form.cleaned_data['course_quarters']
+#             quarterly_fee = float(tuition_fee / int(quarters))
+#             quarterly_fee = round(quarterly_fee, 2)
+#             student = form.save(commit=False)
+#             agent_name = form.cleaned_data['agent_name']
+#             agent = agent_models.AgentModel.objects.get(company=agent_name)
+#             # student.commission = st
+#             # student.quarterly_fee_amount = quarterly_fee
+#             student.outstanding_fee = quarterly_fee
+#             # paid_fee = student.total_fee - student.tuition_fee
+#             # student.paid_fee = application_fee
+#             student.total_required_fee = student.total_fee
+#             student.amount_inserting_date = today.date()
+#             student.last_paid_on = today.date()
+#
+#             student.save()
+#             messages.success(request, f"{student.full_name} Added Successfully!")
+#             return redirect("all-students")
+#     else:
+#         form = student_form.StudentForm()
+#     context = {
+#         "page_title": "Add Student",
+#         "form1": form,
+#         "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
+#         'button': 'Submit',
+#         'cancel_button': 'Cancel',
+#         'cancel_button_url': reverse('all-students'),
+#         'nav_conf': {
+#             'active_classes': ['student'],
+#         },
+#     }
+#     return render(request, "dashboard/add_or_edit.html", context)
+
 @login_required(login_url='login')
 def edit_student(request, pk):
     student = get_object_or_404(student_models.StudentModel, pk=pk)
@@ -377,9 +452,6 @@ def edit_student(request, pk):
 
         if form.is_valid():
             student = form.save(commit=False)
-            agent_name = form.cleaned_data['agent_name']
-            agent = agent_models.AgentModel.objects.get(company=agent_name)
-            student.commission = form.cleaned_data['commission']
             student.save()
 
             messages.success(request, f" Student updated Successfully")
@@ -400,6 +472,38 @@ def edit_student(request, pk):
     }
     return render(request, "dashboard/add_or_edit.html", context)
 
+
+# @login_required(login_url='login')
+# def edit_student(request, pk):
+#     student = get_object_or_404(student_models.StudentModel, pk=pk)
+#     if request.method == "POST":
+#         form = student_form.StudentForm(request.POST, instance=student)
+#
+#         if form.is_valid():
+#             student = form.save(commit=False)
+#             agent_name = form.cleaned_data['agent_name']
+#             agent = agent_models.AgentModel.objects.get(company=agent_name)
+#             student.commission = form.cleaned_data['commission']
+#             student.save()
+#
+#             messages.success(request, f" Student updated Successfully")
+#             return redirect('all-students')
+#     else:
+#         form = student_form.StudentFormEdit(instance=student)
+#     context = {
+#         "form1": form,
+#         "page_title": "Edit Student",
+#         "subtitle": "Here you can Edit the Student",
+#         "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
+#         'button': 'Submit',
+#         'cancel_button': 'Cancel',
+#         'cancel_button_url': reverse('all-students'),
+#         'nav_conf': {
+#             'active_classes': ['student'],
+#         },
+#     }
+#     return render(request, "dashboard/add_or_edit.html", context)
+#
 
 def delete_student(request, pk):
     student = get_object_or_404(student_models.StudentModel, pk=pk)
