@@ -869,6 +869,21 @@
             })
         })
     </script>
+
+    <script>
+        $('#id_course').on("change", function () {
+            let select = $(this)
+            let student = select.val()
+            let url = "{% url 'get-student-fee-details' %}?student=" + student
+            $.get(url, function (response, success) {
+                let student_data = response.data
+                $("#id_total_fee").val(student_data.total_fee)
+                $("#id_total_required_fee").val(student_data.total_required_fee)
+                $("#id_outstanding_fee").val(student_data.outstanding_fee)
+                $("#id_paid_fee").val(student_data.already_paid_amount)
+            })
+        })
+    </script>
     <script>
         $('#id_student').on("change", function () {
             let select = $(this)

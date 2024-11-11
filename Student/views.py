@@ -115,7 +115,10 @@ def index(request):
     for i in upcoming_fee:
         upcoming_fees.append(i.outstanding_fee)
     if upcoming_fees:
-        total_upcoming_fee = sum(upcoming_fees)
+        try:
+            total_upcoming_fee = sum(upcoming_fees)
+        except:
+            total_upcoming_fee = 0
     else:
         total_upcoming_fee = 0
 
@@ -207,12 +210,6 @@ def all_students(request):
     students = student_table.StudentTable(students)
     context = {
         "links": [
-            # {
-            #     "color_class": "btn-primary",
-            #     "title": "Add Fee",
-            #     "href": reverse("add-fee"),
-            #     "icon": "fa fa-plus"
-            # },
             {
                 "color_class": "btn-primary",
                 "title": "Add Student",
@@ -232,8 +229,10 @@ def all_students(request):
 
 @login_required(login_url='login')
 def history_student(request, pk):
-    student = get_object_or_404(student_models.StudentModel, pk=pk)
-    students = student_models.PayModelStudent.objects.filter(student=student, fee_pay__gt=0)
+    # student = get_object_or_404(student_models.StudentModel, pk=pk)
+    students = student_models.PayModelStudent.objects.filter(student_course__id=pk, fee_pay__gt=0)
+    student_course = student_models.StudentCourse.objects.filter(id=pk).first()
+    student = student_models.StudentModel.objects.filter(courses=student_course).first()
     sort = request.GET.get('sort', None)
     if sort:
         students = students.order_by(sort)
@@ -255,7 +254,7 @@ def history_student(request, pk):
             },
         ],
         'redirect_from_modal': student_urls.student_fee_refund(pk),
-        "page_title": f"{student.full_name} Payment History",
+        "page_title": f"{student.full_name} Payment History for {student_course.course.name}",
         "table": students,
         "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
         'nav_conf': {
@@ -276,18 +275,23 @@ def student_courses(request, pk):
     students = student_table.StudentCoursesTable(student_courses, user_id=student.id)
     context = {
         "links": [
-            # {
-            #     "color_class": "btn-primary",
-            #     "title": f"Refund {student.full_name}'s Fee",
-            #     "icon": "fa fa-undo",
-            #     'data_toggle': 'modal',
-            #     'data_target': '#refund',
-            #     'data_name': f'{student.full_name}',
-            # },
+
             {
                 "color_class": "btn-primary",
                 "title": "All Student",
                 "href": reverse("all-students"),
+                "icon": "fa fa-graduation-cap"
+            },
+            {
+                "color_class": "btn-primary",
+                "title": "Add Fee",
+                "href": reverse("add-fee-student", kwargs={"pk": pk}),
+                "icon": "fa fa-plus"
+            },
+            {
+                "color_class": "btn-primary",
+                "title": "Add Course",
+                "href": reverse("add-student-course", kwargs={"pk": pk}),
                 "icon": "fa fa-graduation-cap"
             },
         ],
@@ -300,6 +304,74 @@ def student_courses(request, pk):
         },
     }
     return render(request, "dashboard/list-entries.html", context)
+
+
+def add_student_courses(request, pk):
+    student = get_object_or_404(student_models.StudentModel, pk=pk)
+    all_courses = Courses.models.Course.objects.all()
+    form = student_form.AddCourseForm()
+    print("these are the Coursses=-=====11111", all_courses)
+    if request.method == "POST":
+        course_id = request.POST.get('course')
+        course = Courses.models.Course.objects.get(pk=course_id)
+        form = student_form.AddCourseForm(request.POST)
+        if form.is_valid():
+            obj = form.save()
+            student.courses.add(obj)
+            student.save()
+
+        messages.success(request, f"{student.full_name} Added to {course.name} Successfully!")
+        return redirect('student-courses', pk=pk)
+
+    # form.fields['name'].queryset = all_courses
+    context = {
+        "page_title": "Add Student Courses",
+        "student": student,
+        "form1": form,
+        "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
+        'button': 'Submit',
+        'cancel_button': 'Cancel',
+        'cancel_button_url': reverse('student-courses', kwargs={"pk": pk}),
+        'nav_conf': {
+            'active_classes': ['student'],
+        },
+    }
+    return render(request, "dashboard/add_or_edit.html", context)
+
+
+def edit_student_courses(request, pk):
+    studentcourse_obj = get_object_or_404(student_models.StudentCourse, pk=pk)
+    student = student_models.StudentModel.objects.filter(courses=studentcourse_obj).first()
+    if request.method == "POST":
+        form = student_form.AddCourseForm(request.POST, instance=studentcourse_obj)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"{studentcourse_obj.course.name} Updated Successfully!")
+            return redirect('student-courses', pk=student.id)
+    else:
+        form = student_form.AddCourseForm(instance=studentcourse_obj)
+    context = {
+        "page_title": "Edit Student Courses",
+        "student": student,
+        "form1": form,
+        "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
+        'button': 'Submit',
+        'cancel_button': 'Cancel',
+        'cancel_button_url': reverse('student-courses', kwargs={"pk": student.id}),
+        'nav_conf': {
+            'active_classes': ['student'],
+        },
+    }
+
+    return render(request, "dashboard/add_or_edit.html", context)
+
+
+def delete_student_courses(request, pk):
+    studentcourse_obj = get_object_or_404(student_models.StudentCourse, pk=pk)
+    student = student_models.StudentModel.objects.filter(courses=studentcourse_obj).first()
+    studentcourse_obj.delete()
+    messages.success(request, f"{studentcourse_obj.course.name} Deleted Successfully!")
+    return redirect('student-courses', pk=student.id)
 
 
 @login_required(login_url='login')
@@ -621,6 +693,105 @@ def add_fee(request):
         form1 = student_form.StudentFormAddFee()
         context = {
             "page_title": "Add Fee",
+            "form1": form,
+            'form2': form1,
+            "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
+            'button': 'Submit',
+            'cancel_button': 'Cancel',
+            'cancel_button_url': reverse('all-students'),
+            'nav_conf': {
+                'active_classes': ['student'],
+            },
+        }
+        return render(request, "dashboard/add_or_edit.html", context)
+
+
+@login_required(login_url='login')
+def add_fee_student(request, pk):
+    student = get_object_or_404(student_models.StudentModel, pk=pk)
+    student_courses = student.courses.all()
+    if request.method == 'POST':
+        form = student_form.AddFeeForm(request.POST)
+        if form.is_valid():
+            student = form.cleaned_data['student']
+            student_obj = student_models.StudentModel.objects.get(pk=student.pk)
+            is_oshc_fee = form.cleaned_data['is_oshc_fee']
+            is_bonus = form.cleaned_data['is_bonus']
+            is_material_fee = form.cleaned_data['is_material_fee']
+            is_application_fee = form.cleaned_data['is_application_fee']
+            fee_amount = form.cleaned_data['fee_pay']
+            paid_on = form.cleaned_data['paid_on']
+            if is_bonus:
+                form_obj = form.save(commit=False)
+                student_obj.is_bonus = True
+                form_obj.save()
+                student_obj.total_commission_paid += fee_amount
+                student_obj.save()
+                messages.success(request, "Bonus added successfully")
+                return redirect("all-students")
+            if is_oshc_fee:
+                form_obj = form.save(commit=False)
+                student_obj.oshc_fee_paid = True
+                form_obj.save()
+                messages.success(request, "OSHC Fee added successfully")
+                return redirect("all-students")
+            if is_application_fee:
+                if not student_obj.application_fee_paid:
+                    application_fee_to_subtract = student_obj.application_fee
+                    if student_obj.application_fee <= fee_amount:
+                        fee_amount = fee_amount - application_fee_to_subtract
+                        student_obj.application_fee_paid = True
+                else:
+                    messages.error(request,
+                                   "Process not completed because application fee of this student is already paid")
+                    return redirect("add-fee")
+            if is_material_fee:
+                if not student_obj.material_fee_paid:
+                    material_fee_to_subtract = student_obj.material_fee
+                    if student_obj.material_fee <= fee_amount:
+                        fee_amount = fee_amount - material_fee_to_subtract
+                        student_obj.material_fee_paid = True
+                else:
+                    messages.error(request,
+                                   "Process not completed because material fee of this student is already paid")
+                    return redirect("add-fee")
+            fee = form.save(commit=False)
+            if fee_amount > 0 and is_material_fee:
+                if form.cleaned_data['fee_pay'] > student_obj.material_fee:
+                    fee.is_tuition_and_material_fee = True
+            calculate_commission_to_pay = student_utils.calculate_commission_including_gst_and_commission(student_obj,
+                                                                                                          fee_amount)
+            student_obj.commission_to_pay = student_obj.commission_to_pay + calculate_commission_to_pay
+            fee: student_models.PayModelStudent
+            fee.agent_commision_amount = calculate_commission_to_pay
+            if student_obj.paid_fee >= student_obj.total_fee:
+                student_obj.outstanding_fee = 0
+            elif student_obj.outstanding_fee == fee_amount:
+                student_obj.outstanding_fee = 0
+            elif student_obj.outstanding_fee > fee_amount:
+                student_obj.outstanding_fee = student_obj.outstanding_fee - fee_amount
+            elif fee_amount > student_obj.outstanding_fee:
+                student_obj.outstanding_fee = 0
+            total_fee_amount = form.cleaned_data['fee_pay']
+            fee.fee_pay = total_fee_amount
+            fee.commission_percentage = student_obj.commission
+            student_obj.total_required_fee = student_obj.total_required_fee - total_fee_amount
+            student_obj.paid_fee = student_obj.paid_fee + total_fee_amount if student_obj.paid_fee else 0 + total_fee_amount
+            # student_obj.material_fee = student_obj.material_fee + fee_amount
+            student_obj.last_paid_on = paid_on
+            student_obj.amount_already_inserted = True
+            student_obj.save()
+            fee.save()
+            messages.success(request, f"Fee Added Successfully!")
+            return redirect("all-students")
+        else:
+            print("form is not valid$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    else:
+        form = student_form.AddFeeForm()
+        form.fields['course'].queryset = student_courses
+        form1 = student_form.StudentFormAddFee()
+        context = {
+            "page_title": f" Add Fee ({student.full_name})",
             "form1": form,
             'form2': form1,
             "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
@@ -987,21 +1158,23 @@ def get_student_commission(request):
 @login_required(login_url='login')
 def get_student_fee_details(request):
     today = datetime.today()
-    student = request.GET.get('student', '')
-    student_obj = student_models.StudentModel.objects.get(pk=student)
-    tuition_fee = student_obj.tuition_fee
-    outstanding_fee = student_models.PayModelStudent.objects.filter(student=student_obj,
+    student_course = request.GET.get('student', '')
+    print("this is student", student_course)
+    student_course_obj = student_models.StudentCourse.objects.get(pk=student_course)
+    student_obj = student_models.StudentModel.objects.get(courses=student_course_obj)
+    tuition_fee = student_course_obj.tuition_fee
+    outstanding_fee = student_models.PayModelStudent.objects.filter(student_course=student_course_obj,
                                                                     paid_on__range=(today - timedelta(days=120), today))
     if outstanding_fee:
         context = {
-            'total_fee': student_obj.total_fee,
+            'total_fee': student_course_obj.total_fee,
             'total_required_fee': student_obj.total_required_fee,
             'outstanding_fee': student_obj.outstanding_fee,
             'already_paid_amount': student_obj.paid_fee if student_obj.paid_fee else 0,
         }
     else:
         context = {
-            'total_fee': student_obj.total_fee,
+            'total_fee': student_course_obj.total_fee,
             'total_required_fee': student_obj.total_required_fee,
             'outstanding_fee': student_obj.outstanding_fee,
             'already_paid_amount': student_obj.paid_fee if student_obj.paid_fee else 0,

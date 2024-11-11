@@ -104,8 +104,10 @@ def delete_course(request, pk):
 
 
 def get_course_quarters(request):
+    print("entered")
     if request.GET.get('check'):
         student_name = request.GET.get('check')
+        print("this is check========", student_name)
         student = student_models.StudentModel.objects.get(full_name=student_name)
         data = {
             "material_fee": student.material_fee,
@@ -115,10 +117,13 @@ def get_course_quarters(request):
         }
         return JsonResponse(success_response(data=data), safe=False)
     try:
+        print("======1=====")
         course = course_models.Course.objects.get(pk=request.GET.get('course_id'))
         data = {
             'quarters': course.quarters,
         }
+        print("this is data=====", data)
         return JsonResponse(success_response(data=data), safe=False)
-    except:
+    except Exception as e:
+        print("this is exception====", e)
         return JsonResponse(success_response(data=None), safe=False)

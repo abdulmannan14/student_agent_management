@@ -35,4 +35,4 @@ class CourseForm(forms.ModelForm):
 
     class Meta:
         model = student_models.Course
-        fields = "__all__"
+        fields = ['name', 'description', 'weeks', 'months', 'quarters']

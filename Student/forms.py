@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 import re
 from . import models as student_models
 from django.core import validators
+from Courses import models as course_models
 
 
 class StudentForm(forms.ModelForm):
@@ -87,6 +88,7 @@ class StudentFormEdit(forms.ModelForm):
 
 class AddFeeForm(forms.ModelForm):
     paid_on = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'type': 'date'}))
+    course = forms.ModelChoiceField(queryset=course_models.Course.objects.all(), required=True)
 
     def __init__(self, *args, **kwargs):
         super(AddFeeForm, self).__init__(*args, **kwargs)
@@ -95,14 +97,14 @@ class AddFeeForm(forms.ModelForm):
         self.fields['is_oshc_fee'].label = "OSHC Fee"
         self.fields['is_material_fee'].label = "Material Fee"
         self.fields['is_application_fee'].label = "Application Fee"
-        self.fields['student'].required = True
+        # self.fields['student'].required = True
         self.fields['fee_pay'].required = True
         # self.fields['total_required_fee'].label = "Total Required Fee($)"
         # self.fields['outstanding_fee'].label = "Outstanding Fee($)"
 
     class Meta:
         model = student_models.PayModelStudent
-        fields = ['student', 'fee_pay', 'mode_of_payment', 'paid_on', 'is_material_fee', 'is_application_fee',
+        fields = ['course', 'fee_pay', 'mode_of_payment', 'paid_on', 'is_material_fee', 'is_application_fee',
                   'is_oshc_fee', 'is_bonus',
                   'comment']
         widgets = {
@@ -129,6 +131,8 @@ class EditFeeForm(forms.ModelForm):
 
 
 class StudentFormAddFee(forms.ModelForm):
+    total_fee = forms.FloatField(required=True)
+
     def __init__(self, *args, **kwargs):
         super(StudentFormAddFee, self).__init__(*args, **kwargs)
         self.fields['total_fee'].widget.attrs['readonly'] = True
@@ -141,3 +145,36 @@ class StudentFormAddFee(forms.ModelForm):
     class Meta:
         model = student_models.StudentModel
         fields = ['total_required_fee', 'outstanding_fee', 'total_fee', 'paid_fee']
+        # fields = "__all__"
+
+
+class AddCourseForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(AddCourseForm, self).__init__(*args, **kwargs)
+        self.fields['course'].required = True
+        # self.fields['course_code'].required = True
+        self.fields['material_fee'].label = "Material Fee($)"
+        self.fields['tuition_fee'].label = "Tuition Fee($)"
+        self.fields['application_fee'].label = "Application Fee($)"
+        self.fields['quarterly_fee_amount'].label = "Qaurterly Fee($)"
+        self.fields['total_fee'].label = "Total Fee($)"
+        self.fields['total_commission_amount'].label = "Total Commission($)"
+        self.fields['discount'].label = "Discount($)"
+
+        # self.fields['course_code'].label = "Course Code"
+        self.fields['total_fee'].widget.attrs['readonly'] = True
+        self.fields['total_commission_amount'].widget.attrs['readonly'] = True
+        self.fields['quarterly_fee_amount'].widget.attrs['readonly'] = True
+
+    class Meta:
+        model = student_models.StudentCourse
+        fields = ['course', 'discount', 'start_date', 'end_date', 'commission', 'gst_status', 'material_fee',
+                  'tuition_fee', 'application_fee', 'oshc', 'quarterly_fee_amount', 'total_fee',
+                  'total_commission_amount', 'comment']
+        widgets = {
+            'comment': forms.Textarea(attrs={'rows': '5', 'cols': '3'}),
+            # make the name field select2
+            # 'course': forms.Select(attrs={'class': 'select2'}),
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'type': 'date'}),
+        }

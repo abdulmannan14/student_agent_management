@@ -17,7 +17,7 @@ class AgentForm(forms.ModelForm):
 
     class Meta:
         model = agent_models.AgentModel
-        fields = "__all__"
+        fields = ['company', 'name', 'country', 'bonus', 'phone', 'email', 'email2', 'email3']
         # exclude = ('restaurant', 'date','time')
 
 

@@ -318,7 +318,9 @@ def commission_history(request, pk):
 def get_student_agent_details(request):
     # today = datetime.today()
     student = request.GET.get('student', '')
+    print("this is  student====", student)
     student_obj = student_models.StudentModel.objects.get(pk=student)
+    print("this is student object====", student_obj)
     context = {
         'agent': student_obj.agent_name.name,
         'agent_commission_percentage': student_obj.commission,
@@ -383,6 +385,7 @@ def export_individual_agent_details(request, pk=None):
         writer.writerow(row)
 
     return response
+
 
 def export_agents_details(request):
     import csv

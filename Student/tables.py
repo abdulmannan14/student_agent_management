@@ -89,7 +89,8 @@ class PayModelStudentTable(tables.Table):
 
 
 class StudentCoursesTable(tables.Table):
-    status = tables.Column(empty_values=())
+    data_enrolled = tables.Column(empty_values=())
+    # status = tables.Column(empty_values=())
     actions = tables.Column(empty_values=())
 
     def __init__(self, *args, user_id=None, **kwargs):
@@ -98,23 +99,25 @@ class StudentCoursesTable(tables.Table):
 
     class Meta:
         attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
-        model = courses_models.Course
-        fields = ['name', ]
+        model = student_models.StudentCourse
+        fields = ['course', ]
 
-    def render_status(self, record):
-        status = "Active"
-        bgclass = "bg-white"
-        style = 'border-radius: 5px;'
-        return format_html('<h5 class={bgclass} style={style}>{}</h5>'.format(status, bgclass=bgclass, style=style))
+    # def render_status(self, record):
+    #     status = "Active"
+    #     bgclass = "bg-white"
+    #     style = 'border-radius: 5px;'
+    #     return format_html('<h5 class={bgclass} style={style}>{}</h5>'.format(status, bgclass=bgclass, style=style))
+    def render_data_enrolled(self, record):
+        return format_html("<h5>{}</h5>".format(record.created_at.date().strftime("%m-%d-%Y")))
 
     def render_actions(self, record):
         student_obj = student_models.StudentModel.objects.get(id=self.user_id)
         return format_html("<a class='btn btn-sm text-warning' href='{history}'><i class='fa fa-book'></i></a>"
                            "<a class='btn btn-sm text-primary' href='{update}'><i class='fa fa-pen'></i></a>"
                            "{delete}".format(
-            history=student_urls.history_student(self.user_id),
-            update=student_urls.edit_student(self.user_id),
-            delete=delete_action(student_urls.delete_student(self.user_id), student_obj.full_name),
+            history=student_urls.history_student(record.id),
+            update=student_urls.edit_student_course(record.id),
+            delete=delete_action(student_urls.delete_student_course(record.id), f'{record.course.name} Enrollment'),
         )
         )
 
@@ -337,20 +340,23 @@ class StudentTableForReport(tables.Table):
         return "Last Paid On : {}".format(record.previous_commission_history)
 
     def render_status(self, record):
-        if record.total_required_fee < 1:
-            status = "Total Paid"
-            bgclass = "bg-blue"
-            style = 'border-block-style: inherit; border-bottom-style: solid; width: 75px; height: 28px; border-radius: 8px;'
-        elif not record.outstanding_fee:
-            status = "Clear"
-            bgclass = "bg-green"
-            style = 'border-block-style: inherit; border-bottom-style: solid; padding-left: 15px; width: 75px; height: 28px; border-radius: 8px;'
-        else:
-            status = "Not Clear"
-            bgclass = "bg-danger"
-            style = 'border-block-style: inherit; border-bottom-style: solid; width: 75px; height: 28px; border-radius: 8px;'
-        return format_html(
-            '<h4 class="{bgclass}" style="{style}">{}</h4>'.format(status, bgclass=bgclass, style=style))
+        try:
+            if record.total_required_fee < 1:
+                status = "Total Paid"
+                bgclass = "bg-blue"
+                style = 'border-block-style: inherit; border-bottom-style: solid; width: 75px; height: 28px; border-radius: 8px;'
+            elif not record.outstanding_fee:
+                status = "Clear"
+                bgclass = "bg-green"
+                style = 'border-block-style: inherit; border-bottom-style: solid; padding-left: 15px; width: 75px; height: 28px; border-radius: 8px;'
+            else:
+                status = "Not Clear"
+                bgclass = "bg-danger"
+                style = 'border-block-style: inherit; border-bottom-style: solid; width: 75px; height: 28px; border-radius: 8px;'
+            return format_html(
+                '<h4 class="{bgclass}" style="{style}">{}</h4>'.format(status, bgclass=bgclass, style=style))
+        except:
+            pass
 
     # def render_non_refundable_fee(self, record):
     #     return "${}".format(record.non_refundable_fee)
