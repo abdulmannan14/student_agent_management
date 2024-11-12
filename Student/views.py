@@ -239,14 +239,15 @@ def history_student(request, pk):
     students = student_table.PayModelStudentTable(students)
     context = {
         "links": [
+            # {
+            #     "color_class": "btn-primary",
+            #     "title": f"Refund {student.full_name}'s Fee",
+            #     "icon": "fa fa-undo",
+            #     'data_toggle': 'modal',
+            #     'data_target': '#refund',
+            #     'data_name': f'{student.full_name}',
+            # },
             {
-                "color_class": "btn-primary",
-                "title": f"Refund {student.full_name}'s Fee",
-                "icon": "fa fa-undo",
-                'data_toggle': 'modal',
-                'data_target': '#refund',
-                'data_name': f'{student.full_name}',
-            }, {
                 "color_class": "btn-primary",
                 "title": "All Student",
                 "href": reverse("all-students"),
@@ -268,6 +269,7 @@ def history_student(request, pk):
 def student_courses(request, pk):
     student = get_object_or_404(student_models.StudentModel, pk=pk)
     student_courses = student.courses.all()
+    print("these are the courses=====", student_courses)
     sort = request.GET.get('sort', None)
     print("these are the Coursses=-=====", student_courses)
     if sort:
@@ -275,7 +277,6 @@ def student_courses(request, pk):
     students = student_table.StudentCoursesTable(student_courses, user_id=student.id)
     context = {
         "links": [
-
             {
                 "color_class": "btn-primary",
                 "title": "All Student",
@@ -316,6 +317,9 @@ def add_student_courses(request, pk):
         course = Courses.models.Course.objects.get(pk=course_id)
         form = student_form.AddCourseForm(request.POST)
         if form.is_valid():
+            if student.courses.filter(course=course).exists():
+                messages.error(request, f"{student.full_name} Already Enrolled in {course.name}")
+                return redirect('student-courses', pk=pk)
             obj = form.save()
             student.courses.add(obj)
             student.save()
@@ -579,6 +583,12 @@ def edit_student(request, pk):
 
 def delete_student(request, pk):
     student = get_object_or_404(student_models.StudentModel, pk=pk)
+    student_courses = student.courses.all()
+    for course in student_courses:
+        id = course.id
+        obj = student_models.StudentCourse.objects.get(id=id)
+        obj.delete()
+
     backend_utils._delete_table_entry(student)
     messages.success(request, f"{student.full_name} is Deleted Successfully!")
     return redirect('all-students')
@@ -711,81 +721,90 @@ def add_fee_student(request, pk):
     student = get_object_or_404(student_models.StudentModel, pk=pk)
     student_courses = student.courses.all()
     if request.method == 'POST':
-        form = student_form.AddFeeForm(request.POST)
-        if form.is_valid():
-            student = form.cleaned_data['student']
-            student_obj = student_models.StudentModel.objects.get(pk=student.pk)
-            is_oshc_fee = form.cleaned_data['is_oshc_fee']
-            is_bonus = form.cleaned_data['is_bonus']
-            is_material_fee = form.cleaned_data['is_material_fee']
-            is_application_fee = form.cleaned_data['is_application_fee']
-            fee_amount = form.cleaned_data['fee_pay']
-            paid_on = form.cleaned_data['paid_on']
-            if is_bonus:
-                form_obj = form.save(commit=False)
-                student_obj.is_bonus = True
-                form_obj.save()
-                student_obj.total_commission_paid += fee_amount
-                student_obj.save()
-                messages.success(request, "Bonus added successfully")
-                return redirect("all-students")
-            if is_oshc_fee:
-                form_obj = form.save(commit=False)
-                student_obj.oshc_fee_paid = True
-                form_obj.save()
-                messages.success(request, "OSHC Fee added successfully")
-                return redirect("all-students")
-            if is_application_fee:
-                if not student_obj.application_fee_paid:
-                    application_fee_to_subtract = student_obj.application_fee
-                    if student_obj.application_fee <= fee_amount:
-                        fee_amount = fee_amount - application_fee_to_subtract
-                        student_obj.application_fee_paid = True
-                else:
-                    messages.error(request,
-                                   "Process not completed because application fee of this student is already paid")
-                    return redirect("add-fee")
-            if is_material_fee:
-                if not student_obj.material_fee_paid:
-                    material_fee_to_subtract = student_obj.material_fee
-                    if student_obj.material_fee <= fee_amount:
-                        fee_amount = fee_amount - material_fee_to_subtract
-                        student_obj.material_fee_paid = True
-                else:
-                    messages.error(request,
-                                   "Process not completed because material fee of this student is already paid")
-                    return redirect("add-fee")
-            fee = form.save(commit=False)
-            if fee_amount > 0 and is_material_fee:
-                if form.cleaned_data['fee_pay'] > student_obj.material_fee:
-                    fee.is_tuition_and_material_fee = True
-            calculate_commission_to_pay = student_utils.calculate_commission_including_gst_and_commission(student_obj,
-                                                                                                          fee_amount)
-            student_obj.commission_to_pay = student_obj.commission_to_pay + calculate_commission_to_pay
-            fee: student_models.PayModelStudent
-            fee.agent_commision_amount = calculate_commission_to_pay
-            if student_obj.paid_fee >= student_obj.total_fee:
-                student_obj.outstanding_fee = 0
-            elif student_obj.outstanding_fee == fee_amount:
-                student_obj.outstanding_fee = 0
-            elif student_obj.outstanding_fee > fee_amount:
-                student_obj.outstanding_fee = student_obj.outstanding_fee - fee_amount
-            elif fee_amount > student_obj.outstanding_fee:
-                student_obj.outstanding_fee = 0
-            total_fee_amount = form.cleaned_data['fee_pay']
-            fee.fee_pay = total_fee_amount
-            fee.commission_percentage = student_obj.commission
-            student_obj.total_required_fee = student_obj.total_required_fee - total_fee_amount
-            student_obj.paid_fee = student_obj.paid_fee + total_fee_amount if student_obj.paid_fee else 0 + total_fee_amount
-            # student_obj.material_fee = student_obj.material_fee + fee_amount
-            student_obj.last_paid_on = paid_on
-            student_obj.amount_already_inserted = True
-            student_obj.save()
-            fee.save()
-            messages.success(request, f"Fee Added Successfully!")
-            return redirect("all-students")
-        else:
-            print("form is not valid$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        course = request.POST.get('course')
+        student_course = student_models.StudentCourse.objects.get(pk=course)
+        fee_type = request.POST.get('fee_type')
+        fee_amount = request.POST.get('fee_pay')
+        paid_on = request.POST.get('paid_on')
+        mode_of_payment = request.POST.get('mode_of_payment')
+        comment = request.POST.get('comment')
+
+        obj = student_models.PayModelStudent.objects.create(
+            student=student,
+            student_course=student_course,
+            fee_pay=fee_amount,
+            paid_on=paid_on,
+            fee_type=fee_type,
+            agent_commision_amount=(int(student_course.commission) * int(
+                fee_amount) / 100) if fee_type == student_models.tution_fee else 0,
+            commission_percentage=student_course.commission,
+            mode_of_payment=mode_of_payment,
+            comment=comment
+        )
+        # if fee_type == student_models.bonus:
+        #     student_obj.is_bonus = True
+        #     form_obj.save()
+        #     student_obj.total_commission_paid += fee_amount
+        #     student_obj.save()
+        #     messages.success(request, "Bonus added successfully")
+        #     return redirect("all-students")
+        # if fee_type == student_models.oshc_fee:
+        #     student_course.oshc = fee_amount
+        # messages.success(request, "OSHC Fee added successfully")
+        # return redirect("all-students")
+        # if fee_type == student_models.application_fee:
+        #     student_course.application_fee = fee_amount
+        # if not student_obj.application_fee_paid:
+        #     application_fee_to_subtract = student_obj.application_fee
+        #     if student_obj.application_fee <= fee_amount:
+        #         fee_amount = fee_amount - application_fee_to_subtract
+        #         student_obj.application_fee_paid = True
+        # else:
+        #     messages.error(request,
+        #                    "Process not completed because application fee of this student is already paid")
+        #     return redirect("add-fee")
+        # if fee_type == student_models.material_fee:
+        #     student_course.material_fee = fee_amount
+        # if not student_obj.material_fee_paid:
+        #     material_fee_to_subtract = student_obj.material_fee
+        #     if student_obj.material_fee <= fee_amount:
+        #         fee_amount = fee_amount - material_fee_to_subtract
+        #         student_obj.material_fee_paid = True
+        # else:
+        #     messages.error(request,
+        #                    "Process not completed because material fee of this student is already paid")
+        #     return redirect("add-fee")
+        # if fee_amount > 0 and is_material_fee:
+        #     if form.cleaned_data['fee_pay'] > student_obj.material_fee:
+        #         fee.is_tuition_and_material_fee = True
+        if fee_type == student_models.tution_fee:
+            calculate_commission_to_pay = student_utils.calculate_commission_including_gst_and_commission(
+                student_course,
+                fee_amount)
+            student_course.commission_to_pay = student_course.commission_to_pay + calculate_commission_to_pay
+            student_course.save()
+        # fee: student_models.PayModelStudent
+        # fee.agent_commision_amount = calculate_commission_to_pay
+        # if student_obj.paid_fee >= student_obj.total_fee:
+        #     student_obj.outstanding_fee = 0
+        # elif student_obj.outstanding_fee == fee_amount:
+        #     student_obj.outstanding_fee = 0
+        # elif student_obj.outstanding_fee > fee_amount:
+        #     student_obj.outstanding_fee = student_obj.outstanding_fee - fee_amount
+        # elif fee_amount > student_obj.outstanding_fee:
+        #     student_obj.outstanding_fee = 0
+        # total_fee_amount = form.cleaned_data['fee_pay']
+        # fee.fee_pay = total_fee_amount
+        # fee.commission_percentage = student_obj.commission
+        # student_obj.total_required_fee = student_obj.total_required_fee - total_fee_amount
+        # student_obj.paid_fee = student_obj.paid_fee + total_fee_amount if student_obj.paid_fee else 0 + total_fee_amount
+        # # student_obj.material_fee = student_obj.material_fee + fee_amount
+        # student_obj.last_paid_on = paid_on
+        # student_obj.amount_already_inserted = True
+        # student_obj.save()
+        # fee.save()
+        messages.success(request, f"Fee Added Successfully!")
+        return redirect("student-courses", pk=pk)
     else:
         form = student_form.AddFeeForm()
         form.fields['course'].queryset = student_courses
@@ -1155,30 +1174,44 @@ def get_student_commission(request):
     return JsonResponse(success_response(data=data), safe=False)
 
 
+from django.db.models import Sum
+
+
 @login_required(login_url='login')
 def get_student_fee_details(request):
     today = datetime.today()
     student_course = request.GET.get('student', '')
     print("this is student", student_course)
     student_course_obj = student_models.StudentCourse.objects.get(pk=student_course)
-    student_obj = student_models.StudentModel.objects.get(courses=student_course_obj)
-    tuition_fee = student_course_obj.tuition_fee
-    outstanding_fee = student_models.PayModelStudent.objects.filter(student_course=student_course_obj,
-                                                                    paid_on__range=(today - timedelta(days=120), today))
-    if outstanding_fee:
-        context = {
-            'total_fee': student_course_obj.total_fee,
-            'total_required_fee': student_obj.total_required_fee,
-            'outstanding_fee': student_obj.outstanding_fee,
-            'already_paid_amount': student_obj.paid_fee if student_obj.paid_fee else 0,
-        }
-    else:
-        context = {
-            'total_fee': student_course_obj.total_fee,
-            'total_required_fee': student_obj.total_required_fee,
-            'outstanding_fee': student_obj.outstanding_fee,
-            'already_paid_amount': student_obj.paid_fee if student_obj.paid_fee else 0,
-        }
+    # student_obj = student_models.StudentModel.objects.get(courses=student_course_obj)
+    # tuition_fee = student_course_obj.tuition_fee
+    # outstanding_fee = student_models.PayModelStudent.objects.filter(student_course=student_course_obj,
+    #                                                                 paid_on__range=(today - timedelta(days=120), today))
+
+    course_fee_paid_objects = student_models.PayModelStudent.objects.filter(student_course=student_course_obj)
+    record_table = []
+    for obj in course_fee_paid_objects:
+        record_table.append({
+            'fee_pay': obj.fee_pay,
+            'paid_on': obj.paid_on.strftime('%m-%d-%Y') if obj.paid_on else 'N/A',
+            'fee_type': obj.fee_type,
+            'mode_of_payment': obj.mode_of_payment,
+            'comment': obj.comment if obj.comment else 'N/A'
+        })
+
+    total_amount_paid = course_fee_paid_objects.filter(
+        student_course_id=student_course_obj.id).aggregate(
+        total_paid=Sum('fee_pay')
+    )
+    context = {
+        'total_fee': student_course_obj.total_fee,
+        # 'total_required_fee': student_obj.total_required_fee,
+        # 'outstanding_fee': student_obj.outstanding_fee,
+        # 'already_paid_amount': student_obj.paid_fee if student_obj.paid_fee else 0,
+        'already_paid_amount': total_amount_paid['total_paid'],
+        'record_table': record_table
+    }
+
     return JsonResponse(success_response(data=context), safe=False)
 
 
@@ -1187,86 +1220,86 @@ def get_student_fee_details(request):
 def student_report(request):
     today = datetime.today()
     students = student_models.StudentModel.objects.filter(refunded=False)
-    for student in students:
-        check_outstanding_fee = student_models.StudentModel.objects.filter(pk=student.id,
-                                                                           last_paid_on__range=(
-                                                                               today - timedelta(days=90), today))
-        if not check_outstanding_fee:
-            if student.quarterly_fee_amount:
-                if student.outstanding_fee != student.quarterly_fee_amount and student.outstanding_fee < student.quarterly_fee_amount:
-                    last_paid_on = student.last_paid_on
-
-                    try:
-                        days_differnece = abs((today.date() - last_paid_on).days)
-                        amount_inserting_day_difference = abs((today.date() - student.amount_inserting_date).days)
-                        if days_differnece >= 90:  # and amount_inserting_day_difference >= 90
-                            student.amount_already_inserted = False
-
-                    except:
-                        pass
-                    if student.total_required_fee > 0 and student.outstanding_fee == 0:
-                        student.outstanding_fee = student.quarterly_fee_amount
-                        student.last_paid_on = today
-                    elif student.total_required_fee > 0 and student.outstanding_fee > 0 and student.amount_already_inserted is False and student.total_required_fee != student.outstanding_fee:
-                        student.outstanding_fee = student.quarterly_fee_amount + student.outstanding_fee
-                        student.amount_already_inserted = True
-                        student.last_paid_on = today
-                        student.amount_inserting_date = today.date()
-                    else:
-                        student.save()
-                else:
-                    last_paid = student.last_paid_on
-                    days_differnece = abs((today.date() - last_paid).days)
-                    if days_differnece >= 365:  # and student.amount_already_inserted == False:
-                        fee_to_add = (4 * student.quarterly_fee_amount) + student.outstanding_fee
-                        if student.total_required_fee < fee_to_add:
-                            student.outstanding_fee = student.total_required_fee
-                            student.last_paid_on = today
-                        else:
-                            student.outstanding_fee = fee_to_add
-                            student.last_paid_on = today
-                        student.amount_already_inserted = True
-                        student.amount_inserting_date = today.date()
-
-                    elif days_differnece >= 270:  # and student.amount_already_inserted == False:
-                        fee_to_add = (3 * student.quarterly_fee_amount) + student.outstanding_fee
-                        if student.total_required_fee < fee_to_add:
-                            student.outstanding_fee = student.total_required_fee
-                            student.last_paid_on = today
-                        else:
-                            student.outstanding_fee = fee_to_add
-                            student.last_paid_on = today
-                        student.amount_already_inserted = True
-                        student.amount_inserting_date = today.date()
-                    elif days_differnece >= 180:  # and student.amount_already_inserted == False:
-                        fee_to_add = (2 * student.quarterly_fee_amount) + student.outstanding_fee
-                        if student.total_required_fee < fee_to_add:
-                            student.last_paid_on = today
-                            student.outstanding_fee = student.total_required_fee
-                        else:
-                            student.outstanding_fee = fee_to_add
-                            student.last_paid_on = today
-                        student.amount_already_inserted = True
-                        student.amount_inserting_date = today.date()
-
-                    elif days_differnece >= 90:  # and student.amount_already_inserted == False:
-                        fee_to_add = student.quarterly_fee_amount + student.outstanding_fee
-                        if student.total_required_fee < fee_to_add:
-                            student.last_paid_on = today
-                            student.outstanding_fee = student.total_required_fee
-                        else:
-                            student.outstanding_fee = fee_to_add
-                            student.last_paid_on = today
-                        student.amount_already_inserted = True
-                        student.amount_inserting_date = today.date()
-                    else:
-                        # student.amount_already_inserted = False
-                        pass
-                student.save()
-    sort = request.GET.get('sort', None)
-    if sort:
-        students = students.order_by(sort)
-    students = student_table.StudentTableForReport(students)
+    # for student in students:
+    #     check_outstanding_fee = student_models.StudentModel.objects.filter(pk=student.id,
+    #                                                                        last_paid_on__range=(
+    #                                                                            today - timedelta(days=90), today))
+    #     if not check_outstanding_fee:
+    #         if student.quarterly_fee_amount:
+    #             if student.outstanding_fee != student.quarterly_fee_amount and student.outstanding_fee < student.quarterly_fee_amount:
+    #                 last_paid_on = student.last_paid_on
+    #
+    #                 try:
+    #                     days_differnece = abs((today.date() - last_paid_on).days)
+    #                     amount_inserting_day_difference = abs((today.date() - student.amount_inserting_date).days)
+    #                     if days_differnece >= 90:  # and amount_inserting_day_difference >= 90
+    #                         student.amount_already_inserted = False
+    #
+    #                 except:
+    #                     pass
+    #                 if student.total_required_fee > 0 and student.outstanding_fee == 0:
+    #                     student.outstanding_fee = student.quarterly_fee_amount
+    #                     student.last_paid_on = today
+    #                 elif student.total_required_fee > 0 and student.outstanding_fee > 0 and student.amount_already_inserted is False and student.total_required_fee != student.outstanding_fee:
+    #                     student.outstanding_fee = student.quarterly_fee_amount + student.outstanding_fee
+    #                     student.amount_already_inserted = True
+    #                     student.last_paid_on = today
+    #                     student.amount_inserting_date = today.date()
+    #                 else:
+    #                     student.save()
+    #             else:
+    #                 last_paid = student.last_paid_on
+    #                 days_differnece = abs((today.date() - last_paid).days)
+    #                 if days_differnece >= 365:  # and student.amount_already_inserted == False:
+    #                     fee_to_add = (4 * student.quarterly_fee_amount) + student.outstanding_fee
+    #                     if student.total_required_fee < fee_to_add:
+    #                         student.outstanding_fee = student.total_required_fee
+    #                         student.last_paid_on = today
+    #                     else:
+    #                         student.outstanding_fee = fee_to_add
+    #                         student.last_paid_on = today
+    #                     student.amount_already_inserted = True
+    #                     student.amount_inserting_date = today.date()
+    #
+    #                 elif days_differnece >= 270:  # and student.amount_already_inserted == False:
+    #                     fee_to_add = (3 * student.quarterly_fee_amount) + student.outstanding_fee
+    #                     if student.total_required_fee < fee_to_add:
+    #                         student.outstanding_fee = student.total_required_fee
+    #                         student.last_paid_on = today
+    #                     else:
+    #                         student.outstanding_fee = fee_to_add
+    #                         student.last_paid_on = today
+    #                     student.amount_already_inserted = True
+    #                     student.amount_inserting_date = today.date()
+    #                 elif days_differnece >= 180:  # and student.amount_already_inserted == False:
+    #                     fee_to_add = (2 * student.quarterly_fee_amount) + student.outstanding_fee
+    #                     if student.total_required_fee < fee_to_add:
+    #                         student.last_paid_on = today
+    #                         student.outstanding_fee = student.total_required_fee
+    #                     else:
+    #                         student.outstanding_fee = fee_to_add
+    #                         student.last_paid_on = today
+    #                     student.amount_already_inserted = True
+    #                     student.amount_inserting_date = today.date()
+    #
+    #                 elif days_differnece >= 90:  # and student.amount_already_inserted == False:
+    #                     fee_to_add = student.quarterly_fee_amount + student.outstanding_fee
+    #                     if student.total_required_fee < fee_to_add:
+    #                         student.last_paid_on = today
+    #                         student.outstanding_fee = student.total_required_fee
+    #                     else:
+    #                         student.outstanding_fee = fee_to_add
+    #                         student.last_paid_on = today
+    #                     student.amount_already_inserted = True
+    #                     student.amount_inserting_date = today.date()
+    #                 else:
+    #                     # student.amount_already_inserted = False
+    #                     pass
+    #             student.save()
+    # sort = request.GET.get('sort', None)
+    # if sort:
+    #     students = students.order_by(sort)
+    # students = student_table.StudentTableForReport(students)
     context = {
         "page_title": "Fee Report",
         "table": students,

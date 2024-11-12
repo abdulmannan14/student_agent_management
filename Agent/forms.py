@@ -30,22 +30,26 @@ class AgentCommissionForm(forms.ModelForm):
     # current_commission_amount = forms.CharField(max_length=100, required=False)
     paid_on = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'type': 'date'}))
     gst_status = forms.CharField(max_length=50, required=False)
+    # a new field named as course which has all the courses of the selected student
+    # courses = forms.CharField(widget=forms.Select(attrs={'class': 'form-control'}))
+    student_courses = forms.ChoiceField(choices=[])
 
     def __init__(self, *args, **kwargs):
         super(AgentCommissionForm, self).__init__(*args, **kwargs)
 
-        self.fields['agent_name'].label = "Agent Name"
+        # self.fields['agent_name'].label = "Agent Name"
+        self.fields['student_courses'].label = "Course"
         self.fields['agent_commission_percentage'].label = "Commission Percentage"
         self.fields['agent_commission_amount'].widget.attrs['readonly'] = True
         self.fields['total_commission_paid'].widget.attrs['readonly'] = True
-        self.fields['student_paid_fee'].widget.attrs['readonly'] = True
+        # self.fields['student_paid_fee'].widget.attrs['readonly'] = True
         self.fields['agent_commission_percentage'].widget.attrs['readonly'] = True
         self.fields['gst_status'].widget.attrs['readonly'] = True
 
     class Meta:
         model = agent_models.CommissionModelAgent
-        fields = ['student', 'agent_name', 'agent_commission_percentage', 'gst_status', 'agent_commission_amount',
-                  'total_commission_paid', 'student_paid_fee', 'current_commission_amount', 'mode_of_payment',
+        fields = ['student_courses', 'agent_commission_percentage', 'gst_status', 'agent_commission_amount',
+                  'total_commission_paid', 'current_commission_amount', 'mode_of_payment',
                   'paid_on', 'comment']
         widgets = {
             'comment': forms.Textarea(attrs={'rows': '5', 'cols': '3'}),

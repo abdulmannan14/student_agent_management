@@ -25,12 +25,7 @@ def all_agents(request):
     agents = agent_table.AgentTable(agents)
     context = {
         "links": [
-            {
-                "color_class": "btn-primary",
-                "title": "Add Commission",
-                "href": reverse("add-commission"),
-                "icon": "fa fa-plus"
-            },
+
             {
                 "color_class": "btn-primary",
                 "title": "Add Agent",
@@ -156,32 +151,48 @@ def unarchive_agent(request, pk):
 
 
 # ======================+COMMISSION============================================
-def add_commission(request):
+def add_commission(request, pk):
+    student = get_object_or_404(student_models.StudentModel, pk=pk)
     today = datetime.today().date()
     if request.method == 'POST':
-        form = agent_form.AgentCommissionForm(request.POST)
-        student = request.POST.get('student', 0)
-        commission_paid = request.POST.get('current_commission_amount', 0)
-        if form.is_valid():
-            current_commission_amount = request.POST.get('current_commission_amount')
-            student_obj = student_models.StudentModel.objects.get(pk=student)
-            commission = form.save(commit=False)
-            student_obj.total_commission_paid = float(student_obj.total_commission_paid) + float(
-                commission_paid) if float(
-                student_obj.total_commission_paid) else 0 + float(commission_paid)
-            student_obj.previous_commission_history = today
-            commission.agent_commission_amount = commission_paid
-            student_obj.commission_to_pay = student_obj.commission_to_pay - float(current_commission_amount)
-            student_obj.save()
-            commission.save()
-            messages.success(request, f"Commission Added Successfully!")
-            return redirect('all-agent')
-        else:
-            pass
+        course = request.POST.get('student_courses', 0)
+        print("this is course=====", course)
+        course_obj = student_models.StudentCourse.objects.get(pk=course)
+        commission_paid = request.POST.get('total_commission_paid', 0)
+        agent_commission_percentage = request.POST.get('agent_commission_percentage')
+        agent_commission_amount = request.POST.get('agent_commission_amount')
+        current_commission_amount = request.POST.get('current_commission_amount')
+        mode_of_payment = request.POST.get('mode_of_payment')
+        paid_date = request.POST.get('paid_on')
+        comment = request.POST.get('comment')
+        agent_models.CommissionModelAgent.objects.create(
+            student_course=course_obj,
+            agent_name=student.agent_name.name,
+            agent_commission_percentage=agent_commission_percentage,
+            agent_commission_amount=agent_commission_amount,
+            total_commission_paid=commission_paid,
+            current_commission_amount=current_commission_amount,
+            paid_on=paid_date,
+            mode_of_payment=mode_of_payment,
+            comment=comment
+        )
+
+        course_obj.commission_to_pay = course_obj.commission_to_pay - float(current_commission_amount)
+        if not course_obj.total_commission_paid:
+            course_obj.total_commission_paid = 0
+            course_obj.save()
+        course_obj.total_commission_paid = course_obj.total_commission_paid + float(current_commission_amount)
+        course_obj.save()
+        messages.success(request, f"Commission Added Successfully!")
+        return redirect('agent-student-courses', pk)
     else:
         form = agent_form.AgentCommissionForm(initial={'student_paid_fee': 0, 'current_commission_amount': 0})
+        print("COURSES=========", student.courses.all())
+        form.fields['student_courses'].choices = [('-----', '-----')] + [(course.pk, course) for course in
+                                                                         student.courses.all()]
+
         context = {
-            "page_title": "Add Commission",
+            "page_title": f"Add Commission for Student ({student.full_name})",
             "form3": form,
             "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
             'button': 'Submit',
@@ -255,6 +266,7 @@ def delete_commission(request, pk):
 
 def agent_students(request, pk):
     agent = get_object_or_404(agent_models.AgentModel, pk=pk)
+    # agent_students = student_models.StudentCourse.objects.filter(studentmodel__agent_name=agent)
     agent_students = student_models.StudentModel.objects.filter(agent_name=agent)
     sort = request.GET.get('sort', None)
     if sort:
@@ -268,12 +280,12 @@ def agent_students(request, pk):
                 "href": reverse("all-agent"),
                 "icon": "fa fa-graduation-cap"
             },
-            {
-                "color_class": "btn-primary",
-                "title": "Export Agent Report",
-                "href": reverse("export-agent-report", kwargs={'pk': pk}),
-                "icon": "fa fa-download"
-            },
+            # {
+            #     "color_class": "btn-primary",
+            #     "title": "Export Agent Report",
+            #     "href": reverse("export-agent-report", kwargs={'pk': pk}),
+            #     "icon": "fa fa-download"
+            # },
         ],
         "page_title": f"{agent.name} All Student",
         "table": agent_students,
@@ -285,12 +297,50 @@ def agent_students(request, pk):
     return render(request, "dashboard/list-entries.html", context)
 
 
+def agent_students_courses(request, pk):
+    student = get_object_or_404(student_models.StudentModel, pk=pk)
+    # agent_students = student_models.StudentCourse.objects.filter(studentmodel__agent_name=agent)
+    student_courses = student.courses.all()
+    sort = request.GET.get('sort', None)
+    if sort:
+        student_courses = student_courses.order_by(sort)
+    student_courses = agent_table.AgentStudentCourseTable(student_courses)
+    context = {
+        "links": [
+            {
+                "color_class": "btn-primary",
+                "title": "Add Commission",
+                "href": reverse("add-commission", kwargs={'pk': pk}),
+                "icon": "fa fa-plus"
+            },
+            {
+                "color_class": "btn-primary",
+                "title": "All Agents",
+                "href": reverse("all-agent"),
+                "icon": "fa fa-graduation-cap"
+            },
+            {
+                "color_class": "btn-primary",
+                "title": "Export Agent Report",
+                "href": reverse("export-agent-report", kwargs={'pk': pk}),
+                "icon": "fa fa-download"
+            },
+        ],
+        "page_title": f"{student.full_name} All Courses",
+        "table": student_courses,
+        "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
+        'nav_conf': {
+            'active_classes': ['student'],
+        },
+    }
+    return render(request, "dashboard/list-entries.html", context)
+
+
 def commission_history(request, pk):
-    student_obj = get_object_or_404(student_models.StudentModel, pk=pk)
-    agent_obj = get_object_or_404(agent_models.AgentModel, pk=student_obj.agent_name.pk)
-    commission_data_history = agent_models.CommissionModelAgent.objects.filter(student=student_obj,
-                                                                               agent_name=agent_obj.name,
-                                                                               agent_commission_amount__gt=0)
+    print("entered-----")
+    student_course = get_object_or_404(student_models.StudentCourse, pk=pk)
+    student = student_models.StudentModel.objects.get(courses=student_course)
+    commission_data_history = agent_models.CommissionModelAgent.objects.filter(student_course=student_course)
     sort = request.GET.get('sort', None)
     if sort:
         commission_data_history = commission_data_history.order_by(sort)
@@ -304,7 +354,7 @@ def commission_history(request, pk):
                 "icon": "fa fa-graduation-cap"
             },
         ],
-        "page_title": f"All Commission From {student_obj.full_name}",
+        "page_title": f"All Commission From {student.full_name}",
         "table": commission_data_history,
         "nav_bar": render_to_string("dashboard/company/partials/nav.html"),
         'nav_conf': {
@@ -317,18 +367,18 @@ def commission_history(request, pk):
 # ======================================JS WORKING===========================
 def get_student_agent_details(request):
     # today = datetime.today()
-    student = request.GET.get('student', '')
-    print("this is  student====", student)
-    student_obj = student_models.StudentModel.objects.get(pk=student)
-    print("this is student object====", student_obj)
+    student_course = request.GET.get('student_course', '')
+    print("this is  student====", student_course)
+    student_course_obj = student_models.StudentCourse.objects.get(pk=student_course)
+    print("this is student object====", student_course_obj)
     context = {
-        'agent': student_obj.agent_name.name,
-        'agent_commission_percentage': student_obj.commission,
-        'agent_gst': student_obj.gst,
-        'agent_commission_amount': student_obj.total_commission_amount,
-        'total_commission_paid_till_now': student_obj.total_commission_paid if student_obj.total_commission_paid else 0,
-        'commission_to_pay': student_obj.commission_to_pay if student_obj.commission_to_pay else 0,
-        'gst_status': student_obj.gst_status if student_obj.gst_status else '',
+        # 'agent': student_course_obj.agent_name.name,
+        'agent_commission_percentage': student_course_obj.commission,
+        'agent_gst': student_course_obj.gst,
+        'agent_commission_amount': student_course_obj.total_commission_amount,
+        'total_commission_paid_till_now': student_course_obj.total_commission_paid if student_course_obj.total_commission_paid else 0,
+        'commission_to_pay': student_course_obj.commission_to_pay if student_course_obj.commission_to_pay else 0,
+        'gst_status': student_course_obj.gst_status if student_course_obj.gst_status else '',
     }
     return JsonResponse(success_response(data=context), safe=False)
 
@@ -360,28 +410,28 @@ def send_mail(request, pk):
 def export_individual_agent_details(request, pk=None):
     import csv
     from django.http import HttpResponse
-    print("=========+++AJAOoooo============")
     # Create the HttpResponse object with CSV headers.
-    agent = get_object_or_404(agent_models.AgentModel, pk=pk)
+    student = get_object_or_404(student_models.StudentModel, pk=pk)
+
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = f'attachment; filename="{agent.name}_Students.csv"'
+    response[
+        'Content-Disposition'] = f'attachment; filename="{student.full_name}_ACMI#{student.acmi_number}_report_for_agent_{student.agent_name.name}.csv"'
 
     # Create a CSV writer object
     writer = csv.writer(response)
 
     # Write the header row (you can modify this according to your table's structure)
-    writer.writerow(['ACMI#', 'Full Name', 'Course', 'Start Date', 'End Date', 'Total Fee', 'Total Commission Amount',
+    writer.writerow(['Course', 'Start Date', 'End Date', 'Total Fee', 'Total Commission Amount',
                      'Total Commission Paid', 'Commission Yet To Pay'])  # Replace with actual column names
 
-    agent_students = student_models.StudentModel.objects.filter(agent_name=agent).order_by('-pk').values_list(
-        'acmi_number',
-        'full_name', 'course',
+    student_courses = student.courses.all().order_by('-pk').values_list(
+        'course__name',
         'start_date', 'end_date',
         'total_fee',
         'total_commission_amount',
         'total_commission_paid',
         'commission_to_pay')
-    for row in agent_students:
+    for row in student_courses:
         writer.writerow(row)
 
     return response

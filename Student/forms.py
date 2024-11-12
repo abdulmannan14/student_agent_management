@@ -90,25 +90,30 @@ class AddFeeForm(forms.ModelForm):
     paid_on = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'type': 'date'}))
     course = forms.ModelChoiceField(queryset=course_models.Course.objects.all(), required=True)
 
+    # fee_type = forms.Select(choices=['Tuition Fee', 'Material Fee', 'Application Fee', 'OSHC Fee', 'Bonus'],
+    # attrs = {'class': 'select2'})
+
     def __init__(self, *args, **kwargs):
         super(AddFeeForm, self).__init__(*args, **kwargs)
         self.fields['fee_pay'].label = "Fee Amount"
         self.fields['paid_on'].label = "Date"
-        self.fields['is_oshc_fee'].label = "OSHC Fee"
-        self.fields['is_material_fee'].label = "Material Fee"
-        self.fields['is_application_fee'].label = "Application Fee"
+        # self.fields['is_oshc_fee'].label = "OSHC Fee"
+        # self.fields['is_material_fee'].label = "Material Fee"
+        # self.fields['is_application_fee'].label = "Application Fee"
         # self.fields['student'].required = True
         self.fields['fee_pay'].required = True
+        self.fields['fee_type'].required = True
         # self.fields['total_required_fee'].label = "Total Required Fee($)"
         # self.fields['outstanding_fee'].label = "Outstanding Fee($)"
 
     class Meta:
         model = student_models.PayModelStudent
-        fields = ['course', 'fee_pay', 'mode_of_payment', 'paid_on', 'is_material_fee', 'is_application_fee',
-                  'is_oshc_fee', 'is_bonus',
+        fields = ['course', 'fee_type', 'fee_pay', 'mode_of_payment', 'paid_on',
                   'comment']
         widgets = {
             'comment': forms.Textarea(attrs={'rows': '5', 'cols': '3'}),
+            #     make fee type field is a select field
+
         }
 
 
@@ -126,7 +131,7 @@ class EditFeeForm(forms.ModelForm):
 
     class Meta:
         model = student_models.PayModelStudent
-        fields = ['student', 'fee_pay', 'mode_of_payment', 'paid_on', 'is_material_fee', 'is_application_fee',
+        fields = ['student', 'fee_pay', 'mode_of_payment', 'paid_on', 'fee_type',
                   'comment']
 
 
@@ -137,14 +142,17 @@ class StudentFormAddFee(forms.ModelForm):
         super(StudentFormAddFee, self).__init__(*args, **kwargs)
         self.fields['total_fee'].widget.attrs['readonly'] = True
         self.fields['paid_fee'].widget.attrs['readonly'] = True
-        self.fields['total_required_fee'].widget.attrs['readonly'] = True
-        self.fields['outstanding_fee'].widget.attrs['readonly'] = True
-        self.fields['total_required_fee'].label = "Total Required Fee($)"
-        self.fields['outstanding_fee'].label = "Outstanding Fee($)"
+        # self.fields['total_required_fee'].widget.attrs['readonly'] = True
+        # self.fields['outstanding_fee'].widget.attrs['readonly'] = True
+        # self.fields['total_required_fee'].label = "Total Required Fee($)"
+        # self.fields['outstanding_fee'].label = "Outstanding Fee($)"
+        self.fields['total_fee'].label = "Total Fee($)"
+        self.fields['paid_fee'].label = "Paid Fee($)"
 
     class Meta:
         model = student_models.StudentModel
-        fields = ['total_required_fee', 'outstanding_fee', 'total_fee', 'paid_fee']
+        # fields = ['total_required_fee', 'outstanding_fee', 'total_fee', 'paid_fee']
+        fields = ['total_fee', 'paid_fee']
         # fields = "__all__"
 
 

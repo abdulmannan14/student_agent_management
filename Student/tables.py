@@ -9,17 +9,17 @@ from Courses import models as courses_models
 
 
 class PayModelStudentTable(tables.Table):
-    actions = tables.Column(empty_values=())
+    # actions = tables.Column(empty_values=())
     status = tables.Column(empty_values=())
     agent_commission_gst = tables.Column(empty_values=(), verbose_name='Agent Gst Status')
     acmi_number = tables.Column(empty_values=(), verbose_name='ACMI Number#')
-    course = tables.Column(empty_values=(), verbose_name='Course')
+    # course = tables.Column(empty_values=(), verbose_name='Course')
     commission = tables.Column(empty_values=(), verbose_name='Commission (%)')
 
     class Meta:
         attrs = {"class": "table  table-stripped data-table", "data-add-url": "Url here"}
         model = student_models.PayModelStudent
-        fields = ['acmi_number', 'student', 'course', 'fee_pay', 'agent_commision_amount', 'commission',
+        fields = ['acmi_number', 'student', 'fee_pay', 'agent_commision_amount', 'commission',
                   'agent_commission_gst',
                   'paid_on', 'status']
 
@@ -28,9 +28,9 @@ class PayModelStudentTable(tables.Table):
 
     def render_agent_commission_gst(self, record):
         record: student_models.PayModelStudent
-        if record.student.gst_status == record.student.COMMISSION_ONLY:
+        if record.student_course.gst_status == student_models.COMMISSION_ONLY:
             return 'Commission Only'
-        elif record.student.gst_status == record.student.COMMISSION_PLUS_GST:
+        elif record.student_course.gst_status == student_models.COMMISSION_PLUS_GST:
             return 'Commission + GST'
         else:
             return "NOT DEFINED"
@@ -38,34 +38,31 @@ class PayModelStudentTable(tables.Table):
     def render_acmi_number(self, record):
         return "#{}".format(record.student.acmi_number)
 
-    def render_course(self, record):
-        return "{}".format(record.student.course)
-
     def render_status(self, record):
-        if record.is_bonus:
+        if record.fee_type == student_models.bonus:
             status = "Bonus Paid"
             bgclass = "bg-white"
             style = 'border-radius: 5px;'
             return format_html('<h5 class={bgclass} style={style}>{}</h5>'.format(status, bgclass=bgclass, style=style))
-        if record.is_oshc_fee:
+        if record.fee_type == student_models.oshc_fee:
             status = "OSHC Fee"
             bgclass = "bg-white"
             style = 'border-radius: 5px;'
             return format_html('<h5 class={bgclass} style={style}>{}</h5>'.format(status, bgclass=bgclass, style=style))
-        if record.is_tuition_and_material_fee and record.is_application_fee:
-            status = "Tuition , Material & Application Fee"
-            bgclass = "bg-white"
-            style = 'border-radius: 5px;'
-        elif record.is_tuition_and_material_fee:
-            status = "Tuition & Material Fee"
-            bgclass = "bg-white"
-            style = 'border-radius: 5px;'
-        elif record.is_material_fee:
+        # if record.fee_type==student_models.is_tuition_and_material_fee and record.is_application_fee:
+        #     status = "Tuition , Material & Application Fee"
+        #     bgclass = "bg-white"
+        #     style = 'border-radius: 5px;'
+        # elif record.is_tuition_and_material_fee:
+        #     status = "Tuition & Material Fee"
+        #     bgclass = "bg-white"
+        #     style = 'border-radius: 5px;'
+        elif record.fee_type == student_models.material_fee:
             status = "Material Fee"
             bgclass = "bg-white"
             style = 'border-radius: 5px;'
-        elif record.is_application_fee:
-            status = "Tuition & Application Fee"
+        elif record.fee_type == student_models.application_fee:
+            status = "Application Fee"
             bgclass = "bg-white"
             style = 'border-radius: 5px;'
         else:

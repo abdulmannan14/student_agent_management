@@ -619,9 +619,16 @@
                                     </div>
                                 </div>
                             </form>
+
                         </div>
+
                     </div>
+
                 </div>
+
+            </div>
+            <div class="card" id="main_card_payment_history_table_add_fee_get">
+
             </div>
         </div>
         <div id="refunds" class="modal fade">
@@ -876,32 +883,44 @@
             let student = select.val()
             let url = "{% url 'get-student-fee-details' %}?student=" + student
             $.get(url, function (response, success) {
-                let student_data = response.data
-                $("#id_total_fee").val(student_data.total_fee)
-                $("#id_total_required_fee").val(student_data.total_required_fee)
-                $("#id_outstanding_fee").val(student_data.outstanding_fee)
-                $("#id_paid_fee").val(student_data.already_paid_amount)
-            })
+                    let student_data = response.data
+                    $("#id_total_fee").val(student_data.total_fee)
+                    {#$("#id_total_required_fee").val(student_data.total_required_fee)#}
+                    {#$("#id_outstanding_fee").val(student_data.outstanding_fee)#}
+                    $("#id_paid_fee").val(student_data.already_paid_amount)
+                    let record_table = student_data.record_table
+
+                    let table = "<div class='card-header'>Payment History</div><div class='card-body'><div class='table-responsive' id='payment_history_table_add_fee_get'><table class='table table-bordered'><thead><tr><th style='font-weight: bolder'>Amount</th><th style='font-weight: bolder'>Payment Date</th><th style='font-weight: bolder'>Fee Type</th><th style='font-weight: bolder'>Payment Method</th><th style='font-weight: bolder'>Comments</th></tr></thead><tbody>"
+                    for (let i = 0; i < record_table.length; i++) {
+                        table += "<tr><td>" + record_table[i].fee_pay + "</td><td>" + record_table[i].paid_on + "</td><td>" + record_table[i].fee_type + "</td><td>" + record_table[i].mode_of_payment + "</td><td>" + record_table[i].comment + "</td></tr>"
+                    }
+                    table += "</tbody></table></div></div>"
+                    $("#main_card_payment_history_table_add_fee_get").html(table)
+                }
+            )
         })
     </script>
     <script>
-        $('#id_student').on("change", function () {
+        $('#id_student_courses').on("change", function () {
             let select = $(this)
             let student = select.val()
-            let url = "{% url 'get-student-agent-details' %}?student=" + student
-            $.get(url, function (response, success) {
-                let student_data = response.data
-                let agent_gst_amount = student_data.agent_gst
-                console.log("this is data==", student_data)
-                $("#id_agent_name").val(student_data.agent)
-                $("#id_agent_commission_percentage").val(student_data.agent_commission_percentage)
-                $("#id_agent_commission_amount").val(student_data.agent_commission_amount)
-                $("#id_total_commission_paid").val(student_data.total_commission_paid_till_now)
-                $("#id_current_commission_amount").val(student_data.commission_to_pay)
-                $("#id_gst_status").val(student_data.gst_status)
-                calculate_fee(student_data.gst_status)
-
-            })
+            if (student !== '-----') {
+                console.log("this is the selected value======", select)
+                console.log("this is the selected value======2", student)
+                let url = "{% url 'get-student-agent-details' %}?student_course=" + student
+                $.get(url, function (response, success) {
+                    let student_data = response.data
+                    let agent_gst_amount = student_data.agent_gst
+                    console.log("this is data==", student_data)
+                    {#$("#id_agent_name").val(student_data.agent)#}
+                    $("#id_agent_commission_percentage").val(student_data.agent_commission_percentage)
+                    $("#id_agent_commission_amount").val(student_data.agent_commission_amount)
+                    $("#id_total_commission_paid").val(student_data.total_commission_paid_till_now)
+                    $("#id_current_commission_amount").val(student_data.commission_to_pay)
+                    $("#id_gst_status").val(student_data.gst_status)
+                    {#calculate_fee(student_data.gst_status)#}
+                })
+            }
         })
     </script>
     {#    <script>#}

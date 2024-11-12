@@ -16,6 +16,8 @@ refunded_archive = 'REFUNDED ARCHIVE'
 archived_choices = [(completed_archive, completed_archive), (withdrawl_archive, withdrawl_archive),
                     (refunded_archive, refunded_archive)]
 # Create your models here.
+
+
 NO_COMMISSION = 'NO COMMISSION'
 COMMISSION_ONLY = 'COMMISSION ONLY'
 COMMISSION_PLUS_GST = 'COMMISSION + GST (10%)'
@@ -32,6 +34,7 @@ class StudentCourse(models.Model):
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     commission = models.IntegerField(null=True, blank=True, default=30)
+    commission_to_pay = models.IntegerField(null=True, blank=True, default=0)
     gst_status = models.CharField(max_length=30, choices=gst_choices, null=True, blank=True,
                                   default=COMMISSION_ONLY)
     material_fee = models.IntegerField(null=True, blank=True)
@@ -41,6 +44,8 @@ class StudentCourse(models.Model):
     total_fee = models.FloatField(null=True, blank=True)
     oshc = models.IntegerField(null=True, blank=True)
     total_commission_amount = models.FloatField(null=True, blank=True)
+    total_commission_paid = models.FloatField(null=True, blank=True)
+    gst = models.IntegerField(null=True, blank=True, default=10)
     comment = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -50,14 +55,6 @@ class StudentCourse(models.Model):
 
 # Create your models here.
 class StudentModel(BaseModel):
-    NO_COMMISSION = 'NO COMMISSION'
-    COMMISSION_ONLY = 'COMMISSION ONLY'
-    COMMISSION_PLUS_GST = 'COMMISSION + GST (10%)'
-    gst_choices = [
-        (NO_COMMISSION, NO_COMMISSION),
-        (COMMISSION_ONLY, COMMISSION_ONLY),
-        (COMMISSION_PLUS_GST, COMMISSION_PLUS_GST)
-    ]
     agent_name = models.ForeignKey('Agent.AgentModel', on_delete=models.CASCADE, null=True, blank=True)
     acmi_number = models.CharField(max_length=500, null=True, blank=True)
     full_name = models.CharField(max_length=500, null=True, blank=True)
@@ -107,6 +104,15 @@ class StudentModel(BaseModel):
         return "{name}  ({acmi_number})".format(name=self.full_name, acmi_number=self.acmi_number)
 
 
+tution_fee = 'Tuition Fee'
+material_fee = 'Material Fee'
+application_fee = 'Application Fee'
+oshc_fee = 'OSHC Fee'
+bonus = 'Bonus'
+fee_type_choices = [(tution_fee, tution_fee), (material_fee, material_fee), (application_fee, application_fee),
+                    (oshc_fee, oshc_fee), (bonus, bonus)]
+
+
 # Create your models here.
 class PayModelStudent(BaseModel):
     upfront_fee = 'UPFRONT FEE'
@@ -123,11 +129,7 @@ class PayModelStudent(BaseModel):
     student_course = models.ForeignKey(StudentCourse, on_delete=models.CASCADE, null=True, blank=True)
     fee_pay = models.FloatField(null=True, blank=True)
     paid_on = models.DateField(null=True, blank=True)
-    is_material_fee = models.BooleanField(blank=True, default=False)
-    is_application_fee = models.BooleanField(blank=True, default=False)
-    is_tuition_and_material_fee = models.BooleanField(blank=True, default=False)
-    is_oshc_fee = models.BooleanField(blank=True, default=False)
-    is_bonus = models.BooleanField(blank=True, default=False)
+    fee_type = models.CharField(max_length=100, choices=fee_type_choices, null=True, blank=True)
     agent_commision_amount = models.FloatField(null=True, blank=True, default=0)
     comment = models.TextField(null=True, blank=True)
     mode_of_payment = models.CharField(max_length=100, choices=mode_of_payment_choices, null=True, blank=True)

@@ -53,7 +53,7 @@ class CommissionModelAgent(BaseModel):
         (upfront_fee, upfront_fee),
         (adjustment, adjustment)
     ]
-    student = models.ForeignKey('Student.StudentModel', on_delete=models.CASCADE, null=True, blank=True)
+    student_course = models.ForeignKey('Student.StudentCourse', on_delete=models.CASCADE, null=True, blank=True)
     agent_name = models.CharField(max_length=100, null=True)
     agent_commission_percentage = models.CharField(max_length=100, null=True)
     agent_commission_amount = models.CharField(max_length=100, null=True)
