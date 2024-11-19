@@ -280,12 +280,12 @@ def agent_students(request, pk):
                 "href": reverse("all-agent"),
                 "icon": "fa fa-graduation-cap"
             },
-            # {
-            #     "color_class": "btn-primary",
-            #     "title": "Export Agent Report",
-            #     "href": reverse("export-agent-report", kwargs={'pk': pk}),
-            #     "icon": "fa fa-download"
-            # },
+            {
+                "color_class": "btn-primary",
+                "title": "Export All Student",
+                "href": reverse("export-agent-all-student", kwargs={'pk': pk}),
+                "icon": "fa fa-download"
+            },
         ],
         "page_title": f"{agent.name} All Student",
         "table": agent_students,
@@ -437,10 +437,66 @@ def export_individual_agent_details(request, pk=None):
     return response
 
 
+def get_total_commission_of_a_student(student):
+    student_all_courses = student.courses.all()
+    total_commission = 0
+    for course in student_all_courses:
+        total_commission += course.total_commission_amount
+    return "${}".format(total_commission)
+
+
+def get_commission_to_pay_against_a_student(student):
+    student_all_courses = student.courses.all()
+    commission_to_pay = 0
+    for course in student_all_courses:
+        commission_to_pay += course.commission_to_pay
+    return "${}".format(commission_to_pay)
+
+
+def commission_paid_yet_of_a_single_student(student):
+    try:
+        student_all_courses = student.courses.all()
+        commission_paid_yet = 0
+        for course in student_all_courses:
+            commission_paid_yet += course.total_commission_paid
+        return "${}".format(commission_paid_yet)
+    except:
+        return "${}".format(0)
+
+
+def export_agent_all_student(request, pk=None):
+    import csv
+    from django.http import HttpResponse
+    # Create the HttpResponse object with CSV headers.
+    agent = get_object_or_404(agent_models.AgentModel, pk=pk)
+    agent_students = student_models.StudentModel.objects.filter(agent_name=agent)
+    data = []
+    for student in agent_students:
+        temp_data = {
+            'acmi_number': "#" + str(student.acmi_number),
+            'full_name': student.full_name,
+            "total_commission": get_total_commission_of_a_student(student),
+            'commission_to_pay': get_commission_to_pay_against_a_student(student),
+            'commission_paid_yet': commission_paid_yet_of_a_single_student(student)
+        }
+        data.append(temp_data)
+    response = HttpResponse(content_type='text/csv')
+    response[
+        'Content-Disposition'] = f'attachment; filename="{agent.name}_all_student.csv"'
+    # Create a CSV writer object
+    writer = csv.writer(response)
+
+    # Write the header row (you can modify this according to your table's structure)
+    writer.writerow(data[0].keys())  # Replace with actual column names
+    for item in data:
+        writer.writerow(item.values())
+
+    return response
+
+
 def export_agents_details(request):
     import csv
     from django.http import HttpResponse
-    print("=========+++AJAOoooo============1")
     # Create the HttpResponse object with CSV headers.
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename="All_Agents.csv"'

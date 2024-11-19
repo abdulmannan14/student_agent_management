@@ -113,7 +113,10 @@ class AgentStudentTable(tables.Table):
             student_all_courses = record.courses.all()
             commission_paid_yet = 0
             for course in student_all_courses:
-                commission_paid_yet += course.total_commission_paid
+                if course.total_commission_paid:
+                    commission_paid_yet += course.total_commission_paid
+                else:
+                    pass
             return "${}".format(commission_paid_yet)
         except:
             return "${}".format(0)

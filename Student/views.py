@@ -230,7 +230,7 @@ def all_students(request):
 @login_required(login_url='login')
 def history_student(request, pk):
     # student = get_object_or_404(student_models.StudentModel, pk=pk)
-    students = student_models.PayModelStudent.objects.filter(student_course__id=pk, fee_pay__gt=0)
+    students = student_models.PayModelStudent.objects.filter(student_course__id=pk)
     student_course = student_models.StudentCourse.objects.filter(id=pk).first()
     student = student_models.StudentModel.objects.filter(courses=student_course).first()
     sort = request.GET.get('sort', None)
