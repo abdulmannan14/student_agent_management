@@ -135,12 +135,19 @@ def index(request):
     student_report(request)
     context = {
         "cards": [
+            # {
+            #     "title": "Upcoming Fee",
+            #     "value": f"${round(total_upcoming_fee, 2)}",
+            #     "icon": "fa-money",
+            #     "url": '#'
+            #     # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/PendingTrips.svg"),
+            # },
             {
-                "title": "Upcoming Fee",
-                "value": f"${round(total_upcoming_fee, 2)}",
-                "icon": "fa-money",
+                "title": "Fee Collected This Month",
+                "value": total_agents,
+                "icon": "fa-blind",
                 "url": '#'
-                # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/PendingTrips.svg"),
+                # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/TripsToday.svg"),
             },
             {
                 "title": " Commission To Pay",
@@ -164,26 +171,20 @@ def index(request):
                 # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/TripsToday.svg"),
             },
             {
-                "title": " Current Enrollments",
+                "title": " Total Enrollments",
                 "value": total_enrollments,
                 "icon": "fa-book",
                 "url": '#'
                 # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/TripsToday.svg"),
             },
-            {
-                "title": " Total Refunded Student",
-                "value": total_refunded_student,
-                "icon": "fa-blind",
-                "url": reverse('refunded-student')
-                # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/TripsToday.svg"),
-            },
-            {
-                "title": "Fee Collected This Month",
-                "value": total_agents,
-                "icon": "fa-blind",
-                "url": '#'
-                # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/TripsToday.svg"),
-            },
+            # {
+            #     "title": " Total Refunded Student",
+            #     "value": total_refunded_student,
+            #     "icon": "fa-blind",
+            #     "url": reverse('refunded-student')
+            #     # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/TripsToday.svg"),
+            # },
+
             {
                 "title": "Total Courses",
                 "value": Courses.models.Course.objects.all().count(),
