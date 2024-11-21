@@ -327,34 +327,35 @@ class StudentTableForReport(tables.Table):
     def render_acmi_number(self, record):
         return "#{}".format(record.acmi_number)
 
-    def render_commission(self, record):
-        return f"{record.commission} %"
+    # def render_commission(self, record):
+    #     return f"{record.commission} %"
 
-    def render_previous_student_fee_history(self, record):
-        return "Last Paid On : {} ".format(record.last_paid_on)
+    # def render_previous_student_fee_history(self, record):
+    #     return "Last Paid On : {} ".format(record.last_paid_on)
 
-    def render_agent_previous_commission_history(self, record):
-        return "Last Paid On : {}".format(record.previous_commission_history)
+    # def render_agent_previous_commission_history(self, record):
+    #     return "Last Paid On : {}".format(record.previous_commission_history)
 
-    def render_status(self, record):
-        try:
-            if record.total_required_fee < 1:
-                status = "Total Paid"
-                bgclass = "bg-blue"
-                style = 'border-block-style: inherit; border-bottom-style: solid; width: 75px; height: 28px; border-radius: 8px;'
-            elif not record.outstanding_fee:
-                status = "Clear"
-                bgclass = "bg-green"
-                style = 'border-block-style: inherit; border-bottom-style: solid; padding-left: 15px; width: 75px; height: 28px; border-radius: 8px;'
-            else:
-                status = "Not Clear"
-                bgclass = "bg-danger"
-                style = 'border-block-style: inherit; border-bottom-style: solid; width: 75px; height: 28px; border-radius: 8px;'
-            return format_html(
-                '<h4 class="{bgclass}" style="{style}">{}</h4>'.format(status, bgclass=bgclass, style=style))
-        except:
-            pass
-
+    # def render_status(self, record):
+    #     try:
+    #         if record.total_required_fee < 1:
+    #             status = "Total Paid"
+    #             bgclass = "bg-blue"
+    #             style = 'border-block-style: inherit; border-bottom-style: solid; width: 75px; height: 28px; border-radius: 8px;'
+    #         elif not record.outstanding_fee:
+    #             status = "Clear"
+    #             bgclass = "bg-green"
+    #             style = 'border-block-style: inherit; border-bottom-style: solid; padding-left: 15px; width: 75px; height: 28px; border-radius: 8px;'
+    #         else:
+    #             status = "Not Clear"
+    #             bgclass = "bg-danger"
+    #             style = 'border-block-style: inherit; border-bottom-style: solid; width: 75px; height: 28px; border-radius: 8px;'
+    #         return format_html(
+    #             '<h4 class="{bgclass}" style="{style}">{}</h4>'.format(status, bgclass=bgclass, style=style))
+    #     except:
+    #         pass
+    #
+    # ===============================================
     # def render_non_refundable_fee(self, record):
     #     return "${}".format(record.non_refundable_fee)
 
@@ -363,56 +364,59 @@ class StudentTableForReport(tables.Table):
     #
     # def render_tuition_fee(self, record):
     #     return "${}".format(record.tuition_fee)
+    # ===============================================
 
-    def render_total_required_fee(self, record):
-        return "${}".format(record.total_required_fee)
+    # def render_total_required_fee(self, record):
+    #     return "${}".format(record.total_required_fee)
+    # ===============================================
 
     # def render_paid_fee(self, record):
     #     return "${}".format(record.paid_fee)
+    # ===============================================
 
-    def render_outstanding_fee(self, record):
-        return "${}".format(round(record.outstanding_fee, 2))
+    # def render_outstanding_fee(self, record):
+    #     return "${}".format(round(record.outstanding_fee, 2))
 
     # def render_commission(self, record):
     #     return "${}".format(record.commission)
 
-    def render_discount(self, record):
-        return "${}".format(record.discount)
+    # def render_discount(self, record):
+    #     return "${}".format(record.discount)
 
-    def render_agent_bonus(self, record):
-        try:
-            return "${}".format(record.agent_bonus)
-        except:
-            return "$ 0"
+    # def render_agent_bonus(self, record):
+    #     try:
+    #         return "${}".format(record.agent_bonus)
+    #     except:
+    #         return "$ 0"
 
-    def render_total_commission_amount(self, record):
-        return "${}".format(record.total_commission_amount)
+    # def render_total_commission_amount(self, record):
+    #     return "${}".format(record.total_commission_amount)
+    #
+    # def render_material_fee(self, record):
+    #     return record.material_fee
+    #
+    # def render_application_fee_paid(self, record):
+    #     if record.application_fee_paid:
+    #         status = 'YES'
+    #         bgclass = "bg-green"
+    #
+    #     else:
+    #         status = "NO"
+    #         bgclass = "bg-red"
+    #     style = 'border-block-style: inherit; border-bottom-style: solid; padding-left: 20px; width: 75px; height: 28px; border-radius: 8px;'
+    #     return format_html(
+    #         '<h4 class={bgclass} style="{style}">{}</h4>'.format(status, bgclass=bgclass, style=style))
 
-    def render_material_fee(self, record):
-        return record.material_fee
-
-    def render_application_fee_paid(self, record):
-        if record.application_fee_paid:
-            status = 'YES'
-            bgclass = "bg-green"
-
-        else:
-            status = "NO"
-            bgclass = "bg-red"
-        style = 'border-block-style: inherit; border-bottom-style: solid; padding-left: 20px; width: 75px; height: 28px; border-radius: 8px;'
-        return format_html(
-            '<h4 class={bgclass} style="{style}">{}</h4>'.format(status, bgclass=bgclass, style=style))
-
-    def render_material_fee_paid(self, record):
-        if record.material_fee_paid:
-            status = 'YES'
-            bgclass = "bg-green"
-        else:
-            status = "NO"
-            bgclass = "bg-red"
-        style = 'border-block-style: inherit; border-bottom-style: solid;padding-left: 20px; width: 75px; height: 28px; border-radius: 8px;'
-        return format_html(
-            '<h4 class={bgclass} style="{style}">{}</h4>'.format(status, bgclass=bgclass, style=style))
+    # def render_material_fee_paid(self, record):
+    #     if record.material_fee_paid:
+    #         status = 'YES'
+    #         bgclass = "bg-green"
+    #     else:
+    #         status = "NO"
+    #         bgclass = "bg-red"
+    #     style = 'border-block-style: inherit; border-bottom-style: solid;padding-left: 20px; width: 75px; height: 28px; border-radius: 8px;'
+    #     return format_html(
+    #         '<h4 class={bgclass} style="{style}">{}</h4>'.format(status, bgclass=bgclass, style=style))
 
     def render_actions(self, record):
         if not record.refunded:

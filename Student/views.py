@@ -1297,10 +1297,10 @@ def student_report(request):
     #                     # student.amount_already_inserted = False
     #                     pass
     #             student.save()
-    # sort = request.GET.get('sort', None)
-    # if sort:
-    #     students = students.order_by(sort)
-    # students = student_table.StudentTableForReport(students)
+    sort = request.GET.get('sort', None)
+    if sort:
+        students = students.order_by(sort)
+    students = student_table.StudentTableForReport(students)
     context = {
         "page_title": "Fee Report",
         "table": students,
