@@ -10,6 +10,11 @@ urlpatterns = [
     path('add', student_views.add_student, name='add-student'),
     path('edit/<int:pk>', student_views.edit_student, name='edit-student'),
     path('history/<int:pk>', student_views.history_student, name='history-student'),
+    path('student/courses/<int:pk>', student_views.student_courses, name='student-courses'),
+    path('student/courses/<int:pk>/add', student_views.add_student_courses, name='add-student-course'),
+    path('student/courses/<int:pk>/edit', student_views.edit_student_courses, name='edit-student-course'),
+    path('student/courses/<int:pk>/delete', student_views.delete_student_courses, name='delete-student-course'),
+
     path('delete/<int:pk>', student_views.delete_student, name='delete-student'),
     path('archive/<int:pk>', student_views.archive_student, name='archive-student'),
     path('unarchive/<int:pk>', student_views.unarchive_student, name='unarchive-student'),
@@ -19,6 +24,7 @@ urlpatterns = [
     path('get_student_fee_details', student_views.get_student_fee_details, name='get-student-fee-details'),
     # FEE Related
     path('add/fee', student_views.add_fee, name='add-fee'),
+    path('add/fee/student/<int:pk>', student_views.add_fee_student, name='add-fee-student'),
     path('edit/fee/<int:pk>', student_views.edit_fee, name='edit-student-fee'),
     path('delete/fee/<int:pk>', student_views.delete_fee, name='delete-student-fee'),
     #     =====================STUDENT REPORT=============================================
@@ -46,6 +52,10 @@ def edit_student(pk: int):
     return reverse("edit-student", kwargs={"pk": pk})
 
 
+def edit_student_course(pk: int):
+    return reverse("edit-student-course", kwargs={"pk": pk})
+
+
 def edit_student_fee(pk: int):
     return reverse("edit-student-fee", kwargs={"pk": pk})
 
@@ -58,12 +68,22 @@ def history_student(pk: int):
     return reverse("history-student", kwargs={"pk": pk})
 
 
+def student_courses(pk: int):
+    return reverse("student-courses", kwargs={"pk": pk})
+
+
 def delete_student(pk: int):
     return reverse("delete-student", kwargs={"pk": pk})
 
 
+def delete_student_course(pk: int):
+    return reverse("delete-student-course", kwargs={"pk": pk})
+
+
 def archive_student(pk: int):
     return reverse("archive-student", kwargs={"pk": pk})
+
+
 def unarchive_student(pk: int):
     return reverse("unarchive-student", kwargs={"pk": pk})
 
