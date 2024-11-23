@@ -20,7 +20,6 @@ import dotenv
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-STATIC_DIR = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 
 DEBUG = True
@@ -141,6 +140,7 @@ USE_TZ = True
 # ]
 
 # FOR LOCAL
+STATIC_DIR = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/staticfiles/'
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATIC_ROOT = "static/"
