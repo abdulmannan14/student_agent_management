@@ -140,20 +140,20 @@ USE_TZ = True
 # ]
 
 # FOR LOCAL
-# STATIC_URL = '/staticfiles/'
-# STATIC_DIR = os.path.join(BASE_DIR, 'staticfiles')
-# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-# STATIC_ROOT = "static/"
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, "staticfiles"),
-# ]
-# =======server======
-STATIC_URL = '/static/'  # Use '/static/' for consistency in production
+STATIC_URL = '/staticfiles/'
+STATIC_DIR = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')  # For collectstatic output
+STATIC_ROOT = "static/"
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'staticfiles'),  # Development static files
+    os.path.join(BASE_DIR, "staticfiles"),
 ]
+# =======server======
+# STATIC_URL = '/static/'  # Use '/static/' for consistency in production
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')  # For collectstatic output
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'staticfiles'),
+# ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

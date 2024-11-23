@@ -1,0 +1,57 @@
+.skill{
+    width: 80px;
+    height: 80px;
+    /* background: yellow; */
+     position: relative;
+}
+.outer{
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    /* border: 1px solid red; */
+    box-shadow: 6px 6px 10px -1px rgba(0,0,0,0.15),
+                -6px -6px 10px -1px rgba(255,255,255,0.7);
+    padding:10px;
+}
+.inner{
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+
+    display: flex;  /*for making number in center position */
+    align-items: center;
+    justify-content: center;
+
+    /* border: 1px solid red; */
+    box-shadow: inset 4px 4px 6px -1px rgba(0,0,0,0.2),
+                inset -4px -4px 6px -1px rgba(255,255,255,0.7),
+                      -0.5px -0.5px 0px rgba(255,255,255,1),
+                      0.5px 0.5px 0px rgba(0,0,0,0.15),
+                      0px 12px 10px -10px rgba(0,0,0,0.05);
+}
+#number{
+    font-weight: 600;
+    color: #555;
+}
+
+circle{
+    fill: none;
+    /* stroke: cornflowerblue; */
+    stroke: url(#GradientColor);
+    stroke-width:12px;  /*for gradient color stroke*/
+    stroke-dasharray: 270;  /*for making complete circle*/
+    stroke-dashoffset: 270; /*for hiding gradient circle*/
+    animation: anim 2s linear forwards;
+}
+svg{
+    position:absolute;
+    top:-7px;
+    left:-7px;
+}
+
+/* keyframe for enim animation */
+@keyframes anim {
+    100%{
+        stroke-dashoffset: 320; /*for showing gradient circle for 65% and formula is 472-472*0.65=165 */
+    }
+}
