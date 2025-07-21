@@ -144,7 +144,7 @@ def index(request):
             # },
             {
                 "title": "Fee Collected This Month",
-                "value": total_agents,
+                "value": 0,
                 "icon": "fa-blind",
                 "url": '#'
                 # "icon_path": static("dashboard/assets/img/sidebar/dashboard-card-icons/TripsToday.svg"),
@@ -736,7 +736,7 @@ def add_fee_student(request, pk):
             fee_pay=fee_amount,
             paid_on=paid_on,
             fee_type=fee_type,
-            agent_commision_amount=(int(student_course.commission) * int(
+            agent_commision_amount=(float(student_course.commission) * float(
                 fee_amount) / 100) if fee_type == student_models.tution_fee else 0,
             commission_percentage=student_course.commission,
             mode_of_payment=mode_of_payment,

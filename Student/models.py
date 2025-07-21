@@ -34,7 +34,7 @@ class StudentCourse(models.Model):
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     commission = models.IntegerField(null=True, blank=True, default=30)
-    commission_to_pay = models.IntegerField(null=True, blank=True, default=0)
+    commission_to_pay = models.FloatField(null=True, blank=True, default=0)
     gst_status = models.CharField(max_length=30, choices=gst_choices, null=True, blank=True,
                                   default=COMMISSION_ONLY)
     material_fee = models.IntegerField(null=True, blank=True)

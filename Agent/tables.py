@@ -35,7 +35,7 @@ class AgentTable(tables.Table):
         for s in agent_student:
             get_all_courses = s.courses.all()
             for course in get_all_courses:
-                total_commission_to_pay += course.commission_to_pay
+                total_commission_to_pay += float(course.commission_to_pay)
         return "${}".format(total_commission_to_pay)
 
     def render_actions(self, record):
